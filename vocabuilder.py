@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QDialog, QWidget, QPushButton, QGridLayout, QSizePolicy
 from PyQt6.QtWidgets import QMainWindow, QScrollArea, QLabel, QVBoxLayout, QLineEdit, QBoxLayout
@@ -9,14 +8,15 @@ from PyQt6.QtGui import QIntValidator, QFont, QKeyEvent, QMouseEvent
 
 import configparser
 import csv
-import datetime
 import git
 import logging
-import os
+from pathlib import Path
 import pdb
+from pprint import pprint
 import random
 import shutil
 import sys
+import time
 from typing import Callable, Type
 
 # type hints for collection of builtin types requires python>=3.9, see
@@ -25,17 +25,10 @@ MIN_PYTHON = (3, 9)
 if sys.version_info < MIN_PYTHON:
     sys.exit(f"Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]} or later is required.")
 
-logging.basicConfig(level=logging.INFO)
-
 
 #----------
 #   MIXINS
 #----------
-
-class DateMixin():
-    def today_as_string(self):
-        return datetime.datetime.now().strftime(self.config.datefmt_str)
-
 
 class StringMixin():
     @staticmethod
@@ -44,10 +37,14 @@ class StringMixin():
             return True
         return False
 
+class TimeMixin():
+    @staticmethod
+    def epoch_in_seconds() -> int:
+        return int(time.time())
 
 class WarningsMixin():
     @staticmethod
-    def display_warning(parent, msg: str) -> None:
+    def display_warning(parent: QWidget, msg: str) -> None:
         mbox = QMessageBox(parent)  # "parent" makes the message box appear centered on the parent
         mbox.setIcon(QMessageBox.Icon.Information)
         mbox.setText(msg)
@@ -62,6 +59,13 @@ class WarningsMixin():
 #    Exceptions
 #----------------------
 
+class ConfigException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return f"Config exception: {self.value}"
+
 class DatabaseException(Exception):
     def __init__(self, value):
         self.value = value
@@ -74,7 +78,7 @@ class DatabaseException(Exception):
 #   CLASSES (alphabetically)
 #-----------------------------
 
-class AddWindow(QDialog, WarningsMixin, DateMixin, StringMixin):
+class AddWindow(QDialog, WarningsMixin, StringMixin):
     """Add a new term (and its translation) to the database, then ask for a another term to add.
     Continue the above procedure of adding terms until the user clicks the cancel button"""
     def __init__(self, parent: "MainWindow"):
@@ -93,9 +97,6 @@ class AddWindow(QDialog, WarningsMixin, DateMixin, StringMixin):
         vpos = self.add_line_edits(layout, vpos)
         self.add_buttons(layout, vpos)
         self.setLayout(layout)
-        #widget = QWidget()
-        ##widget.setLayout(layout)
-        #self.setCentralWidget(widget)
         self.exec()
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> None:
@@ -135,12 +136,12 @@ class AddWindow(QDialog, WarningsMixin, DateMixin, StringMixin):
         delay = self.edits[self.header.test_delay].text()
         if len(delay) == 0:
             delay = "0"
-        today = self.today_as_string()
+        now = str(self.epoch_in_seconds())
         item = {
                     self.header.term1      : term1,
                     self.header.term2      : term2,
                     self.header.test_delay : delay,
-                    self.header.last_test  : today,
+                    self.header.last_test  : now,
                   }
         self.parent.db.add_item(item)
         return True
@@ -219,17 +220,20 @@ class AddWindow(QDialog, WarningsMixin, DateMixin, StringMixin):
 class Config():
     def __init__(self):
         self.dir = self.check_config_dir()
-        self.fn = os.path.join(self.dir, 'config.ini')
+        self.fn = Path(self.dir) / 'config.ini'
         self.read_config()
-        self.datefmt_str = '%Y-%m-%d %H:%M:%S'
 
     def get_dir(self) -> None:
         return self.dir
 
     def read_config(self) -> None:
-        if not os.path.exists(self.fn):
+        path = Path(self.fn)
+        if path.exists():
+            if not path.is_file():
+                raise ConfigException(f"Config filename {str(path)} exists, but filetype is not file")
+        else:
             with open(self.fn, "w") as fp:
-                pass
+                pass  # only create empty file
         config = configparser.ConfigParser()
         defaults = {
             "AddWindow": {
@@ -269,26 +273,38 @@ class Config():
         self.config = config
 
     def check_config_dir(self) -> str:
-        dir = ".vocabuilder"
-        if not os.path.exists(dir):
-            os.mkdir(dir)
-        return dir
+        path = Path(".vocabuilder")
+        if path.exists():
+            if path.is_file():
+                raise ConfigException(f"Config directory {str(path)} is file. Expected directory")
+        else:
+            path.mkdir()
+        return path
 
 
 class CsvDatabaseHeader():
+    """
+    status        : 0 = The item has been deleted, 1, 2, 3,.. the item is not deleted
+    term1         : "From" term
+    term2         : "To" term (translation of Term1)
+    test_delay    : Number of days to next possible test, 0 or negative means no delay
+    last_test     : timestamp (epoch) of last time this term was practiced
+    last_modified : timestamp (epoch) of last time any of the previous was modified
+    """
     status = "Status"
     term1 = "Term1"
     term2 = "Term2"
     test_delay = "TestDelay"
     last_test = "LastTest"
-    header = [status, term1, term2, test_delay, last_test]
+    last_modified = "LastModified"
+    header = [status, term1, term2, test_delay, last_test, last_modified]
 
 
 class CSVwrapper():
-    def __init__(self, dbname: str):
+    def __init__(self, dbname: Path):
         self.quotechar = '"'
         self.delimiter = ','
-        self.filename = dbname
+        self.filename = str(dbname)
         self.header = CsvDatabaseHeader()
 
     def append_line(self, row_dict: dict):
@@ -336,16 +352,16 @@ class CSVwrapperWriter():
         self.csvwriter.writerow(self.parent.dict_to_row(row_dict))
 
 
-class Database(DateMixin):
+class Database(TimeMixin):
     def __init__(self, config: "Config"):
         self.config = config
         self.configdir = config.get_dir()
         self.db = {}
         self.status = TermStatus()
         self.header = CsvDatabaseHeader()
-        self.dbname = os.path.join(self.configdir, "database.csv")
+        self.dbname = self.configdir / "database.csv"
         self.csvwrapper = CSVwrapper(self.dbname)
-        self.backupdir = os.path.join(self.configdir, "backup")
+        self.backupdir = self.configdir / "backup"
         self.maybe_create_db()
         self.maybe_create_backup_repo()
         self.read_database()
@@ -354,23 +370,21 @@ class Database(DateMixin):
 
     def add_item(self, item: dict) -> None:
         item[self.header.status] = self.status.NOT_DELETED
+        item[self.header.last_modified] = self.epoch_in_seconds()  # epoch
         db_object = item.copy()
         term1 = db_object.pop(self.header.term1)
         self.db[term1] = db_object
         self.csvwrapper.append_line(item)
-        logging.info(f"ADDED: term1 = '{term1}', "
-                     f"term2 = '{item[self.header.term2]}', "
-                     f"delay = '{item[self.header.test_delay]}', "
-                     f"last_test = '{item[self.header.last_test]}'")
+        logging.info(f"ADDED: " + self.item_to_string(item))
 
     def check_term1_exists(self, term1: str) -> bool:
         return term1 in self.db
 
     def create_backup(self) -> None:
-        shutil.copy(self.dbname, self.backupdir)
-        repo = git.Repo(self.backupdir)
+        shutil.copy(str(self.dbname), str(self.backupdir))
+        repo = git.Repo(str(self.backupdir))
         index = repo.index
-        index.add([os.path.basename(self.dbname)])
+        index.add([self.dbname.name])
         author = git.Actor("vocabuilder", "hakon.hagland@gmail.com")
         committer = author
         index.commit("Startup commit", author=author, committer=committer)
@@ -381,11 +395,18 @@ class Database(DateMixin):
         item[self.header.status] = self.status.DELETED
         item[self.header.term1] = term1
         self.csvwrapper.append_line(item)
-        logging.info(f"DELETED: term1 = '{term1}', term2 = '{item[self.header.term2]}'")
+        logging.info(f"DELETED: " + self.item_to_string(item))
         del self.db[term1]
 
+    def get_epoch_diff_in_days(self, t1: int, t2: int) -> int:
+        if t1 > t2:
+            raise DatabaseException("Bad timestamp. Smaller than previous timestamp. Expected larger")
+        diff = (t2 - t1) // ( 24 * 60 * 60 )
+        return diff
+
     def get_pairs_exceeding_test_delay(self) -> list[tuple[str,str]]:
-        today = datetime.datetime.now()
+        """Get all candidates for a practice session."""
+        now = self.epoch_in_seconds()
         keys = self.get_term1_list()
         pairs = []
         for key in keys:
@@ -395,9 +416,7 @@ class Database(DateMixin):
             if last_test == "NA":
                 candidate = True
             else:
-                last_test = datetime.datetime.strptime(last_test, self.config.datefmt_str)
-                diff = today - last_test
-                days_since_last_test = diff.days
+                days_since_last_test = self.get_epoch_diff_in_days(int(last_test), now)
                 test_delay = int(values[self.header.test_delay])
                 if days_since_last_test >= test_delay:
                     candidate = True
@@ -424,73 +443,94 @@ class Database(DateMixin):
     def get_term2(self, term1: str) -> str:
         return self.db[term1][self.header.term2]
 
+    def item_to_string(self, item):
+        return f"term1 = '{item[self.header.term1]}', "\
+               f"term2 = '{item[self.header.term2]}', "\
+               f"delay = '{item[self.header.test_delay]}', "\
+               f"last_test = '{item[self.header.last_test]}', "\
+               f"last_modified = '{item[self.header.last_modified]}'"\
+
     def maybe_create_backup_repo(self) -> None:
-        if not os.path.exists(self.backupdir):
-            os.mkdir(self.backupdir)
-        gitdir = os.path.join(self.backupdir, '.git')
-        if not os.path.exists(gitdir):
+        if self.backupdir.exists():
+            if self.backupdir.is_file():
+                raise DatabaseException(f"Backup dir {str(self.backupdir)} is a file. Expected directory")
+        else:
+            self.backupdir.mkdir()
+        gitdir = self.backupdir / '.git'
+        if gitdir.exists():
+            if gitdir.is_file():
+                raise DatabaseException(f"Git directory {str(gitdir)} is a file. Expected directory")
+        else:
             git.Repo.init(self.backupdir)
 
     def maybe_create_db(self) -> None:
-        # Status: 0 = The item has been deleted, 1, 2, 3,.. the item is not deleted
-        # Term1     : "From" term
-        # Term2     : "To" term (translation of Term1)
-        # TestDelay : Number of days to next possible test, 0 or negative means no delay
-        if not os.path.exists(self.dbname):
-            self.csvwrapper.append_row(self.header.header)
+        if self.dbname.exists():
+            if not self.dbname.is_file():
+                raise DatabaseException(f"CSV database file {str(self.dbname)} exists "
+                                        f"but filetype is not file.")
+        else:
+            self.csvwrapper.append_row(self.header.header) # This will create the file
 
     def read_database(self) -> None:
-        filename = self.dbname
+        filename = str(self.dbname)
         with open(filename, "r") as fp:
             # TODO: This is the only place in the code where we are reading from db on file,
             # so we are lazy and don't delegate this to csvwrapper yet..
             delimiter = self.csvwrapper.delimiter
             quotechar = self.csvwrapper.quotechar
             csvh = csv.DictReader(fp, delimiter=delimiter, quotechar=quotechar)
-            line = 1
-            for row in csvh:
+            for lineno, row in enumerate(csvh, start=1):
                 if len(row) != len(self.header.header):
-                    raise Exception(f'Currupt database, expected {len(self.header.header)} items,'
-                                    f'got {len(row)} items')
+                    raise DatabaseException(
+                        f"Currupt database {filename}? Line {lineno} : "
+                        f"Expected {len(self.header.header)} items, "
+                        f"got {len(row)} items")
                 status = row[self.header.status]
                 term1 = row[self.header.term1]
                 if status == self.status.NOT_DELETED:
                     self.db[term1] = {
-                        self.header.term2      : row[self.header.term2],
-                        self.header.status     : status,
-                        self.header.test_delay : row[self.header.test_delay],
-                        self.header.last_test  : row[self.header.last_test]
+                        self.header.term2         : row[self.header.term2],
+                        self.header.status        : status,
+                        self.header.test_delay    : row[self.header.test_delay],
+                        self.header.last_test     : row[self.header.last_test],
+                        self.header.last_modified : row[self.header.last_modified]
                     }
                 elif status == self.status.DELETED:
                     if term1 in self.db:
                         del self.db[term1]
                 else:
                     raise DatabaseException(
-                        f"Unexpected value for status at line {line} in file {filename}")
-                line += 1
+                        f"Unexpected value for status at line {lineno} in file {filename}")
         logging.info(f"Read {len(self.db.keys())} lines from database")
 
     def update_dbfile_item(self, term1: str) -> None:
         """Write the data for db[term1] to the database file"""
+        self.db[term1][self.header.last_modified] = self.epoch_in_seconds()  # epoch
         item = self.db[term1].copy()
         item[self.header.term1] = term1
         self.csvwrapper.append_line(item)
-        logging.info( f"UPDATED: term1 = '{term1}', "
-                      f"term2 = '{item[self.header.term2]}', "
-                      f"delay = '{item[self.header.test_delay]}', "
-                      f"last_test = '{item[self.header.last_test]}'")
+        logging.info( f"UPDATED: " + self.item_to_string(item) )
 
     def update_item(self, term1: str, item: dict) -> None:
         self.db[term1] = item.copy()
         self.update_dbfile_item(term1)
 
     def update_retest_value(self, term1: str, delay: str) -> None:
+        """Set a delay (in days) until next time this term should be practiced"""
         self.db[term1][self.header.test_delay] = delay
-        today = self.today_as_string()
-        self.db[term1][self.header.last_test] = today
+        now = self.epoch_in_seconds()
+        self.db[term1][self.header.last_test] = str(now)
         self.update_dbfile_item(term1)
 
     def write_cleaned_up(self) -> None:
+        """When a database item is modified it is appended to the database file rather than
+        having the whole database rewritten. Of course, this will make the database file
+        temporarily contain duplicate items, but this is no problem since the database is read
+        sequentially in the read_database() method, and items with larger line number will then
+        overwrite items occurring at a lower line number.
+           However, the database in memory (the self.db dict) does not contain any duplicates so this
+        method will remove any duplicates from the database on file
+        """
         terms = self.get_term1_list()
         with self.csvwrapper.open_for_write() as fp:
             fp.writerow(self.header.header)
@@ -501,7 +541,7 @@ class Database(DateMixin):
         logging.info(f"Wrote cleaned up version of DB")
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, WarningsMixin):
     def __init__(self, app: QApplication, db: Database, config: "Config"):
         super().__init__()
         self.config = config
@@ -539,7 +579,7 @@ class MainWindow(QMainWindow):
         self.db.create_backup()
 
     def delete_entry(self) -> None:
-        print("Delete entry. Not implemented yet")
+        self.display_warning(self, "Delete entry. Not implemented yet")
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         #print(f"key code: {event.key()}, text: {event.text()}")
@@ -560,12 +600,12 @@ class MainWindow(QMainWindow):
         TestWindow(self)
 
     def view_entries(self) -> None:
-        print("View entries. Not implemented yet")
+        self.display_warning(self, "View entries. Not implemented yet")
 
 
-class ModifyWindow1(QDialog, WarningsMixin, DateMixin, StringMixin):
+class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
     """Modify/edit the translation of an existing term1 (and/or its translation) and update the
-    database. Then, ask for a another term to add. Continue the above
+    database. Then, ask for a another term to modify. Continue the above
     procedure of modifying terms until the user clicks the cancel button"""
     def __init__(self, parent: "MainWindow"):
         super().__init__(parent)  # make dialog modal
@@ -684,7 +724,7 @@ class ModifyWindow1(QDialog, WarningsMixin, DateMixin, StringMixin):
         #self.scrollwidget.setLayout(self.vbox)
         self.scrollwidget.update()
 
-class ModifyWindow2(QDialog, WarningsMixin, DateMixin, StringMixin):
+class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
     """Modify/edit the translation of an existing term1 (and/or its translation) and update the
     database."""
     def __init__(self, parent: QDialog, term1: str, database: Database):
@@ -697,8 +737,8 @@ class ModifyWindow2(QDialog, WarningsMixin, DateMixin, StringMixin):
         self.config = parent.config
         self.button_config = self.config.config["Buttons"]
         self.window_config = self.config.config["ModifyWindow2"]
+        # NOTE: resize(.., -1) means: let QT figure out the optimal height of the window
         self.resize(int(self.window_config["Width"]), -1)
-        #self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Modify item")
         layout = QGridLayout()
         vpos = 0
@@ -778,7 +818,7 @@ class ModifyWindow2(QDialog, WarningsMixin, DateMixin, StringMixin):
         if self.check_space_or_empty_str(new_term2):
             self.display_warning(self, 'Term2 is empty')
             return False
-        item = self.db.get_item(old_term1).copy()
+        item = self.db.get_term1_data(old_term1).copy()
         if new_term1 == old_term1:
             item[self.header.term2] = new_term2
             self.db.update_item(item)
@@ -807,7 +847,6 @@ class ModifyWindow2(QDialog, WarningsMixin, DateMixin, StringMixin):
             if widget is not None:
                 widget.deleteLater()
         self.add_scroll_area_items(self.vbox, text)
-        #self.scrollwidget.setLayout(self.vbox)
         self.scrollwidget.update()
 
 
@@ -895,8 +934,12 @@ class TestWindow(QDialog, WarningsMixin):
         grid.addWidget(edit, 1, 1)
         button = QPushButton("&Show translation: ", self)
         grid.addWidget(button, 2, 0)
-        label32 = QLabel(self.config.config["Practice"]["HiddenText"])
+        self.hidden_text_placeholder = self.config.config["Practice"]["HiddenText"]
+        label32 = QLabel(self.hidden_text_placeholder)
+        # In case you want to copy/paste the label text:
+        label32.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.hidden_label = label32
+        self.hidden_toggle = True   # True means: text is hidden
         term2_color = self.config.config["FontColor"]["Red"]
         label32.setStyleSheet(f"QLabel {{font-size: {fontsize}; color: {term2_color}; }}")
         grid.addWidget(label32, 2, 1)
@@ -1002,10 +1045,14 @@ class TestWindow(QDialog, WarningsMixin):
         self.user_edit.setText("")
         self.user_edit.setFocus()
 
-
     def show_hidden_translation(self, label: QLabel) -> Callable[[], None]:
         def callback():
-            label.setText(self.term2)
+            if self.hidden_toggle:
+                label.setText(self.term2)
+                self.hidden_toggle = False
+            else:
+                label.setText(self.hidden_text_placeholder)
+                self.hidden_toggle = True
         return callback
 
     def update_retest_lineedit(self, edit: QLineEdit, delay: str) -> Callable[[], None]:
@@ -1097,6 +1144,7 @@ class TestWindowChooseParameters(QDialog):
 #     Main program
 #--------------------
 def main():
+    logging.basicConfig(level=logging.INFO)
     config = Config()
     db = Database(config)
     app = QApplication(sys.argv)
