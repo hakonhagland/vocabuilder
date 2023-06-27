@@ -12,6 +12,7 @@ import git
 import logging
 from pathlib import Path
 import pdb
+import platformdirs
 from pprint import pprint
 import random
 import shutil
@@ -219,20 +220,75 @@ class AddWindow(QDialog, WarningsMixin, StringMixin):
 
 class Config():
     def __init__(self):
-        self.dir = self.check_config_dir()
-        self.fn = Path(self.dir) / 'config.ini'
+        self.appname = "vocabuilder"
+        self.dirlock_fn = ".dirlock"
+        self.lockfile_string = "author=HH"
+        self.config_dir = self.check_config_dir()
+        self.config_path = Path(self.config_dir) / 'config.ini'
         self.read_config()
+        self.datadir_path = self.get_data_dir_path()
 
-    def get_dir(self) -> None:
-        return self.dir
+    def check_config_dir(self) -> str:
+        config_dir = platformdirs.user_config_dir(appname=self.appname)
+        path = Path(config_dir)
+        lock_file = path / self.dirlock_fn
+        if path.exists():
+            if path.is_file():
+                raise ConfigException(f"Config directory {str(path)} is file. Expected directory")
+            self.check_correct_config_dir(lock_file)
+        else:
+            path.mkdir(parents=True)
+            with open(str(lock_file), "a") as fp:
+                fp.write(self.lockfile_string)
+        return path
+
+    def check_correct_config_dir(self, lock_file: Path) -> None:
+        """The config dir might be owned by another app with the same name"""
+        if lock_file.is_file():
+            with open(str(lock_file)) as fp:
+                line = fp.readline()
+                if line.startswith(self.lockfile_string):
+                    return
+        raise ConfigException(f"Config dir lock file missing. "
+                    f"The data directory {str(lock_file)} might be owned by another app.")
+
+    def check_correct_data_dir(self, lock_file: Path) -> None:
+        """The data dir might be owned by another app with the same name"""
+        if lock_file.is_file():
+            with open(str(lock_file)) as fp:
+                line = fp.readline()
+                if line.startswith(self.lockfile_string):
+                    return
+        raise ConfigException(f"Data dir lock file missing. "
+                    f"The data directory {str(lock_file)} might be owned by another app.")
+
+    def get_config_dir(self) -> Path:
+        return self.config_path
+
+    def get_data_dir(self) -> Path:
+        return self.datadir_path
+
+    def get_data_dir_path(self) -> Path:
+        data_dir = platformdirs.user_data_dir(appname=self.appname)
+        path = Path(data_dir)
+        lock_file = path / self.dirlock_fn
+        if path.exists():
+            if path.is_file():
+                raise ConfigException(f"Data directory {str(path)} is file. Expected directory")
+            self.check_correct_data_dir(lock_file)
+        else:
+            path.mkdir(parents=True)
+            with open(str(lock_file), "a") as fp:
+                fp.write(self.lockfile_string)
+        return path
 
     def read_config(self) -> None:
-        path = Path(self.fn)
+        path = Path(self.config_path)
         if path.exists():
             if not path.is_file():
                 raise ConfigException(f"Config filename {str(path)} exists, but filetype is not file")
         else:
-            with open(self.fn, "w") as fp:
+            with open(str(self.config_path), "w") as fp:
                 pass  # only create empty file
         config = configparser.ConfigParser()
         defaults = {
@@ -269,17 +325,8 @@ class Config():
             }
         }
         config.read_dict(defaults)
-        config.read(self.fn)
+        config.read(str(self.config_path))
         self.config = config
-
-    def check_config_dir(self) -> str:
-        path = Path(".vocabuilder")
-        if path.exists():
-            if path.is_file():
-                raise ConfigException(f"Config directory {str(path)} is file. Expected directory")
-        else:
-            path.mkdir()
-        return path
 
 
 class CsvDatabaseHeader():
@@ -353,15 +400,16 @@ class CSVwrapperWriter():
 
 
 class Database(TimeMixin):
-    def __init__(self, config: "Config"):
+    def __init__(self, config: "Config", voca_name: str):
         self.config = config
-        self.configdir = config.get_dir()
+        self.datadir = config.get_data_dir() / "databases" / voca_name
+        self.datadir.mkdir(parents=True, exist_ok=True)
         self.db = {}
         self.status = TermStatus()
         self.header = CsvDatabaseHeader()
-        self.dbname = self.configdir / "database.csv"
+        self.dbname = self.datadir / "database.csv"
         self.csvwrapper = CSVwrapper(self.dbname)
-        self.backupdir = self.configdir / "backup"
+        self.backupdir = self.datadir / "backup"
         self.maybe_create_db()
         self.maybe_create_backup_repo()
         self.read_database()
@@ -863,6 +911,13 @@ class QLabelClickable(QLabel):
             self.clicked_callback()
         return super().mousePressEvent(ev)
 
+class SelectVocabulary():
+    def __init__(self):
+        self.selected_name = "english-korean"
+
+    def get_name(self):
+        return self.selected_name
+
 
 class TermStatus():
     """Has this term been deleted from the database?"""
@@ -1143,10 +1198,17 @@ class TestWindowChooseParameters(QDialog):
 # -------------------
 #     Main program
 #--------------------
+
+def select_vocabulary():
+    """The user can select between different databases with different vocabularies"""
+    select = SelectVocabulary()
+    return select.get_name()
+
 def main():
     logging.basicConfig(level=logging.INFO)
     config = Config()
-    db = Database(config)
+    voca_name = select_vocabulary()
+    db = Database(config, voca_name)
     app = QApplication(sys.argv)
     window = MainWindow(app, db, config)
     window.show()

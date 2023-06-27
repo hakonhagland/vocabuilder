@@ -7,4 +7,4 @@ class MyTimer(TimeMixin):
 def test_today():
     d = MyTimer()
     now = d.epoch_in_seconds()
-    assert re.match(r"^\d+$", now)
+    assert re.match(r"^\d+$", str(now))

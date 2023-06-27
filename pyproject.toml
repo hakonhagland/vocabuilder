@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "vocabuilder"
+version = "0.1.0"
+description = ""
+authors = ["Håkon Hægland <hakon.hagland@gmail.com>"]
+readme = "README.md"
+packages = [{include = "vocabuilder", from = "src"}]
+license = "MIT"
+repository = "https://github.com/hakonhagland/vocabuilder"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+platformdirs = "^3.8.0"
+pyqt6 = "^6.5.1"
+configparser = "^5.3.0"
+pathlib = "^1.0.1"
+gitpython = "^3.1.31"
+
+[tool.poetry.scripts]
+vocabuilder = "vocabuilder.vocabuilder:main"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
