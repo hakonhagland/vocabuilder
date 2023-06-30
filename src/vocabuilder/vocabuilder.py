@@ -79,7 +79,7 @@ class DatabaseException(Exception):
 #   CLASSES (alphabetically)
 #-----------------------------
 
-class AddWindow(QDialog, WarningsMixin, StringMixin):
+class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
     """Add a new term (and its translation) to the database, then ask for a another term to add.
     Continue the above procedure of adding terms until the user clicks the cancel button"""
     def __init__(self, parent: "MainWindow"):
@@ -219,9 +219,12 @@ class AddWindow(QDialog, WarningsMixin, StringMixin):
 
 
 class Config():
+    # NOTE: This is made a class variable since it must be accessible from pytest before creating an
+    # object of this class
+    dirlock_fn = ".dirlock"
+
     def __init__(self):
         self.appname = "vocabuilder"
-        self.dirlock_fn = ".dirlock"
         self.lockfile_string = "author=HH"
         self.config_dir = self.check_config_dir()
         self.config_path = Path(self.config_dir) / 'config.ini'
@@ -250,7 +253,7 @@ class Config():
                 if line.startswith(self.lockfile_string):
                     return
         raise ConfigException(f"Config dir lock file missing. "
-                    f"The data directory {str(lock_file)} might be owned by another app.")
+                    f"The data directory {str(lock_file.parent)} might be owned by another app.")
 
     def check_correct_data_dir(self, lock_file: Path) -> None:
         """The data dir might be owned by another app with the same name"""
@@ -260,7 +263,7 @@ class Config():
                 if line.startswith(self.lockfile_string):
                     return
         raise ConfigException(f"Data dir lock file missing. "
-                    f"The data directory {str(lock_file)} might be owned by another app.")
+                    f"The data directory {str(lock_file.parent)} might be owned by another app.")
 
     def get_config_dir(self) -> Path:
         return self.config_path
@@ -400,14 +403,18 @@ class CSVwrapperWriter():
 
 
 class Database(TimeMixin):
+    # NOTE: This is made a class variable since it must be accessible from pytest before creating an
+    # object of this class
+    database_fn = "database.csv"
+    database_dir = "databases"
     def __init__(self, config: "Config", voca_name: str):
         self.config = config
-        self.datadir = config.get_data_dir() / "databases" / voca_name
+        self.datadir = config.get_data_dir() / self.database_dir / voca_name
         self.datadir.mkdir(parents=True, exist_ok=True)
         self.db = {}
         self.status = TermStatus()
         self.header = CsvDatabaseHeader()
-        self.dbname = self.datadir / "database.csv"
+        self.dbname = self.datadir / self.database_fn
         self.csvwrapper = CSVwrapper(self.dbname)
         self.backupdir = self.datadir / "backup"
         self.maybe_create_db()
@@ -419,6 +426,8 @@ class Database(TimeMixin):
     def add_item(self, item: dict) -> None:
         item[self.header.status] = self.status.NOT_DELETED
         item[self.header.last_modified] = self.epoch_in_seconds()  # epoch
+        if len(item.keys()) != len(self.header.header):
+            raise DatabaseException("add_item(): received unexpected number of elements for item")
         db_object = item.copy()
         term1 = db_object.pop(self.header.term1)
         self.db[term1] = db_object
