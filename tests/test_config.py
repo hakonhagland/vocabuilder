@@ -1,6 +1,9 @@
-from pathlib import Path, PosixPath
+from pathlib import PosixPath
+
 from vocabuilder.vocabuilder import Config
-#from .fixtures.common import config_object, config_dir_path
+
+# from .conftest import config_object, config_dir_path
+
 
 def test_config_object(config_object: Config, config_dir_path: PosixPath):
     cfg = config_object
