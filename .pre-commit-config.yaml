@@ -25,4 +25,4 @@ repos:
         additional_dependencies: [platformdirs==3.8.0, pyqt6==6.5.1, configparser==5.3.0,
                                   pathlib==1.0.1, gitpython==3.1.31, future==0.18.3]
 
-        args: [--strict]
+        args: [--strict, --implicit-reexport]

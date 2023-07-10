@@ -598,7 +598,7 @@ class Database(TimeMixin):
         index.add([self.dbname.name])
         # NOTE: Using git.util instead of git here to make mypy --strict happy
         #    see: https://stackoverflow.com/a/76649585/2173773
-        author = git.util.Actor("vocabuilder", "hakon.hagland@gmail.com")
+        author = git.Actor("vocabuilder", "hakon.hagland@gmail.com")
         committer = author
         index.commit("Startup commit", author=author, committer=committer)
         logging.info("Created backup.")
@@ -745,7 +745,7 @@ class Database(TimeMixin):
 
     def update_retest_value(self, term1: str, delay: str) -> None:
         """Set a delay (in days) until next time this term should be practiced"""
-        self.db[term1][self.header.test_delay] = delay
+        self.db[term1][self.header.test_delay] = int(delay)
         now = self.epoch_in_seconds()
         self.db[term1][self.header.last_test] = str(now)
         self.update_dbfile_item(term1)
