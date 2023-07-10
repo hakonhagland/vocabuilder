@@ -591,13 +591,9 @@ class Database(TimeMixin):
 
     def create_backup(self) -> None:
         shutil.copy(str(self.dbname), str(self.backupdir))
-        # NOTE: Using git.repo instead of git here to make mypy --strict happy
-        #    see: https://stackoverflow.com/a/76649585/2173773
-        repo = git.repo.Repo(str(self.backupdir))
+        repo = git.Repo(str(self.backupdir))
         index = repo.index
         index.add([self.dbname.name])
-        # NOTE: Using git.util instead of git here to make mypy --strict happy
-        #    see: https://stackoverflow.com/a/76649585/2173773
         author = git.Actor("vocabuilder", "hakon.hagland@gmail.com")
         committer = author
         index.commit("Startup commit", author=author, committer=committer)
@@ -687,8 +683,7 @@ class Database(TimeMixin):
                     f"Git directory {str(gitdir)} is a file. Expected directory"
                 )
         else:
-            # NOTE: see comment about git.repo other place in this source file
-            git.repo.Repo.init(self.backupdir)
+            git.Repo.init(self.backupdir)
 
     def maybe_create_db(self) -> None:
         if self.dbname.exists():
