@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+from __future__ import annotations
 
 import configparser
 import csv
@@ -9,10 +10,18 @@ import random
 import shutil
 import sys
 import time
+import typing
+
 from pathlib import Path
 
 # from pprint import pprint
-from typing import Any, Callable
+from typing import Callable, Literal, Optional
+from types import TracebackType
+
+# NOTE: "Self" type requires python >= 3.11, and we are trying to support python 3.10, so
+#   we will work around this using "from __future__ import annotations", see above
+#   See also: https://stackoverflow.com/a/33533514/2173773
+# from typing_extensions import Self
 
 import git
 import platformdirs
@@ -47,7 +56,13 @@ if sys.version_info < MIN_PYTHON:
     sys.exit(f"Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]} or later is required.")
 
 
-# ----------
+# -----------------
+#   Type aliases
+# ----------------
+
+DatabaseValue = str | int | None
+DatabaseRow = dict[str, DatabaseValue]
+
 #   MIXINS
 # ----------
 
@@ -87,18 +102,18 @@ class WarningsMixin:
 
 
 class ConfigException(Exception):
-    def __init__(self, value):
+    def __init__(self, value: str):
         self.value = value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Config exception: {self.value}"
 
 
 class DatabaseException(Exception):
-    def __init__(self, value):
+    def __init__(self, value: str):
         self.value = value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Database exception: {self.value}"
 
 
@@ -121,17 +136,13 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         self.header = CsvDatabaseHeader()
         self.window_config = self.config.config["AddWindow"]
         self.button_config = self.config.config["Buttons"]
-        self.resize(
-            int(self.window_config["Width"]), int(self.window_config["Height"])
-        )
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Add new item")
         layout = QGridLayout()
         vpos = 0
         self.add_scroll_area(layout, vpos)
         vpos += 1
-        self.edits: dict[
-            str, QLineEdit
-        ] = {}  # mypy requires type annotation here
+        self.edits: dict[str, QLineEdit] = {}  # mypy requires type annotation here
         vpos = self.add_line_edits(layout, vpos)
         self.add_buttons(layout, vpos)
         self.setLayout(layout)
@@ -181,7 +192,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         else:
             delay = int(delay_str)
         now = self.epoch_in_seconds()
-        item = {
+        item: DatabaseRow = {
             self.header.term1: term1,
             self.header.term2: term2,
             self.header.test_delay: delay,
@@ -190,7 +201,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         self.__parent.db.add_item(item)
         return True
 
-    def add_line_edits(self, layout: QGridLayout, vpos: int):
+    def add_line_edits(self, layout: QGridLayout, vpos: int) -> int:
         large = self.config.config["FontSize"]["Large"]
         descriptions = ["Term1:", "Term2:", "Retest in x days:"]
         fontsizes = [large, large, None]
@@ -223,9 +234,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         self.vbox.setDirection(QBoxLayout.Direction.BottomToTop)
         self.add_scroll_area_items(self.vbox)
         self.scrollwidget.setLayout(self.vbox)
-        self.__scroll.setVerticalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAlwaysOn
-        )
+        self.__scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.__scroll.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
@@ -234,7 +243,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         layout.addWidget(self.__scroll, vpos, 0, 1, 3)
         return
 
-    def add_scroll_area_items(self, vbox: QVBoxLayout, text=None) -> None:
+    def add_scroll_area_items(self, vbox: QVBoxLayout, text: str | None = None) -> None:
         terms = self.__parent.db.get_term1_list()
         for term in reversed(
             terms
@@ -273,7 +282,7 @@ class Config:
     #   pytest before creating an object of this class
     dirlock_fn = ".dirlock"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.appname = "vocabuilder"
         self.lockfile_string = "author=HH"
         self.config_dir = self.check_config_dir()
@@ -426,11 +435,11 @@ class CSVwrapper:
         self.filename = str(dbname)
         self.header = CsvDatabaseHeader()
 
-    def append_line(self, row_dict: dict) -> None:
+    def append_line(self, row_dict: DatabaseRow) -> None:
         row = self.dict_to_row(row_dict)
         self.append_row(row)
 
-    def append_row(self, row) -> None:
+    def append_row(self, row: list[DatabaseValue]) -> None:
         with open(self.filename, "a", newline="") as fp:
             csvwriter = csv.writer(
                 fp,
@@ -440,7 +449,7 @@ class CSVwrapper:
             )
             csvwriter.writerow(row)
 
-    def dict_to_row(self, row_dict: dict) -> list:
+    def dict_to_row(self, row_dict: DatabaseRow) -> list[DatabaseValue]:
         row = []
         for key in self.header.header:
             row.append(row_dict[key])
@@ -456,9 +465,7 @@ class CSVwrapper:
 class CSVwrapperReader:
     """Context manager for reading lines from the database csv file"""
 
-    def __init__(
-        self, parent: CSVwrapper, filename: str, header: CsvDatabaseHeader
-    ):
+    def __init__(self, parent: CSVwrapper, filename: str, header: CsvDatabaseHeader):
         self.parent = parent
         self.header = header
         self.fp = open(filename, "r")
@@ -468,17 +475,22 @@ class CSVwrapperReader:
             quotechar=self.parent.quotechar,
         )
 
-    def __enter__(self):
+    def __enter__(self) -> CSVwrapperReader:
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(
+        self,
+        type: Optional[type[BaseException]],
+        value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> Literal[False]:
         self.fp.close()
         return False  # TODO: handle exceptions
 
-    def __iter__(self, start=0):
+    def __iter__(self, start: int = 0) -> CSVwrapperReader:
         return self
 
-    def __next__(self):
+    def __next__(self) -> dict[str, DatabaseValue]:
         try:
             row = next(self.csvh)
         except StopIteration as e:
@@ -486,11 +498,12 @@ class CSVwrapperReader:
         self.fixup_datatypes(row)
         return row
 
-    def fixup_datatypes(self, row):
+    def fixup_datatypes(self, row: dict[str, str]) -> None:
+        """NOTE: this method modifies the input argument 'row'"""
         for key in row:
             value = row[key]
             if value == "NA":
-                row[key] = None
+                row[key] = None  # type: ignore
             else:
                 row[key] = self.header.types[key](
                     row[key]
@@ -510,23 +523,29 @@ class CSVwrapperWriter:
             quoting=csv.QUOTE_MINIMAL,
         )
 
-    def __enter__(self):
+    def __enter__(self) -> CSVwrapperWriter:
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(
+        self,
+        type: Optional[type[BaseException]],
+        value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> Literal[False]:
         self.fp.close()
         return False  # TODO: handle exceptions
 
-    def fixup_none_datavalues(self, row):
+    def fixup_none_datavalues(self, row: list[DatabaseValue]) -> None:
+        """NOTE: This method is modifying the input argument 'row'"""
         for i, item in enumerate(row):
             if item is None:
                 row[i] = "NA"
 
-    def writerow(self, row: list[str]) -> None:
+    def writerow(self, row: list[DatabaseValue]) -> None:
         self.fixup_none_datavalues(row)
         self.csvwriter.writerow(row)
 
-    def writeline(self, row_dict: dict) -> None:
+    def writeline(self, row_dict: DatabaseRow) -> None:
         row = self.parent.dict_to_row(row_dict)
         self.fixup_none_datavalues(row)
         self.csvwriter.writerow(row)
@@ -542,7 +561,7 @@ class Database(TimeMixin):
         self.config = config
         self.datadir = config.get_data_dir() / self.database_dir / voca_name
         self.datadir.mkdir(parents=True, exist_ok=True)
-        self.db: dict[Any, Any] = {}
+        self.db: dict[str, DatabaseRow] = {}
         self.status = TermStatus()
         self.header = CsvDatabaseHeader()
         self.dbname = self.datadir / self.database_fn
@@ -554,12 +573,15 @@ class Database(TimeMixin):
         self.create_backup()
         self.write_cleaned_up()
 
-    def add_item(self, item: dict) -> None:
+    def add_item(self, item: DatabaseRow) -> None:
         item[self.header.status] = self.status.NOT_DELETED
         item[self.header.last_modified] = self.epoch_in_seconds()  # epoch
         self.validate_item_content(item)
         db_object = item.copy()
-        term1 = db_object.pop(self.header.term1)
+        # NOTE: according to the type hints term1 will have type str | int | None,
+        #   but we can be sure that term1 will always be of type str, so we skip
+        #   the mypy type check below
+        term1 = typing.cast(str, db_object.pop(self.header.term1))
         self.db[term1] = db_object
         self.csvwrapper.append_line(item)
         logging.info("ADDED: " + self.item_to_string(item))
@@ -569,10 +591,14 @@ class Database(TimeMixin):
 
     def create_backup(self) -> None:
         shutil.copy(str(self.dbname), str(self.backupdir))
-        repo = git.Repo(str(self.backupdir))
+        # NOTE: Using git.repo instead of git here to make mypy --strict happy
+        #    see: https://stackoverflow.com/a/76649585/2173773
+        repo = git.repo.Repo(str(self.backupdir))
         index = repo.index
         index.add([self.dbname.name])
-        author = git.Actor("vocabuilder", "hakon.hagland@gmail.com")
+        # NOTE: Using git.util instead of git here to make mypy --strict happy
+        #    see: https://stackoverflow.com/a/76649585/2173773
+        author = git.util.Actor("vocabuilder", "hakon.hagland@gmail.com")
         committer = author
         index.commit("Startup commit", author=author, committer=committer)
         logging.info("Created backup.")
@@ -605,14 +631,15 @@ class Database(TimeMixin):
             if last_test is None:
                 candidate = True
             else:
-                days_since_last_test = self.get_epoch_diff_in_days(
-                    int(last_test), now
-                )
-                test_delay = int(values[self.header.test_delay])
+                days_since_last_test = self.get_epoch_diff_in_days(int(last_test), now)
+                assert isinstance(values[self.header.test_delay], int)
+                # NOTE: cast from type str | int | None -> int
+                test_delay = typing.cast(int, values[self.header.test_delay])
                 if days_since_last_test >= test_delay:
                     candidate = True
             if candidate:
-                term2 = values[self.header.term2]
+                assert isinstance(self.header.term2, str)
+                term2 = typing.cast(str, values[self.header.term2])
                 pairs.append((key, term2))
         return pairs
 
@@ -625,16 +652,18 @@ class Database(TimeMixin):
         idx = random.randint(min, max)
         return pairs[idx]
 
-    def get_term1_data(self, term1: str) -> dict:
+    def get_term1_data(self, term1: str) -> DatabaseRow:
         return self.db[term1]
 
     def get_term1_list(self) -> list[str]:
         return sorted(self.db.keys())
 
     def get_term2(self, term1: str) -> str:
-        return self.db[term1][self.header.term2]
+        term2 = self.db[term1][self.header.term2]
+        assert isinstance(term2, str)
+        return term2
 
-    def item_to_string(self, item):
+    def item_to_string(self, item: DatabaseRow) -> str:
         return (
             f"term1 = '{item[self.header.term1]}', "
             f"term2 = '{item[self.header.term2]}', "
@@ -658,7 +687,8 @@ class Database(TimeMixin):
                     f"Git directory {str(gitdir)} is a file. Expected directory"
                 )
         else:
-            git.Repo.init(self.backupdir)
+            # NOTE: see comment about git.repo other place in this source file
+            git.repo.Repo.init(self.backupdir)
 
     def maybe_create_db(self) -> None:
         if self.dbname.exists():
@@ -669,7 +699,7 @@ class Database(TimeMixin):
                 )
         else:
             self.csvwrapper.append_row(
-                self.header.header
+                typing.cast(list[DatabaseValue], self.header.header)
             )  # This will create the file
 
     def read_database(self) -> None:
@@ -682,16 +712,14 @@ class Database(TimeMixin):
                         f"got {len(row)} items"
                     )
                 status = row[self.header.status]
-                term1 = row[self.header.term1]
+                term1 = typing.cast(str, row[self.header.term1])
                 if status == self.status.NOT_DELETED:
                     self.db[term1] = {
                         self.header.term2: row[self.header.term2],
                         self.header.status: status,
                         self.header.test_delay: row[self.header.test_delay],
                         self.header.last_test: row[self.header.last_test],
-                        self.header.last_modified: row[
-                            self.header.last_modified
-                        ],
+                        self.header.last_modified: row[self.header.last_modified],
                     }
                 elif status == self.status.DELETED:
                     if term1 in self.db:
@@ -705,15 +733,13 @@ class Database(TimeMixin):
 
     def update_dbfile_item(self, term1: str) -> None:
         """Write the data for db[term1] to the database file"""
-        self.db[term1][
-            self.header.last_modified
-        ] = self.epoch_in_seconds()  # epoch
+        self.db[term1][self.header.last_modified] = self.epoch_in_seconds()  # epoch
         item = self.db[term1].copy()
         item[self.header.term1] = term1
         self.csvwrapper.append_line(item)
         logging.info("UPDATED: " + self.item_to_string(item))
 
-    def update_item(self, term1: str, item: dict) -> None:
+    def update_item(self, term1: str, item: DatabaseRow) -> None:
         self.db[term1] = item.copy()
         self.update_dbfile_item(term1)
 
@@ -724,7 +750,7 @@ class Database(TimeMixin):
         self.db[term1][self.header.last_test] = str(now)
         self.update_dbfile_item(term1)
 
-    def validate_item_content(self, item: dict) -> None:
+    def validate_item_content(self, item: DatabaseRow) -> None:
         if len(item.keys()) != len(self.header.header):
             raise DatabaseException("unexpected number of elements for item")
         for key in self.header.header:
@@ -749,7 +775,8 @@ class Database(TimeMixin):
         """
         terms = self.get_term1_list()
         with self.csvwrapper.open_for_write() as fp:
-            fp.writerow(self.header.header)
+            header = typing.cast(list[DatabaseValue], self.header.header)
+            fp.writerow(header)
             for term1 in terms:
                 item = self.db[term1].copy()
                 item[self.header.term1] = term1
@@ -787,9 +814,7 @@ class MainWindow(QMainWindow, WarningsMixin):
 
         for i, name in enumerate(names):
             button = QPushButton(name, self)
-            button.setSizePolicy(
-                QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored
-            )
+            button.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Ignored)
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
             button.setMinimumHeight(int(self.button_config["MinHeight"]))
@@ -848,9 +873,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         self.header = CsvDatabaseHeader()
         self.button_config = self.config.config["Buttons"]
         self.window_config = self.config.config["ModifyWindow1"]
-        self.resize(
-            int(self.window_config["Width"]), int(self.window_config["Height"])
-        )
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Choose item to modify")
         self.edits: dict[str, QLineEdit] = {}
         layout = QGridLayout()
@@ -906,9 +929,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         self.vbox.setDirection(QBoxLayout.Direction.BottomToTop)
         self.add_scroll_area_items(self.vbox)
         self.scrollwidget.setLayout(self.vbox)
-        self.__scroll.setVerticalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAlwaysOn
-        )
+        self.__scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.__scroll.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
@@ -917,7 +938,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         layout.addWidget(self.__scroll, vpos, 0, 1, 4)
         return
 
-    def add_scroll_area_items(self, vbox: QVBoxLayout, text=None) -> None:
+    def add_scroll_area_items(self, vbox: QVBoxLayout, text: str | None = None) -> None:
         terms = self.__parent.db.get_term1_list()
         for term in reversed(
             terms
@@ -950,7 +971,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         self.modify_item()
 
     def scroll_area_item_clicked(self, item: str) -> Callable[[], None]:
-        def callback():
+        def callback() -> None:
             self.edits[self.header.term1].setText(item)
 
         return callback
@@ -1017,23 +1038,19 @@ class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
         label12 = QLabel(self.term1)
         large = self.config.config["FontSize"]["Large"]
         term1_color = self.config.config["FontColor"]["Blue"]
-        label12.setStyleSheet(
-            f"QLabel {{font-size: {large}; color: {term1_color}; }}"
-        )
+        label12.setStyleSheet(f"QLabel {{font-size: {large}; color: {term1_color}; }}")
         layout.addWidget(label12, vpos, 1, 1, 3)
         vpos += 1
         label21 = QLabel("Current term2:")
         layout.addWidget(label21, vpos, 0, 1, 1)
         label22 = QLabel(self.term2)
         term2_color = self.config.config["FontColor"]["Red"]
-        label22.setStyleSheet(
-            f"QLabel {{font-size: {large}; color: {term2_color}; }}"
-        )
+        label22.setStyleSheet(f"QLabel {{font-size: {large}; color: {term2_color}; }}")
         layout.addWidget(label22, vpos, 1, 1, 3)
         vpos += 1
         return vpos
 
-    def add_line_edits(self, layout: QGridLayout, vpos: int):
+    def add_line_edits(self, layout: QGridLayout, vpos: int) -> int:
         large = self.config.config["FontSize"]["Large"]
         descriptions = ["New term1:", "New term2:"]
         fontsizes = [large, large]
@@ -1090,7 +1107,7 @@ class QLabelClickable(QLabel):
         super().__init__(text, parent)
         self.clicked_callback: Callable[[], None] | None = None
 
-    def addCallback(self, callback: Callable[[], None] | None):
+    def addCallback(self, callback: Callable[[], None] | None) -> None:
         self.clicked_callback = callback
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
@@ -1100,10 +1117,10 @@ class QLabelClickable(QLabel):
 
 
 class SelectVocabulary:
-    def __init__(self):
+    def __init__(self) -> None:
         self.selected_name = "english-korean"
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.selected_name
 
 
@@ -1143,9 +1160,7 @@ class TestWindow(QDialog, WarningsMixin):
         self.params = TestWindowChooseParameters(parent)
         if self.params.cancelled:
             return
-        self.resize(
-            int(self.window_config["Width"]), int(self.window_config["Height"])
-        )
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Practice term/phrase/word")
         layout = QGridLayout()
         vpos = 1
@@ -1189,14 +1204,10 @@ class TestWindow(QDialog, WarningsMixin):
         grid.addWidget(edit, 1, 1)
         button = QPushButton("&Show translation: ", self)
         grid.addWidget(button, 2, 0)
-        self.hidden_text_placeholder = self.config.config["Practice"][
-            "HiddenText"
-        ]
+        self.hidden_text_placeholder = self.config.config["Practice"]["HiddenText"]
         label32 = QLabel(self.hidden_text_placeholder)
         # In case you want to copy/paste the label text:
-        label32.setTextInteractionFlags(
-            Qt.TextInteractionFlag.TextSelectableByMouse
-        )
+        label32.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.hidden_label = label32
         self.hidden_toggle = True  # True means: text is hidden
         term2_color = self.config.config["FontColor"]["Red"]
@@ -1210,7 +1221,7 @@ class TestWindow(QDialog, WarningsMixin):
         vpos += 1
         return vpos
 
-    def add_next_done_buttons(self, layout: QGridLayout, vpos: int):
+    def add_next_done_buttons(self, layout: QGridLayout, vpos: int) -> int:
         next_button = QPushButton("&Next", self)
         next_button.clicked.connect(self.next_button_clicked)
         layout.addWidget(next_button, vpos, 0)
@@ -1219,7 +1230,7 @@ class TestWindow(QDialog, WarningsMixin):
         layout.addWidget(done_button, vpos, 1)
         return vpos + 1
 
-    def add_param_info_labels(self, layout: QGridLayout, vpos: int):
+    def add_param_info_labels(self, layout: QGridLayout, vpos: int) -> int:
         if self.params.test_direction == TestDirection._1to2:
             lang1 = 1
             lang2 = 2
@@ -1246,7 +1257,7 @@ class TestWindow(QDialog, WarningsMixin):
         layout.addWidget(groupbox, vpos, 0, 1, 2)
         return vpos + 1
 
-    def add_retest_options(self, layout: QGridLayout, vpos: int):
+    def add_retest_options(self, layout: QGridLayout, vpos: int) -> int:
         groupbox = QGroupBox("When to practice this word again?")
         grid = QGridLayout()
         label11 = QLabel("<i>Practice this word again after x days:</i>")
@@ -1302,23 +1313,19 @@ class TestWindow(QDialog, WarningsMixin):
         self.__parent.db.update_retest_value(self.term1, delay)
         pair = self.__parent.db.get_random_pair()
         if pair is None:
-            self.display_warning(
-                self, "No more terms ready for practice today!"
-            )
+            self.display_warning(self, "No more terms ready for practice today!")
             self.done(1)
         else:
             term1, term2 = pair
             self.term1 = term1
             self.term2 = term2
             self.term1_label.setText(term1)
-            self.hidden_label.setText(
-                self.config.config["Practice"]["HiddenText"]
-            )
+            self.hidden_label.setText(self.config.config["Practice"]["HiddenText"])
             self.user_edit.setText("")
             self.user_edit.setFocus()
 
     def show_hidden_translation(self, label: QLabel) -> Callable[[], None]:
-        def callback():
+        def callback() -> None:
             if self.hidden_toggle:
                 label.setText(self.term2)
                 self.hidden_toggle = False
@@ -1328,10 +1335,8 @@ class TestWindow(QDialog, WarningsMixin):
 
         return callback
 
-    def update_retest_lineedit(
-        self, edit: QLineEdit, delay: str
-    ) -> Callable[[], None]:
-        def callback():
+    def update_retest_lineedit(self, edit: QLineEdit, delay: str) -> Callable[[], None]:
+        def callback() -> None:
             edit.setText(delay)
 
         return callback
@@ -1421,13 +1426,13 @@ class TestWindowChooseParameters(QDialog):
 # --------------------
 
 
-def select_vocabulary():
+def select_vocabulary() -> str:
     """The user can select between different databases with different vocabularies"""
     select = SelectVocabulary()
     return select.get_name()
 
 
-def main():
+def main() -> None:
     logging.basicConfig(level=logging.INFO)
     config = Config()
     voca_name = select_vocabulary()

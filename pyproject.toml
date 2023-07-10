@@ -15,6 +15,7 @@ pyqt6 = "^6.5.1"
 configparser = "^5.3.0"
 pathlib = "^1.0.1"
 gitpython = "^3.1.31"
+future = "^0.18.3"
 
 [tool.poetry.scripts]
 vocabuilder = "vocabuilder.vocabuilder:main"
@@ -31,7 +32,7 @@ flake8 = "^6.0.0"
 flake8-bugbear = "^23.6.5"
 
 [tool.black]
-line-length = 79
+line-length = 88
 
 [tool.coverage.run]
 #omit = [".*", "*/site-packages/*"]
