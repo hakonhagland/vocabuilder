@@ -1,5 +1,5 @@
 import shutil
-from pathlib import PosixPath
+from pathlib import Path
 
 import pytest
 from pytest_mock.plugin import MockerFixture
@@ -10,8 +10,8 @@ TestDataDict = dict[str, str]
 
 
 @pytest.fixture(scope="session")
-def test_file_path() -> PosixPath:
-    return PosixPath(__file__).parent / "files"
+def test_file_path() -> Path:
+    return Path(__file__).parent / "files"
 
 
 @pytest.fixture(scope="session")
@@ -24,15 +24,15 @@ def test_data() -> TestDataDict:
 
 
 @pytest.fixture(scope="session")
-def config_dir_path(test_file_path: PosixPath, test_data: TestDataDict) -> PosixPath:
+def config_dir_path(test_file_path: Path, test_data: TestDataDict) -> Path:
     cfg_dir = test_file_path / test_data["config_dir"]
     return cfg_dir
 
 
 @pytest.fixture()
 def data_dir_path(
-    tmp_path: PosixPath, test_file_path: PosixPath, test_data: TestDataDict
-) -> PosixPath:
+    tmp_path: Path, test_file_path: Path, test_data: TestDataDict
+) -> Path:
     data_dir = tmp_path / test_data["data_dir"]
     data_dir.mkdir()
     data_dirlock_fn = test_file_path / test_data["data_dir"] / Config.dirlock_fn
@@ -42,7 +42,7 @@ def data_dir_path(
 
 @pytest.fixture()
 def config_object(
-    config_dir_path: PosixPath, mocker: MockerFixture, data_dir_path: PosixPath
+    config_dir_path: Path, mocker: MockerFixture, data_dir_path: Path
 ) -> Config:
     cfg_dir = config_dir_path
     data_dir = data_dir_path
@@ -60,12 +60,12 @@ def config_object(
 
 @pytest.fixture()
 def database_object(
-    tmp_path: PosixPath,
-    test_file_path: PosixPath,
+    tmp_path: Path,
+    test_file_path: Path,
     config_object: Config,
     mocker: MockerFixture,
     test_data: TestDataDict,
-    data_dir_path: PosixPath,
+    data_dir_path: Path,
 ) -> Database:
     cfg = config_object
     data_dir = data_dir_path
