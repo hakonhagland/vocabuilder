@@ -304,14 +304,14 @@ class Config:
             self.check_correct_config_dir(lock_file)
         else:
             path.mkdir(parents=True)
-            with open(str(lock_file), "a") as fp:
+            with open(str(lock_file), "a", encoding="utf_8") as fp:
                 fp.write(self.lockfile_string)
         return path
 
     def check_correct_config_dir(self, lock_file: Path) -> None:
         """The config dir might be owned by another app with the same name"""
         if lock_file.is_file():
-            with open(str(lock_file)) as fp:
+            with open(str(lock_file), encoding="utf_8") as fp:
                 line = fp.readline()
                 if line.startswith(self.lockfile_string):
                     return
@@ -323,7 +323,7 @@ class Config:
     def check_correct_data_dir(self, lock_file: Path) -> None:
         """The data dir might be owned by another app with the same name"""
         if lock_file.is_file():
-            with open(str(lock_file)) as fp:
+            with open(str(lock_file), encoding="utf_8") as fp:
                 line = fp.readline()
                 if line.startswith(self.lockfile_string):
                     return
@@ -350,7 +350,7 @@ class Config:
             self.check_correct_data_dir(lock_file)
         else:
             path.mkdir(parents=True)
-            with open(str(lock_file), "a") as fp:
+            with open(str(lock_file), "a", encoding="utf_8") as fp:
                 fp.write(self.lockfile_string)
         return path
 
@@ -362,7 +362,7 @@ class Config:
                     f"Config filename {str(path)} exists, but filetype is not file"
                 )
         else:
-            with open(str(self.config_path), "w") as _:
+            with open(str(self.config_path), "w", encoding="utf_8") as _:
                 pass  # only create empty file
         config = configparser.ConfigParser()
         defaults = {
@@ -442,7 +442,7 @@ class CSVwrapper:
         self.append_row(row)
 
     def append_row(self, row: list[DatabaseValue]) -> None:
-        with open(self.filename, "a", newline="") as fp:
+        with open(self.filename, "a", newline="", encoding="utf_8") as fp:
             csvwriter = csv.writer(
                 fp,
                 delimiter=self.delimiter,
@@ -470,7 +470,7 @@ class CSVwrapperReader:
     def __init__(self, parent: CSVwrapper, filename: str, header: CsvDatabaseHeader):
         self.parent = parent
         self.header = header
-        self.fp = open(filename, "r")
+        self.fp = open(filename, "r", encoding="utf_8")
         self.csvh = csv.DictReader(
             self.fp,
             delimiter=self.parent.delimiter,
@@ -517,7 +517,7 @@ class CSVwrapperWriter:
 
     def __init__(self, parent: CSVwrapper, filename: str):
         self.parent = parent
-        self.fp = open(filename, "w", newline="")
+        self.fp = open(filename, "w", newline="", encoding="utf_8")
         self.csvwriter = csv.writer(
             self.fp,
             delimiter=self.parent.delimiter,
