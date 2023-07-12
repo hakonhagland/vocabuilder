@@ -20,7 +20,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: install packages
         if: startsWith(matrix.os, 'ubuntu')
-        run: sudo apt-get install -y libgl1
+        run: sudo apt-get install -y libegl1
       - name: Update environment variables
         if: startsWith(matrix.os, 'macos')
         run: echo "/Users/runner/.local/bin" >> $GITHUB_PATH
