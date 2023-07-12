@@ -22,7 +22,11 @@ repos:
     rev: v1.4.1
     hooks:
       - id: mypy
+      # Note: since we run mypy on the tests/ folder also we need to add pytest as
+      #       additional dependency
         additional_dependencies: [platformdirs==3.8.0, pyqt6==6.5.1, configparser==5.3.0,
-                                  pathlib==1.0.1, gitpython==3.1.31, future==0.18.3]
-
+                                  pathlib==1.0.1, gitpython==3.1.31, future==0.18.3,
+                                  pytest==7.4.0]
         args: [--strict, --implicit-reexport]
+        pass_filenames: false
+        entry: mypy src

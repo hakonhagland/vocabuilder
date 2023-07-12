@@ -63,6 +63,8 @@ if sys.version_info < MIN_PYTHON:
 DatabaseValue = str | int | None
 DatabaseRow = dict[str, DatabaseValue]
 
+
+# ----------
 #   MIXINS
 # ----------
 

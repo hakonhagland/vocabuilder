@@ -1,19 +1,21 @@
 import shutil
-from pathlib import Path, PosixPath
+from pathlib import PosixPath
 
 import pytest
 from pytest_mock.plugin import MockerFixture
 
 from vocabuilder.vocabuilder import Config, Database
 
+TestDataDict = dict[str, str]
+
 
 @pytest.fixture(scope="session")
 def test_file_path() -> PosixPath:
-    return Path(__file__).parent / "files"
+    return PosixPath(__file__).parent / "files"
 
 
 @pytest.fixture(scope="session")
-def test_data() -> dict:
+def test_data() -> TestDataDict:
     return {
         "config_dir": "config",
         "data_dir": "data",
@@ -22,20 +24,18 @@ def test_data() -> dict:
 
 
 @pytest.fixture(scope="session")
-def config_dir_path(test_file_path: PosixPath, test_data: dict):
+def config_dir_path(test_file_path: PosixPath, test_data: TestDataDict) -> PosixPath:
     cfg_dir = test_file_path / test_data["config_dir"]
     return cfg_dir
 
 
 @pytest.fixture()
 def data_dir_path(
-    tmp_path: PosixPath, test_file_path: PosixPath, test_data: dict
+    tmp_path: PosixPath, test_file_path: PosixPath, test_data: TestDataDict
 ) -> PosixPath:
     data_dir = tmp_path / test_data["data_dir"]
     data_dir.mkdir()
-    data_dirlock_fn = (
-        test_file_path / test_data["data_dir"] / Config.dirlock_fn
-    )
+    data_dirlock_fn = test_file_path / test_data["data_dir"] / Config.dirlock_fn
     shutil.copy(data_dirlock_fn, data_dir)
     return data_dir
 
@@ -64,7 +64,7 @@ def database_object(
     test_file_path: PosixPath,
     config_object: Config,
     mocker: MockerFixture,
-    test_data: dict,
+    test_data: TestDataDict,
     data_dir_path: PosixPath,
 ) -> Database:
     cfg = config_object
@@ -72,9 +72,7 @@ def database_object(
     voca_name = test_data["vocaname"]
     dbname = Database.database_fn
     db_dir = Database.database_dir
-    db_src_path = (
-        test_file_path / test_data["data_dir"] / db_dir / voca_name / dbname
-    )
+    db_src_path = test_file_path / test_data["data_dir"] / db_dir / voca_name / dbname
     db_dest_path = data_dir / db_dir / voca_name
     db_dest_path.mkdir(parents=True)
     shutil.copy(db_src_path, db_dest_path)
