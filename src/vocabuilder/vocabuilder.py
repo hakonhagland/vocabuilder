@@ -111,6 +111,14 @@ class ConfigException(Exception):
         return f"Config exception: {self.value}"
 
 
+class CsvFileException(Exception):
+    def __init__(self, value: str):
+        self.value = value
+
+    def __str__(self) -> str:
+        return f"CSV file exception: {self.value}"
+
+
 class DatabaseException(Exception):
     def __init__(self, value: str):
         self.value = value
@@ -507,9 +515,12 @@ class CSVwrapperReader:
             if value == "NA":
                 row[key] = None  # type: ignore
             else:
-                row[key] = self.header.types[key](
-                    row[key]
-                )  # cast the element to the correct type
+                try:
+                    row[key] = self.header.types[key](
+                        row[key]
+                    )  # cast the element to the correct type
+                except TypeError as exc:
+                    raise CsvFileException("Bad type found in CSV file") from exc
 
 
 class CSVwrapperWriter:
@@ -558,6 +569,8 @@ class Database(TimeMixin):
     #   pytest before creating an object of this class
     database_fn = "database.csv"
     database_dir = "databases"
+    backup_dirname = "backup"
+    git_dirname = ".git"
 
     def __init__(self, config: "Config", voca_name: str):
         self.config = config
@@ -568,7 +581,7 @@ class Database(TimeMixin):
         self.header = CsvDatabaseHeader()
         self.dbname = self.datadir / self.database_fn
         self.csvwrapper = CSVwrapper(self.dbname)
-        self.backupdir = self.datadir / "backup"
+        self.backupdir = self.datadir / self.backup_dirname
         self.maybe_create_db()
         self.maybe_create_backup_repo()
         self.read_database()
@@ -588,6 +601,12 @@ class Database(TimeMixin):
         self.csvwrapper.append_line(item)
         logging.info("ADDED: " + self.item_to_string(item))
 
+    def assert_term1_exists(self, term1: str) -> None:
+        if term1 not in self.db:
+            raise DatabaseException(
+                f"Unexpected: trying to update non-existent term '{term1}'"
+            )
+
     def check_term1_exists(self, term1: str) -> bool:
         return term1 in self.db
 
@@ -602,6 +621,8 @@ class Database(TimeMixin):
         logging.info("Created backup.")
 
     def delete_item(self, term1: str) -> None:
+        if term1 not in self.db:
+            raise DatabaseException(f"Term1 '{term1}' does not exist in database")
         item = self.db[term1].copy()
         item[self.header.status] = self.status.DELETED
         item[self.header.term1] = term1
@@ -610,6 +631,9 @@ class Database(TimeMixin):
         del self.db[term1]
 
     def get_epoch_diff_in_days(self, t1: int, t2: int) -> int:
+        """t1, t2: epoch times. In general these times could be negative, but
+        in this application they should always be positive (corresponding to
+        dates after year 2022)"""
         if t1 > t2:
             raise DatabaseException(
                 "Bad timestamp. Smaller than previous timestamp. Expected larger"
@@ -651,13 +675,18 @@ class Database(TimeMixin):
         return pairs[idx]
 
     def get_term1_data(self, term1: str) -> DatabaseRow:
+        if term1 not in self.db:
+            raise DatabaseException(
+                f"Tried to access non-existing item with key '{term1}'"
+            )
         return self.db[term1]
 
     def get_term1_list(self) -> list[str]:
         return sorted(self.db.keys())
 
     def get_term2(self, term1: str) -> str:
-        term2 = self.db[term1][self.header.term2]
+        row = self.get_term1_data(term1)
+        term2 = row[self.header.term2]
         assert isinstance(term2, str)
         return term2
 
@@ -678,7 +707,7 @@ class Database(TimeMixin):
                 )
         else:
             self.backupdir.mkdir()
-        gitdir = self.backupdir / ".git"
+        gitdir = self.backupdir / self.git_dirname
         if gitdir.exists():
             if gitdir.is_file():
                 raise DatabaseException(
@@ -702,12 +731,9 @@ class Database(TimeMixin):
     def read_database(self) -> None:
         with self.csvwrapper.open_for_read(self.header) as fp:
             for lineno, row in enumerate(fp, start=1):
-                if len(row) != len(self.header.header):
-                    raise DatabaseException(
-                        f"Currupt database {self.csvwrapper.filename}? Line {lineno} : "
-                        f"Expected {len(self.header.header)} items, "
-                        f"got {len(row)} items"
-                    )
+                # NOTE: It should be impossible (?) that len(row) != len(header) here,
+                #  due to the checks in fixup_datatypes() in CSVwrapperReader
+                assert len(row) == len(self.header.header)
                 status = row[self.header.status]
                 term1 = typing.cast(str, row[self.header.term1])
                 if status == self.status.NOT_DELETED:
@@ -737,12 +763,16 @@ class Database(TimeMixin):
         logging.info("UPDATED: " + self.item_to_string(item))
 
     def update_item(self, term1: str, item: DatabaseRow) -> None:
+        self.assert_term1_exists(term1)
         self.db[term1] = item.copy()
         self.update_dbfile_item(term1)
 
-    def update_retest_value(self, term1: str, delay: str) -> None:
+    def update_retest_value(self, term1: str, delay: int) -> None:
         """Set a delay (in days) until next time this term should be practiced"""
-        self.db[term1][self.header.test_delay] = int(delay)
+        self.assert_term1_exists(term1)
+        # NOTE: we can assume that delay is a non-negative integer
+        assert delay >= 0
+        self.db[term1][self.header.test_delay] = delay
         now = self.epoch_in_seconds()
         self.db[term1][self.header.last_test] = str(now)
         self.update_dbfile_item(term1)
@@ -1297,7 +1327,7 @@ class TestWindow(QDialog, WarningsMixin):
 
     def done_button_clicked(self) -> None:
         delay = self.delay_edit.text()
-        self.__parent.db.update_retest_value(self.term1, delay)
+        self.__parent.db.update_retest_value(self.term1, int(delay))
         self.done(0)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
@@ -1307,7 +1337,7 @@ class TestWindow(QDialog, WarningsMixin):
 
     def next_button_clicked(self) -> None:
         delay = self.delay_edit.text()
-        self.__parent.db.update_retest_value(self.term1, delay)
+        self.__parent.db.update_retest_value(self.term1, int(delay))
         pair = self.__parent.db.get_random_pair()
         if pair is None:
             self.display_warning(self, "No more terms ready for practice today!")
