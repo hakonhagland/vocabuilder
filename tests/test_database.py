@@ -166,7 +166,7 @@ class TestEpochDiff:
         now = db.epoch_in_seconds()
         t2 = now - 1 * self.day
         with pytest.raises(DatabaseException) as excinfo:
-            db.get_epoch_diff_in_days(now, t2) == 1
+            db.get_epoch_diff_in_days(now, t2)
         assert re.search(r"Bad timestamp", str(excinfo))
 
     def test_one_day(self, database_object: Database) -> None:
