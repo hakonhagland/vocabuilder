@@ -21,7 +21,9 @@ jobs:
 
       - name: install packages
         if: startsWith(matrix.os, 'ubuntu')
-        run: sudo apt-get install -y libegl1  # Needed for pyqt6
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y libegl1  # Needed for pyqt6
 
       - name: Update PATH macos
         if: startsWith(matrix.os, 'macos')
