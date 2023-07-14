@@ -161,12 +161,6 @@ class TestDeleteItem:
 class TestEpochDiff:
     day = 24 * 60 * 60
 
-    def test_one_day(self, database_object: Database) -> None:
-        db = database_object
-        now = db.epoch_in_seconds()
-        t2 = now + 1 * self.day
-        assert db.get_epoch_diff_in_days(now, t2) == 1
-
     def test_bad_timestamp(self, database_object: Database) -> None:
         db = database_object
         now = db.epoch_in_seconds()
@@ -174,6 +168,12 @@ class TestEpochDiff:
         with pytest.raises(DatabaseException) as excinfo:
             db.get_epoch_diff_in_days(now, t2) == 1
         assert re.search(r"Bad timestamp", str(excinfo))
+
+    def test_one_day(self, database_object: Database) -> None:
+        db = database_object
+        now = db.epoch_in_seconds()
+        t2 = now + 1 * self.day
+        assert db.get_epoch_diff_in_days(now, t2) == 1
 
 
 class TestGetPairs:
