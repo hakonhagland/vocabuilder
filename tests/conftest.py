@@ -1,12 +1,20 @@
 import shutil
-from pathlib import Path
-
+import typing
 import pytest
+
+from pathlib import Path
 from pytest_mock.plugin import MockerFixture
 from typing import Callable
+from PyQt6.QtWidgets import (
+    QApplication,
+)
 
-from vocabuilder.vocabuilder import Config, Database
-from .common import PytestDataDict
+from vocabuilder.vocabuilder import (
+    Config,
+    Database,
+    MainWindow,
+)
+from .common import PytestDataDict, QtBot
 
 
 @pytest.fixture(scope="session")
@@ -91,3 +99,19 @@ def setup_database_dir(
         return db_dest_path
 
     return setup_
+
+
+@pytest.fixture()
+def main_window(
+    config_object: Config,
+    database_object: Database,
+    qtbot: QtBot,
+) -> MainWindow:
+    db = database_object
+    config = config_object
+    # NOTE: QApplication.instance() returns a QCoreApplication type object,
+    #     but there is no difference between QCoreApplication and QApplication
+    #     see: https://stackoverflow.com/a/36561084/2173773
+    app = typing.cast(QApplication, QApplication.instance())
+    window = MainWindow(app, db, config)
+    return window

@@ -156,7 +156,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         vpos = self.add_line_edits(layout, vpos)
         self.add_buttons(layout, vpos)
         self.setLayout(layout)
-        self.exec()
+        self.open()
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
@@ -829,6 +829,8 @@ class MainWindow(QMainWindow, WarningsMixin):
     def add_buttons(self, layout: QGridLayout) -> None:
         self.buttons = []
         names = ["Add", "Modify", "Test", "Delete", "View", "Backup"]
+        # NOTE: this dict is used only for testing purposes
+        self.button_names = {names[i]: i for i in range(len(names))}
         positions = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
         callbacks = [
             self.add_new_entry,
@@ -845,11 +847,14 @@ class MainWindow(QMainWindow, WarningsMixin):
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
             button.setMinimumHeight(int(self.button_config["MinHeight"]))
-            button.clicked.connect(callbacks[i])
+            # NOTE: Theses callbacks usually returns a widget for testing purposes,
+            #  The return value is not used when connecting them to the signal below
+            callback = typing.cast(Callable[[], None], callbacks[i])
+            button.clicked.connect(callback)
             layout.addWidget(button, *positions[i])
 
-    def add_new_entry(self) -> None:
-        AddWindow(self)
+    def add_new_entry(self) -> AddWindow:
+        return AddWindow(self)
 
     def backup(self) -> None:
         self.db.create_backup()
