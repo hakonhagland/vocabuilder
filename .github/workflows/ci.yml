@@ -52,13 +52,15 @@ jobs:
       - name: Check types with mypy
         run: poetry run python -m mypy src tests
 
-      - name: Run unit tests
-        run: poetry run python -m pytest
+#      - name: Run unit tests
+#        run: poetry run python -m pytest
 
       - name: Code coverage
-        run: |
-          poetry run coverage run -m pytest tests
-          poetry run coverage report -m
+        uses: coactions/setup-xvfb@v1
+        with:
+            run: |
+                poetry run coverage run -m pytest tests
+                poetry run coverage report -m
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
