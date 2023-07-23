@@ -1,7 +1,5 @@
 .coverage
 __pycache__/
 .pytest_cache
-poetry.lock
-.python-version
 *.pyc
 .tox/

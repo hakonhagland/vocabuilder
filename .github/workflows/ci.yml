@@ -19,11 +19,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: install packages
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-            sudo apt-get update
-            sudo apt-get install -y libegl1  # Needed for pyqt6
+      - name: install extra qt packages linux
+        uses: tlambert03/setup-qt-libs@v1
 
       - name: Update PATH macos
         if: startsWith(matrix.os, 'macos')
@@ -52,11 +49,8 @@ jobs:
       - name: Check types with mypy
         run: poetry run python -m mypy src tests
 
-#      - name: Run unit tests
-#        run: poetry run python -m pytest
-
       - name: Code coverage
-        uses: coactions/setup-xvfb@v1
+        uses: aganders3/headless-gui@v1
         with:
             run: |
                 poetry run coverage run -m pytest tests
