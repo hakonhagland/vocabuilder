@@ -32,7 +32,7 @@ class TestOther:
         # button = window.buttons[idx]
         # qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
         dialog = window.add_new_entry()
-        qtbot.add_widget(dialog)
+        # qtbot.add_widget(dialog)
         assert isinstance(dialog, QDialog)
 
     def test_create_backup(
