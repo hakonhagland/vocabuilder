@@ -114,4 +114,6 @@ def main_window(
     #     see: https://stackoverflow.com/a/36561084/2173773
     app = typing.cast(QApplication, QApplication.instance())
     window = MainWindow(app, db, config)
+    qtbot.add_widget(window)
+    window.show()
     return window

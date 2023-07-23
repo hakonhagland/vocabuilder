@@ -85,17 +85,32 @@ class TimeMixin:
 
 class WarningsMixin:
     @staticmethod
-    def display_warning(parent: QWidget, msg: str) -> None:
+    def display_warning(
+        parent: QWidget, msg: str, callback: Callable[[], None] | None = None
+    ) -> QMessageBox:
         mbox = QMessageBox(
             parent
-        )  # "parent" makes the message box appear centered on the parent
+        )  # giving "parent" makes the message box appear centered on the parent
         mbox.setIcon(QMessageBox.Icon.Information)
         mbox.setText(msg)
         # mbox.setInformativeText("This is additional information")
         mbox.setWindowTitle("Warning")
         # mbox.setDetailedText("The details are as follows:")
         mbox.setStandardButtons(QMessageBox.StandardButton.Ok)
-        mbox.exec()
+        mbox.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+        if callback is None:
+
+            def button_clicked() -> None:
+                WarningsMixin.display_warning_callback(mbox, msg)
+
+            callback = button_clicked
+        mbox.open(callback)
+        return mbox
+
+    @staticmethod
+    def display_warning_callback(mbox: QMessageBox, msg: str) -> None:
+        """This method is here such that it can be mocked from pytest"""
+        pass
 
 
 # ----------------------
@@ -859,8 +874,9 @@ class MainWindow(QMainWindow, WarningsMixin):
     def backup(self) -> None:
         self.db.create_backup()
 
-    def delete_entry(self) -> None:
-        self.display_warning(self, "Delete entry. Not implemented yet")
+    def delete_entry(self) -> QMessageBox:
+        mbox = self.display_warning(self, "Delete entry. Not implemented yet")
+        return mbox
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
