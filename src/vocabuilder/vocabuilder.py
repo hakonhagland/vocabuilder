@@ -894,17 +894,18 @@ class MainWindow(QMainWindow, WarningsMixin):
             if event.key() == key:
                 callbacks[i]()
 
-    def modify_entry(self) -> None:
-        ModifyWindow1(self)
+    def modify_entry(self) -> ModifyWindow1:
+        return ModifyWindow1(self)
 
     def quit(self) -> None:
         self.app.quit()
 
-    def run_test(self) -> None:
-        TestWindow(self)
+    def run_test(self) -> TestWindow:
+        return TestWindow(self)
 
-    def view_entries(self) -> None:
-        self.display_warning(self, "View entries. Not implemented yet")
+    def view_entries(self) -> QMessageBox:
+        mbox = self.display_warning(self, "View entries. Not implemented yet")
+        return mbox
 
 
 class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
@@ -931,15 +932,15 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         vpos = self.add_line_edit(layout, vpos)
         self.add_buttons(layout, vpos)
         self.setLayout(layout)
-        self.exec()
+        self.open()
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
-        names = ["&Ok", "&Cancel"]
+        self.button_names = ["&Ok", "&Cancel"]
         positions = [(vpos, 0), (vpos, 2)]
         callbacks = [self.ok_button, self.cancel_button]
 
-        for i, name in enumerate(names):
+        for i, name in enumerate(self.button_names):
             button = QPushButton(name, self)
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
@@ -1001,7 +1002,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == 16777216:  # "ESC" pressed
+        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def modify_item(self) -> bool:
@@ -1063,7 +1064,7 @@ class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
         vpos = self.add_line_edits(layout, vpos)
         self.add_buttons(layout, vpos)
         self.setLayout(layout)
-        self.exec()
+        self.open()
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
@@ -1205,9 +1206,11 @@ class TestWindow(QDialog, WarningsMixin):
         self.__parent = parent
         self.config = parent.config
         self.window_config = self.config.config["TestWindow"]
-        self.params = TestWindowChooseParameters(parent)
+        self.params = TestWindowChooseParameters(parent, self.main_dialog)
+
+    def main_dialog(self) -> TestWindow | None:
         if self.params.cancelled:
-            return
+            return None
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Practice term/phrase/word")
         layout = QGridLayout()
@@ -1227,7 +1230,8 @@ class TestWindow(QDialog, WarningsMixin):
             layout.setRowStretch(layout.rowCount(), 1)
             self.setLayout(layout)
             self.user_edit.setFocus()
-            self.exec()
+            self.open()
+        return self
 
     def add_current_term_to_practice(
         self, layout: QGridLayout, vpos: int, term1: str
@@ -1391,8 +1395,9 @@ class TestWindow(QDialog, WarningsMixin):
 
 
 class TestWindowChooseParameters(QDialog):
-    def __init__(self, parent: MainWindow):
+    def __init__(self, parent: MainWindow, callback: Callable[[], TestWindow | None]):
         super().__init__(parent)  # make dialog modal
+        self.parent_callback = callback
         self.config = parent.config
         self.button_config = self.config.config["Buttons"]
         self.cancelled = False
@@ -1405,7 +1410,7 @@ class TestWindowChooseParameters(QDialog):
         # vpos = self.add_line_edits(layout, vpos)
         vpos = self.add_buttons(layout, vpos)
         self.setLayout(layout)
-        self.exec()
+        self.open()
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
@@ -1455,6 +1460,7 @@ class TestWindowChooseParameters(QDialog):
     def cancel_button(self) -> None:
         self.done(1)
         self.cancelled = True
+        (self.parent_callback)()
 
     def ok_button(self) -> None:
         if self.random_button.isChecked():
@@ -1467,6 +1473,7 @@ class TestWindowChooseParameters(QDialog):
             self.test_direction = TestDirection._2to1
         self.done(0)
         self.cancelled = False
+        (self.parent_callback)()
 
 
 # -------------------
