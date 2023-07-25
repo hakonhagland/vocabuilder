@@ -988,17 +988,22 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         return
 
     def add_scroll_area_items(self, vbox: QVBoxLayout, text: str | None = None) -> None:
-        terms = self.__parent.db.get_term1_list()
+        terms = self.get_db().get_term1_list()
+        self.scroll_area_labels = []  # This list is used from pytest
         for term in reversed(
             terms
         ):  # need reverse since vbox has bottom-to-top direction
             if (text is None) or (text in term):
                 label = QLabelClickable(term)
                 label.addCallback(self.scroll_area_item_clicked(term))
+                self.scroll_area_labels.append(label)
                 vbox.addWidget(label)
 
     def cancel_button(self) -> None:
         self.done(1)
+
+    def get_db(self) -> Database:
+        return self.__parent.db
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
@@ -1010,7 +1015,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         if self.check_space_or_empty_str(term1):
             self.display_warning(self, "Term1 is empty")
             return False
-        if not self.__parent.db.check_term1_exists(term1):
+        if not self.get_db().check_term1_exists(term1):
             self.display_warning(self, "Term1 does not exist in database")
             return False
         ModifyWindow2(self, term1, self.__parent.db)
@@ -1068,11 +1073,11 @@ class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
-        names = ["&Ok", "&Cancel"]
+        self.button_names = ["&Ok", "&Cancel"]
         positions = [(vpos, 0), (vpos, 2)]
         callbacks = [self.ok_button, self.cancel_button]
 
-        for i, name in enumerate(names):
+        for i, name in enumerate(self.button_names):
             button = QPushButton(name, self)
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
@@ -1122,7 +1127,7 @@ class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == 16777216:  # "ESC" pressed
+        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def modify_item(self) -> bool:

@@ -1,9 +1,8 @@
 import re
+
 from pytest_mock.plugin import MockerFixture
 from PyQt6.QtCore import Qt
-from vocabuilder.vocabuilder import (
-    MainWindow,
-)
+from vocabuilder.vocabuilder import MainWindow, ModifyWindow2
 from .common import QtBot
 
 
@@ -12,12 +11,14 @@ class TestGeneral:
         self,
         main_window: MainWindow,
         qtbot: QtBot,
+        mocker: MockerFixture,
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        idx = dialog.button_names.index("&Cancel")
-        cancel_button = dialog.buttons[idx]
-        with qtbot.waitSignal(dialog.finished, timeout=1000):
+        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        idx = dialog2.button_names.index("&Cancel")
+        cancel_button = dialog2.buttons[idx]
+        with qtbot.waitSignal(dialog2.finished, timeout=1000):
             cancel_button.click()
         assert True
 
@@ -28,13 +29,12 @@ class TestGeneral:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        with qtbot.waitSignal(dialog.finished, timeout=1000):
-            qtbot.keyClick(dialog, Qt.Key.Key_Escape)
+        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        with qtbot.waitSignal(dialog2.finished, timeout=1000):
+            qtbot.keyClick(dialog2, Qt.Key.Key_Escape)
         assert True
 
-
-class TestModifyItem:
-    def test_empty_str(
+    def test_term1_empty(
         self,
         main_window: MainWindow,
         qtbot: QtBot,
@@ -42,8 +42,10 @@ class TestModifyItem:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        idx = dialog.button_names.index("&Ok")
-        ok_button = dialog.buttons[idx]
+        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2.edits[dialog.header.term1].setText("")
+        idx = dialog2.button_names.index("&Ok")
+        ok_button = dialog2.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
                 "vocabuilder.vocabuilder.WarningsMixin.display_warning",
@@ -53,7 +55,7 @@ class TestModifyItem:
         msg = callback.args[1]
         assert re.search(r"Term1 is empty", msg)
 
-    def test_nonexistent(
+    def test_term2_empty(
         self,
         main_window: MainWindow,
         qtbot: QtBot,
@@ -61,9 +63,10 @@ class TestModifyItem:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog.edits[dialog.header.term1].setText("abcdefg")
-        idx = dialog.button_names.index("&Ok")
-        ok_button = dialog.buttons[idx]
+        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2.edits[dialog.header.term2].setText("")
+        idx = dialog2.button_names.index("&Ok")
+        ok_button = dialog2.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
                 "vocabuilder.vocabuilder.WarningsMixin.display_warning",
@@ -71,9 +74,9 @@ class TestModifyItem:
             )
             ok_button.click()
         msg = callback.args[1]
-        assert re.search(r"Term1 does not exist", msg)
+        assert re.search(r"Term2 is empty", msg)
 
-    def test_valid(
+    def test_old_term1_eq_new_term1(
         self,
         main_window: MainWindow,
         qtbot: QtBot,
@@ -81,18 +84,16 @@ class TestModifyItem:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog.edits[dialog.header.term1].setText("apple")
-        idx = dialog.button_names.index("&Ok")
-        ok_button = dialog.buttons[idx]
+        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2.edits[dialog.header.term2].setText("사과를")
+        idx = dialog2.button_names.index("&Ok")
+        ok_button = dialog2.buttons[idx]
         with qtbot.waitCallback() as callback:
-            mocker.patch(
-                "vocabuilder.vocabuilder.ModifyWindow2.open",
-                callback,
-            )
+            mocker.patch.object(dialog2.db, "update_item", callback)
             ok_button.click()
-        assert len(callback.args) == 0
+        assert len(callback.args) == 2
 
-    def test_scroll_area_item_clicked(
+    def test_old_term1_ne_new_term1(
         self,
         main_window: MainWindow,
         qtbot: QtBot,
@@ -100,10 +101,11 @@ class TestModifyItem:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        label = dialog.scroll_area_labels[0]
-        edit = dialog.edits[dialog.header.term1]
+        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2.edits[dialog.header.term1].setText("apples")
+        idx = dialog2.button_names.index("&Ok")
+        ok_button = dialog2.buttons[idx]
         with qtbot.waitCallback() as callback:
-            mocker.patch.object(edit, "setText", callback)
-            qtbot.mouseClick(label, Qt.MouseButton.LeftButton)
-        txt = callback.args[0]
-        assert txt == "bag"
+            mocker.patch.object(dialog2.db, "add_item", callback)
+            ok_button.click()
+        assert len(callback.args) == 1
