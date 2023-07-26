@@ -25,6 +25,9 @@ jobs:
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
 
+      - name: Install dependencies
+        run: poetry install
+
       - name: Sort imports with isort
         run: poetry run python -m isort .
 
