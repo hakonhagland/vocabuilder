@@ -1419,11 +1419,11 @@ class TestWindowChooseParameters(QDialog):
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
-        names = ["Ok", "Cancel"]
+        self.button_names = ["Ok", "Cancel"]
         positions = [(vpos, 0), (vpos, 1)]
         callbacks = [self.ok_button, self.cancel_button]
 
-        for i, name in enumerate(names):
+        for i, name in enumerate(self.button_names):
             button = QPushButton(name, self)
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
