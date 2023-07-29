@@ -65,5 +65,3 @@ Then run `pip install` from the project root:
 ```
 $ pip install -e .
 ```
-
-

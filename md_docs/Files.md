@@ -10,4 +10,3 @@ The config file is saved in `~/.config/vocabuilder`
 
 ### Linux
 The local CSV databases are saved in `~/.local/share/vocabuilder/databases`
-

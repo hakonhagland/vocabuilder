@@ -16,6 +16,12 @@ configparser = "^5.3.0"
 pathlib = "^1.0.1"
 gitpython = "^3.1.31"
 future = "^0.18.3"
+# Note sphinx-rtd-docs requires sphinx version < 7.0
+sphinx = {version = "6.2.1", optional = true}
+sphinx-rtd-theme = {version = "^1.2.2", optional = true}
+
+[tool.poetry.extras]
+docs = ["sphinx", "sphinx-rtd-theme"]
 
 [tool.poetry.scripts]
 vocabuilder = "vocabuilder.vocabuilder:main"

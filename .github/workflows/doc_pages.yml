@@ -1,0 +1,31 @@
+name: Build docs
+
+on:
+    push:
+      tags: '*'
+    pull_request:
+      branches:
+        - master
+permissions:
+    contents: read
+jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - name: checkout source code
+          uses: actions/checkout@v3
+        - name: Set up Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: "3.11"
+        - name: Install poetry
+          uses: abatilo/actions-poetry@v2
+        - name: Install python dependencies
+          run: poetry install -E docs
+        - name: Build documentation
+          run: |
+            mkdir gh-pages
+            touch gh-pages/.nojekyll
+            cd docs/
+            poetry run sphinx-build -b html . _build
+            cp -r _build/* ../gh-pages/
