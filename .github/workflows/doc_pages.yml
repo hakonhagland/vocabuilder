@@ -3,7 +3,7 @@ name: Build docs
 on: [push, pull_request]
 
 permissions:
-    contents: read
+    contents: write
 jobs:
     build:
       runs-on: ubuntu-latest
