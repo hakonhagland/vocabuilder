@@ -7,6 +7,10 @@
 - Extension to android is planned
 - Incremental local backup of your database using git
 
+## Documentation
+
+See [hakonhagland.github.io/vocabuilder](https://hakonhagland.github.io/vocabuilder/)
+
 ## Synchronization with firebase
 
 - If you use this script from serveral devices with the same firebase database,
@@ -29,5 +33,3 @@ From the root directory of this repository:
 - Run `poetry install` to install dependencies into a virtual environment
 - Run `poetry shell` to activate the virtual environment
 - Run `pytest` to run the test suite
-
-
