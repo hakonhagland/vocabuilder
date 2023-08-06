@@ -1211,32 +1211,11 @@ class TestWindow(QDialog, WarningsMixin):
         self.__parent = parent
         self.config = parent.config
         self.window_config = self.config.config["TestWindow"]
-        self.params = TestWindowChooseParameters(parent, self.main_dialog)
-
-    def main_dialog(self) -> TestWindow | None:
-        if self.params.cancelled:
-            return None
-        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
-        self.setWindowTitle("Practice term/phrase/word")
-        layout = QGridLayout()
-        vpos = 1
-        vpos = self.add_param_info_labels(layout, vpos)
-        pair = self.__parent.db.get_random_pair()
-        if pair is None:
-            self.display_warning(self, "No terms ready for practice today!")
-            self.done(1)
-        else:
-            term1, term2 = pair
-            self.term1 = term1
-            self.term2 = term2
-            vpos = self.add_current_term_to_practice(layout, vpos, term1)
-            vpos = self.add_retest_options(layout, vpos)
-            vpos = self.add_next_done_buttons(layout, vpos)
-            layout.setRowStretch(layout.rowCount(), 1)
-            self.setLayout(layout)
-            self.user_edit.setFocus()
-            self.open()
-        return self
+        # NOTE: This complicated approach with callback is mainly done to make it easier
+        #  to test the code with pytest
+        self.params = TestWindowChooseParameters(parent, self, callback="main_dialog")
+        # NOTE: TestWindowChooseParameters will call the callback when finished, i.e. the
+        #   main_dialog() method below
 
     def add_current_term_to_practice(
         self, layout: QGridLayout, vpos: int, term1: str
@@ -1260,6 +1239,7 @@ class TestWindow(QDialog, WarningsMixin):
         self.user_edit = edit
         grid.addWidget(edit, 1, 1)
         button = QPushButton("&Show translation: ", self)
+        self.show_hidden_button = button
         grid.addWidget(button, 2, 0)
         self.hidden_text_placeholder = self.config.config["Practice"]["HiddenText"]
         label32 = QLabel(self.hidden_text_placeholder)
@@ -1272,19 +1252,21 @@ class TestWindow(QDialog, WarningsMixin):
             f"QLabel {{font-size: {fontsize}; color: {term2_color}; }}"
         )
         grid.addWidget(label32, 2, 1)
-        button.clicked.connect(self.show_hidden_translation(label32))
+        # NOTE: This callback is saved as an instance variable to aid pytest
+        self.show_hidden_button_callback = self.show_hidden_translation(label32)
+        button.clicked.connect(self.show_hidden_button_callback)
         groupbox.setLayout(grid)
         layout.addWidget(groupbox, vpos, 0, 1, 2)
         vpos += 1
         return vpos
 
     def add_next_done_buttons(self, layout: QGridLayout, vpos: int) -> int:
-        next_button = QPushButton("&Next", self)
-        next_button.clicked.connect(self.next_button_clicked)
-        layout.addWidget(next_button, vpos, 0)
-        done_button = QPushButton("&Done", self)
-        done_button.clicked.connect(self.done_button_clicked)
-        layout.addWidget(done_button, vpos, 1)
+        self.next_button = QPushButton("&Next", self)
+        self.next_button.clicked.connect(self.next_button_clicked)
+        layout.addWidget(self.next_button, vpos, 0)
+        self.done_button = QPushButton("&Done", self)
+        self.done_button.clicked.connect(self.done_button_clicked)
+        layout.addWidget(self.done_button, vpos, 1)
         return vpos + 1
 
     def add_param_info_labels(self, layout: QGridLayout, vpos: int) -> int:
@@ -1328,6 +1310,9 @@ class TestWindow(QDialog, WarningsMixin):
         edit.setValidator(validator)
         # edit.setStyleSheet(f"QLineEdit {{font-size: {fontsize};}}")
         grid.addWidget(edit, 0, 2)
+        # NOTE: Buttons and callbacks are saved in these lists to help pytest
+        self.retest_buttons: list[QRadioButton] = []
+        self.retest_button_callbacks: list[Callable[[], None]] = []
         for i, delay in enumerate([0, 1, 3, 7, 30]):
             checked = False
             if delay == 1:
@@ -1348,22 +1333,51 @@ class TestWindow(QDialog, WarningsMixin):
         day_str = "days"
         if delay == 1:
             day_str = "day"
+
         radio = QRadioButton(f"{delay} {day_str}")
+        self.retest_buttons.append(radio)
         radio.setChecked(checked)
-        radio.clicked.connect(self.update_retest_lineedit(edit, str(delay)))
+        callback = self.update_retest_lineedit(edit, str(delay))
+        self.retest_button_callbacks.append(callback)
+        radio.clicked.connect(callback)
         vpos = i // 3
         hpos = i % 3
         grid.addWidget(radio, vpos + 1, hpos)
 
     def done_button_clicked(self) -> None:
         delay = self.delay_edit.text()
-        self.__parent.db.update_retest_value(self.term1, int(delay))
+        self.__parent.db.update_retest_value(self.term1, int(delay))  # type: ignore
         self.done(0)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
         if event.key() == 16777216:  # "ESC" pressed
             self.done(1)
+
+    def main_dialog(self) -> TestWindow | None:
+        if self.params.cancelled:
+            return None
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
+        self.setWindowTitle("Practice term/phrase/word")
+        layout = QGridLayout()
+        vpos = 1
+        vpos = self.add_param_info_labels(layout, vpos)
+        pair = self.__parent.db.get_random_pair()
+        if pair is None:
+            self.display_warning(self, "No terms ready for practice today!")
+            self.done(1)
+        else:
+            term1, term2 = pair
+            self.term1 = term1
+            self.term2 = term2
+            vpos = self.add_current_term_to_practice(layout, vpos, term1)
+            vpos = self.add_retest_options(layout, vpos)
+            vpos = self.add_next_done_buttons(layout, vpos)
+            layout.setRowStretch(layout.rowCount(), 1)
+            self.setLayout(layout)
+            self.user_edit.setFocus()
+            self.open()
+        return self
 
     def next_button_clicked(self) -> None:
         delay = self.delay_edit.text()
@@ -1400,10 +1414,11 @@ class TestWindow(QDialog, WarningsMixin):
 
 
 class TestWindowChooseParameters(QDialog):
-    def __init__(self, parent: MainWindow, callback: Callable[[], TestWindow | None]):
-        super().__init__(parent)  # make dialog modal
-        self.parent_callback = callback
-        self.config = parent.config
+    def __init__(self, main_window: MainWindow, parent: TestWindow, callback: str):
+        super().__init__(main_window)  # make dialog modal
+        self.testwin_callback = callback
+        self.testwin = parent
+        self.config = main_window.config
         self.button_config = self.config.config["Buttons"]
         self.cancelled = False
         self.resize(350, 250)
@@ -1419,7 +1434,7 @@ class TestWindowChooseParameters(QDialog):
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
-        self.button_names = ["Ok", "Cancel"]
+        self.button_names = ["&Ok", "&Cancel"]
         positions = [(vpos, 0), (vpos, 1)]
         callbacks = [self.ok_button, self.cancel_button]
 
@@ -1440,6 +1455,7 @@ class TestWindowChooseParameters(QDialog):
         checkbox1.setChecked(True)
         vbox.addWidget(checkbox1)
         checkbox2 = QRadioButton("Choose word from list")
+        self.choose_from_list_button = checkbox2
         checkbox2.setChecked(False)
         vbox.addWidget(checkbox2)
         # vbox.addStretch(1)
@@ -1456,6 +1472,7 @@ class TestWindowChooseParameters(QDialog):
         vbox.addWidget(checkbox1)
         checkbox2 = QRadioButton("From language 2 to 1")
         checkbox2.setChecked(False)
+        self.lang2to1_button = checkbox2
         vbox.addWidget(checkbox2)
         # vbox.addStretch(1)
         groupbox.setLayout(vbox)
@@ -1465,7 +1482,12 @@ class TestWindowChooseParameters(QDialog):
     def cancel_button(self) -> None:
         self.done(1)
         self.cancelled = True
-        (self.parent_callback)()
+        self.call_parent_callback()
+
+    def call_parent_callback(self) -> None:
+        method = getattr(self.testwin, self.testwin_callback)
+        # method(self.testwin)
+        method()
 
     def ok_button(self) -> None:
         if self.random_button.isChecked():
@@ -1478,7 +1500,7 @@ class TestWindowChooseParameters(QDialog):
             self.test_direction = TestDirection._2to1
         self.done(0)
         self.cancelled = False
-        (self.parent_callback)()
+        self.call_parent_callback()
 
 
 # -------------------
@@ -1493,6 +1515,11 @@ def select_vocabulary() -> str:
 
 
 def main() -> None:
+    # logging.basicConfig(
+    #     filename='/tmp/vb.log',
+    #     filemode='w',
+    #     level=logging.DEBUG,
+    # )
     logging.basicConfig(level=logging.INFO)
     config = Config()
     voca_name = select_vocabulary()
@@ -1503,5 +1530,5 @@ def main() -> None:
     app.exec()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

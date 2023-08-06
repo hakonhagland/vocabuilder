@@ -4,7 +4,7 @@ import pytest
 
 from pathlib import Path
 from pytest_mock.plugin import MockerFixture
-from typing import Callable
+from typing import Any, Callable
 from PyQt6.QtWidgets import (
     QApplication,
 )
@@ -14,6 +14,7 @@ from vocabuilder.vocabuilder import (
     Database,
     MainWindow,
 )
+from vocabuilder.vocabuilder import TestWindow as _TestWindow
 from .common import PytestDataDict, QtBot
 
 
@@ -117,3 +118,30 @@ def main_window(
     qtbot.add_widget(window)
     window.show()
     return window
+
+
+@pytest.fixture()
+def test_window(
+    main_window: MainWindow,
+    qtbot: QtBot,
+) -> _TestWindow:
+    window = main_window
+    with qtbot.waitCallback() as callback:
+        testwin = window.run_test()
+
+        def gen_wrapper() -> Callable[[], None]:
+            original_method = testwin.main_dialog
+            _self = testwin
+
+            def wrapper(*args: Any, **kwargs: Any) -> None:
+                original_method(*args, **kwargs)
+                callback(_self, *args, **kwargs)
+
+            return wrapper
+
+        wrapper = gen_wrapper()
+        # TODO: see comment for test_main_dialog() above
+        testwin.main_dialog = wrapper  # type: ignore
+        idx = testwin.params.button_names.index("&Ok")
+        testwin.params.buttons[idx].click()
+    return testwin
