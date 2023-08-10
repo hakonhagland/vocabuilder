@@ -52,7 +52,7 @@ from PyQt6.QtWidgets import (
 #   requires python >= 3.10
 #   see: https://docs.python.org/3/library/stdtypes.html#types-union
 MIN_PYTHON = (3, 10)
-if sys.version_info < MIN_PYTHON:
+if sys.version_info < MIN_PYTHON:  # pragma: no cover
     sys.exit(f"Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]} or later is required.")
 
 
@@ -108,7 +108,9 @@ class WarningsMixin:
         return mbox
 
     @staticmethod
-    def display_warning_callback(mbox: QMessageBox, msg: str) -> None:
+    def display_warning_callback(
+        mbox: QMessageBox, msg: str
+    ) -> None:  # pragma: no cover
         """This method is here such that it can be mocked from pytest"""
         pass
 
@@ -182,7 +184,6 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
             self.ok_button,
             self.cancel_button,
         ]
-
         for i, name in enumerate(self.button_names):
             button = QPushButton(name, self)
             self.buttons.append(button)
