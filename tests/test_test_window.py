@@ -93,7 +93,6 @@ class TestGeneral:
 
             wrapper = gen_wrapper()
             # TODO: see comment for test_main_dialog() above
-            testwin.done_button_clicked = wrapper  # type: ignore
             testwin.done_button.clicked.disconnect()
             testwin.done_button.clicked.connect(wrapper)
             testwin.done_button.click()

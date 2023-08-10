@@ -175,7 +175,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
-        names = ["&Add", "&Ok", "&Cancel"]
+        self.button_names = ["&Add", "&Ok", "&Cancel"]
         positions = [(vpos, 0), (vpos, 1), (vpos, 2)]
         callbacks = [
             self.add_button_pressed,
@@ -183,7 +183,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
             self.cancel_button,
         ]
 
-        for i, name in enumerate(names):
+        for i, name in enumerate(self.button_names):
             button = QPushButton(name, self)
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
@@ -333,30 +333,42 @@ class Config:
 
     def check_correct_config_dir(self, lock_file: Path) -> None:
         """The config dir might be owned by another app with the same name"""
-        if lock_file.is_file():
-            with open(str(lock_file), encoding="utf_8") as fp:
-                line = fp.readline()
-                if line.startswith(self.lockfile_string):
-                    return
+        if lock_file.exists():
+            if lock_file.is_file():
+                with open(str(lock_file), encoding="utf_8") as fp:
+                    line = fp.readline()
+                    if line.startswith(self.lockfile_string):
+                        return
+                msg = "bad content"
+            else:
+                msg = "is a directory"
+        else:
+            msg = "missing"
         raise ConfigException(
-            f"Config dir lock file missing. "
+            f"Unexpected: Config dir lock file: {msg}. "
             f"The data directory {str(lock_file.parent)} might be owned by another app."
         )
 
     def check_correct_data_dir(self, lock_file: Path) -> None:
         """The data dir might be owned by another app with the same name"""
-        if lock_file.is_file():
-            with open(str(lock_file), encoding="utf_8") as fp:
-                line = fp.readline()
-                if line.startswith(self.lockfile_string):
-                    return
+        if lock_file.exists():
+            if lock_file.is_file():
+                with open(str(lock_file), encoding="utf_8") as fp:
+                    line = fp.readline()
+                    if line.startswith(self.lockfile_string):
+                        return
+                msg = "bad content"
+            else:
+                msg = "is a directory"
+        else:
+            msg = "missing"
         raise ConfigException(
-            f"Data dir lock file missing. "
+            f"Unexpected: Data dir lock file: {msg}. "
             f"The data directory {str(lock_file.parent)} might be owned by another app."
         )
 
     def get_config_dir(self) -> Path:
-        return self.config_path
+        return self.config_dir
 
     def get_data_dir(self) -> Path:
         return self.datadir_path
@@ -1392,6 +1404,7 @@ class TestWindow(QDialog, WarningsMixin):
             self.term2 = term2
             self.term1_label.setText(term1)
             self.hidden_label.setText(self.config.config["Practice"]["HiddenText"])
+            self.hidden_toggle = True
             self.user_edit.setText("")
             self.user_edit.setFocus()
 
@@ -1520,7 +1533,7 @@ def main() -> None:
     #     filemode='w',
     #     level=logging.DEBUG,
     # )
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     config = Config()
     voca_name = select_vocabulary()
     db = Database(config, voca_name)
