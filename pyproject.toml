@@ -46,8 +46,7 @@ line-length = 88
 #omit = [".*", "*/site-packages/*"]
 
 [tool.coverage.report]
-# TODO: update this to 100 when coverage gets better
-fail_under = 30
+fail_under = 100
 
 [build-system]
 requires = ["poetry-core"]
