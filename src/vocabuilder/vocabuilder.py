@@ -283,7 +283,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == 16777216:  # "ESC" pressed
+        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def ok_button(self) -> None:
@@ -893,7 +893,7 @@ class MainWindow(QMainWindow, WarningsMixin):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        keys = [65, 66, 68, 77, 84, 86, 16777216]  # a, b, d, m, r, v, esc
+        keys = [65, 66, 68, 77, 84, 86, Qt.Key.Key_Escape]  # a, b, d, m, r, v, esc
         callbacks = [
             self.add_new_entry,
             self.backup,
@@ -1364,7 +1364,7 @@ class TestWindow(QDialog, WarningsMixin):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == 16777216:  # "ESC" pressed
+        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def main_dialog(self) -> TestWindow | None:
