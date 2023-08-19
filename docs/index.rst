@@ -11,6 +11,7 @@ Welcome to vocabuilder's documentation!
    :caption: Contents:
 
    usage
+   configuration
 
 Indices and tables
 ==================
