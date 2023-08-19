@@ -15,6 +15,6 @@ By adding values to the config file you can change things like:
 * font colors,
 * other platform specific behaviors.
 
-See the source code for
-`read_config() <https://github.com/hakonhagland/vocabuilder/blob/10e95f4b12fd4038545caea2b879e75a9ef11333/src/vocabuilder/vocabuilder.py#L393>`_
+See the default config file
+`default_config.ini <https://github.com/hakonhagland/vocabuilder/tree/main/src/vocabuilder/data/default_config.ini>`_
 for the currently supported options and their default values.
