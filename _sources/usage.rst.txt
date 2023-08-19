@@ -5,8 +5,9 @@ Installation
 ------------
 
 To install the vocabuilder script:
-- Ensure that you have Python version 3.10 or higher
-- Download the git source:
+
+* Ensure that you have Python version 3.10 or higher
+* Download the git source:
 
 .. code-block:: bash
 
