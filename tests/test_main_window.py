@@ -63,7 +63,8 @@ class TestOther:
             )
             mbox = window.delete_entry()
             ok_button = mbox.button(QMessageBox.StandardButton.Ok)
-            ok_button.click()
+            if ok_button is not None:
+                ok_button.click()
         msg = callback.args[1]
         assert re.search(r"Delete entry", msg)
 
@@ -114,7 +115,8 @@ class TestOther:
             )
             mbox = window.view_entries()
             ok_button = mbox.button(QMessageBox.StandardButton.Ok)
-            ok_button.click()
+            if ok_button is not None:
+                ok_button.click()
         msg = callback.args[1]
         assert re.search(r"View entries", msg)
 

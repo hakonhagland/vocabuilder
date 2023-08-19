@@ -284,9 +284,9 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
     def cancel_button(self) -> None:
         self.done(1)
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
+        if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def ok_button(self) -> None:
@@ -298,9 +298,11 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         layout = self.vbox
         for i in reversed(range(layout.count())):
             # layout.itemAt(i).widget().setParent(None)
-            widget = layout.itemAt(i).widget()
-            if widget is not None:
-                widget.deleteLater()
+            layout_item = layout.itemAt(i)
+            if layout_item is not None:
+                widget = layout_item.widget()
+                if widget is not None:
+                    widget.deleteLater()
         self.add_scroll_area_items(self.vbox, text)
         # self.scrollwidget.setLayout(self.vbox)
         self.scrollwidget.update()
@@ -867,7 +869,7 @@ class MainWindow(QMainWindow, WarningsMixin):
         mbox = self.display_warning(self, "Delete entry. Not implemented yet")
         return mbox
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
         keys = [65, 66, 68, 77, 84, 86, Qt.Key.Key_Escape]  # a, b, d, m, r, v, esc
         callbacks = [
@@ -880,7 +882,7 @@ class MainWindow(QMainWindow, WarningsMixin):
             self.quit,
         ]
         for i, key in enumerate(keys):
-            if event.key() == key:
+            if (event is not None) and event.key() == key:
                 callbacks[i]()
 
     def modify_entry(self) -> ModifyWindow1:
@@ -994,9 +996,9 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
     def get_db(self) -> Database:
         return self.__parent.db
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
+        if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def modify_item(self) -> bool:
@@ -1024,9 +1026,11 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         layout = self.vbox
         for i in reversed(range(layout.count())):
             # layout.itemAt(i).widget().setParent(None)
-            widget = layout.itemAt(i).widget()
-            if widget is not None:
-                widget.deleteLater()
+            layout_item = layout.itemAt(i)
+            if layout_item is not None:
+                widget = layout_item.widget()
+                if widget is not None:
+                    widget.deleteLater()
         self.add_scroll_area_items(self.vbox, text)
         # self.scrollwidget.setLayout(self.vbox)
         self.scrollwidget.update()
@@ -1114,9 +1118,9 @@ class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
     def cancel_button(self) -> None:
         self.done(1)
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
+        if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def modify_item(self) -> bool:
@@ -1153,10 +1157,12 @@ class QLabelClickable(QLabel):
     def addCallback(self, callback: Callable[[], None] | None) -> None:
         self.clicked_callback = callback
 
-    def mousePressEvent(self, ev: QMouseEvent) -> None:
-        if self.clicked_callback is not None:
-            self.clicked_callback()
-        return super().mousePressEvent(ev)
+    def mousePressEvent(self, ev: QMouseEvent | None) -> None:
+        if ev is not None:
+            if self.clicked_callback is not None:
+                self.clicked_callback()
+            return super().mousePressEvent(ev)
+        return
 
 
 class SelectVocabulary:
@@ -1338,9 +1344,9 @@ class TestWindow(QDialog, WarningsMixin):
         self.__parent.db.update_retest_value(self.term1, int(delay))  # type: ignore
         self.done(0)
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
+        if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
     def main_dialog(self) -> TestWindow | None:
