@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import configparser
 import csv
+import importlib.resources  # access non-code resources
 import logging
 
 # import pdb
@@ -13,6 +14,8 @@ import time
 import typing
 
 from pathlib import Path
+
+from configparser import ConfigParser
 
 # from pprint import pprint
 from typing import Callable, Literal, Optional
@@ -401,42 +404,15 @@ class Config:
             with open(str(self.config_path), "w", encoding="utf_8") as _:
                 pass  # only create empty file
         config = configparser.ConfigParser()
-        defaults = {
-            "AddWindow": {
-                "Width": 400,
-                "Height": 400,
-            },
-            "Buttons": {
-                "MinWidth": 50,
-                "MinHeight": 30,
-            },
-            "FontColor": {
-                "Blue": "blue",
-                "Red": "red",
-            },
-            "FontSize": {
-                "Small": "10px",
-                "Large": "18px",
-            },
-            "ModifyWindow1": {
-                "Width": "400",
-                "Height": "400",
-            },
-            "ModifyWindow2": {
-                "Width": "400",
-                "Height": "400",
-            },
-            "Practice": {
-                "HiddenText": "<Hidden>",
-            },
-            "TestWindow": {
-                "Width": "400",
-                "Height": "400",
-            },
-        }
-        config.read_dict(defaults)  # type: ignore
+        self.read_defaults(config)
         config.read(str(self.config_path))
         self.config = config
+
+    def read_defaults(self, config: ConfigParser) -> None:
+        path = importlib.resources.files("vocabuilder.data").joinpath(
+            "default_config.ini"
+        )
+        config.read(str(path))
 
 
 class CsvDatabaseHeader:
