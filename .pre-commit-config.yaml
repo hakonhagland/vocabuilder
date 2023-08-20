@@ -31,3 +31,11 @@ repos:
         args: [--strict, --implicit-reexport]
         pass_filenames: false
         entry: mypy src tests
+-   repo: local
+    hooks:
+      - id: coverage
+        name: coverage
+        language: system
+        entry: bash -c 'coverage run -m pytest tests && coverage report -m'
+        always_run: true
+        pass_filenames: false
