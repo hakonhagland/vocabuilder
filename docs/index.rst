@@ -12,6 +12,7 @@ Welcome to vocabuilder's documentation!
 
     usage
     configuration
+    shortcuts
     macos
 
 Indices and tables
