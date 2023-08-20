@@ -4,7 +4,7 @@ MacOS
 Keyboard shortcuts
 ------------------
 
-Most buttons have keyboard shortcuts but these are disabled by default on MacOS,
+Most buttons have :doc:`keyboard shortcuts <shortcuts>` but these are disabled by default on MacOS,
 see the `QT documentation <https://doc.qt.io/qt-6/qshortcut.html#details>`_.
 
 By setting the config value `MacOS.EnableAmpersandShortcut` to true you can enable these shortcuts.
