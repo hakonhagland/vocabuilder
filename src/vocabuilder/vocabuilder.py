@@ -5,6 +5,7 @@ import configparser
 import csv
 import importlib.resources  # access non-code resources
 import logging
+import platform  # determine os name
 
 # import pdb
 import random
@@ -28,6 +29,7 @@ from types import TracebackType
 
 import git
 import platformdirs
+from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QKeyEvent, QMouseEvent
 from PyQt6.QtWidgets import (
@@ -1162,7 +1164,6 @@ class QLabelClickable(QLabel):
             if self.clicked_callback is not None:
                 self.clicked_callback()
             return super().mousePressEvent(ev)
-        return
 
 
 class SelectVocabulary:
@@ -1510,6 +1511,12 @@ def select_vocabulary() -> str:
     return select.get_name()
 
 
+def set_app_options(app: QApplication, cfg: Config) -> None:
+    if platform.system() == "Darwin":
+        enable = cfg.config.getboolean("MacOS", "EnableAmpersandShortcut")
+        QtGui.qt_set_sequence_auto_mnemonic(enable)
+
+
 def main() -> None:
     # logging.basicConfig(
     #     filename='/tmp/vb.log',
@@ -1521,6 +1528,7 @@ def main() -> None:
     voca_name = select_vocabulary()
     db = Database(config, voca_name)
     app = QApplication(sys.argv)
+    set_app_options(app, config)
     window = MainWindow(app, db, config)
     window.show()
     app.exec()

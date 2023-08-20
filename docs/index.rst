@@ -7,11 +7,12 @@ Welcome to vocabuilder's documentation!
 =======================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
 
-   usage
-   configuration
+    usage
+    configuration
+    macos
 
 Indices and tables
 ==================

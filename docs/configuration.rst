@@ -10,7 +10,7 @@ in the Python standard library.
 
 By adding values to the config file you can change things like:
 
-* window and dialog sizes,
+* Window and dialog sizes,
 * font sizes,
 * font colors,
 * other platform specific behaviors.
