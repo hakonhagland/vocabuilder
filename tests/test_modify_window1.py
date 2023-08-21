@@ -100,7 +100,7 @@ class TestModifyItem:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        label = dialog.scroll_area_labels[0]
+        label = dialog.scrollarea.labels[0]
         edit = dialog.edits[dialog.header.term1]
         with qtbot.waitCallback() as callback:
             mocker.patch.object(edit, "setText", callback)

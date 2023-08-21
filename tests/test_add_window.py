@@ -148,3 +148,19 @@ class TestGeneral:
             edit.textChanged.connect(wrapper)
             edit.setText("a")
         assert True
+
+    def test_scroll_area_item_clicked(
+        self,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+    ) -> None:
+        window = main_window
+        dialog = window.add_new_entry()
+        label = dialog.scrollarea.labels[0]
+        edit = dialog.edits[dialog.header.term1]
+        with qtbot.waitCallback() as callback:
+            mocker.patch.object(edit, "setText", callback)
+            qtbot.mouseClick(label, Qt.MouseButton.LeftButton)
+        txt = callback.args[0]
+        assert txt == "bag"
