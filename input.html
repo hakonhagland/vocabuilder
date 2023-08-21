@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MacOS &mdash; vocabuilder 0.1 documentation</title>
+  <title>Foreign language input &mdash; vocabuilder 0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Foreign language input" href="input.html" /> 
+    <link rel="next" title="MacOS" href="macos.html" />
+    <link rel="prev" title="Keyboard shortcuts" href="shortcuts.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,11 +47,12 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shortcuts.html">Keyboard shortcuts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="input.html">Foreign language input</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">MacOS</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#keyboard-shortcuts">Keyboard shortcuts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Foreign language input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#macos">MacOS</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="macos.html">MacOS</a></li>
 </ul>
 
         </div>
@@ -67,9 +69,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">MacOS</li>
+      <li class="breadcrumb-item active">Foreign language input</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/hakonhagland/vocabuilder/blob/master/docs/macos.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/hakonhagland/vocabuilder/blob/master/docs/input.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -77,17 +79,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="macos">
-<h1>MacOS<a class="headerlink" href="#macos" title="Permalink to this heading"></a></h1>
-<section id="keyboard-shortcuts">
-<h2>Keyboard shortcuts<a class="headerlink" href="#keyboard-shortcuts" title="Permalink to this heading"></a></h2>
-<p>Most buttons have <a class="reference internal" href="shortcuts.html"><span class="doc">keyboard shortcuts</span></a> but these are disabled by default on MacOS,
-see the <a class="reference external" href="https://doc.qt.io/qt-6/qshortcut.html#details">QT documentation</a>.</p>
-<p>By setting the <a class="reference internal" href="configuration.html"><span class="doc">config value</span></a> <code class="docutils literal notranslate"><span class="pre">MacOS.EnableAmpersandShortcut</span></code> to true you can enable these shortcuts.</p>
-<p>However, because mnemonic shortcuts do not fit in with
-<a class="reference external" href="https://en.wikipedia.org/wiki/Aqua_(user_interface)">Aqua’s</a> guidelines,
-Qt will not show the shortcut character as underlined, see the
-<a class="reference external" href="https://doc.qt.io/qt-6/qshortcut.html#details">QT documentation</a> for more information.</p>
+  <section id="foreign-language-input">
+<h1>Foreign language input<a class="headerlink" href="#foreign-language-input" title="Permalink to this heading"></a></h1>
+<p>Here are some examples of how to enable foreign language input.</p>
+<section id="ubuntu">
+<h2>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this heading"></a></h2>
+<p>To enable korean hangul input, install the <a class="reference external" href="https://packages.ubuntu.com/jammy/ibus-hangul">ibus-hangul</a>
+package. Add Korean Hangul to your input sources from the <code class="docutils literal notranslate"><span class="pre">Settings-&gt;Keyboard</span></code> dialog. You should now be
+able to switch input sources with keyboard shortcut <code class="docutils literal notranslate"><span class="pre">SUPER+Space</span></code>.</p>
+</section>
+<section id="macos">
+<h2>MacOS<a class="headerlink" href="#macos" title="Permalink to this heading"></a></h2>
+<p>See <a class="reference external" href="https://support.apple.com/en-in/guide/mac-help/mchlp1406/mac">Write in another language on Mac</a>
+or <a class="reference external" href="https://support.apple.com/en-in/guide/korean-input-method/welcome/mac">this guide</a>.</p>
 </section>
 </section>
 
@@ -95,7 +99,8 @@ Qt will not show the shortcut character as underlined, see the
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="input.html" class="btn btn-neutral float-left" title="Foreign language input" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="shortcuts.html" class="btn btn-neutral float-left" title="Keyboard shortcuts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="macos.html" class="btn btn-neutral float-right" title="MacOS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
