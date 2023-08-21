@@ -19,7 +19,7 @@ from pathlib import Path
 from configparser import ConfigParser
 
 # from pprint import pprint
-from typing import Callable, Literal, Optional
+from typing import Callable, Literal, Optional, Protocol
 from types import TracebackType
 
 # NOTE: "Self" type requires python >= 3.11, and we are trying to support python 3.10, so
@@ -69,9 +69,51 @@ DatabaseValue = str | int | None
 DatabaseRow = dict[str, DatabaseValue]
 
 
+class ScrollAreaMixinProtocol(Protocol):
+    """This class is needed to satisfy mypy. See https://stackoverflow.com/a/70907644/2173773"""
+
+    edits: dict[str, QLineEdit]
+    header: CsvDatabaseHeader
+    scroll_area_labels: list[QLabel]
+
+    def get_db(self) -> Database:  # pragma: no cover
+        ...
+
+    def scroll_area_item_clicked(
+        self, item: str
+    ) -> Callable[[], None]:  # pragma: no cover
+        ...
+
+
 # ----------
 #   MIXINS
 # ----------
+
+
+class ScrollAreaItemsMixin:
+    def add_scroll_area_items(
+        self: ScrollAreaMixinProtocol,
+        vbox: QVBoxLayout,
+        text: str | None = None,
+    ) -> None:
+        terms = self.get_db().get_term1_list()
+        self.scroll_area_labels = []  # This list is used from pytest
+        for term in reversed(
+            terms
+        ):  # need reverse since vbox has bottom-to-top direction
+            if (text is None) or (text in term):
+                label = QLabelClickable(term)
+                label.addCallback(self.scroll_area_item_clicked(term))
+                self.scroll_area_labels.append(label)
+                vbox.addWidget(label)
+
+    def scroll_area_item_clicked(
+        self: ScrollAreaMixinProtocol, item: str
+    ) -> Callable[[], None]:
+        def callback() -> None:
+            self.edits[self.header.term1].setText(item)
+
+        return callback
 
 
 class StringMixin:
@@ -154,7 +196,7 @@ class DatabaseException(Exception):
 # -----------------------------
 
 
-class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
+class AddWindow(QDialog, WarningsMixin, ScrollAreaItemsMixin, StringMixin, TimeMixin):
     """Add a new term (and its translation) to the database, then ask for a another term to add.
     Continue the above procedure of adding terms until the user clicks the cancel button
     """
@@ -263,7 +305,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         self.vbox = QVBoxLayout()
         self.vbox.addStretch()  # https://stackoverflow.com/a/63438161/2173773
         self.vbox.setDirection(QBoxLayout.Direction.BottomToTop)
-        self.add_scroll_area_items(self.vbox)
+        self.add_scroll_area_items(self.vbox)  # type: ignore
         self.scrollwidget.setLayout(self.vbox)
         self.__scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.__scroll.setHorizontalScrollBarPolicy(
@@ -274,17 +316,11 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         layout.addWidget(self.__scroll, vpos, 0, 1, 3)
         return
 
-    def add_scroll_area_items(self, vbox: QVBoxLayout, text: str | None = None) -> None:
-        terms = self.__parent.db.get_term1_list()
-        for term in reversed(
-            terms
-        ):  # need reverse since vbox has bottom-to-top direction
-            if (text is None) or (text in term):
-                object = QLabel(term)
-                vbox.addWidget(object)
-
     def cancel_button(self) -> None:
         self.done(1)
+
+    def get_db(self) -> Database:
+        return self.__parent.db
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
@@ -305,7 +341,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
                 widget = layout_item.widget()
                 if widget is not None:
                     widget.deleteLater()
-        self.add_scroll_area_items(self.vbox, text)
+        self.add_scroll_area_items(self.vbox, text)  # type: ignore
         # self.scrollwidget.setLayout(self.vbox)
         self.scrollwidget.update()
 
@@ -901,7 +937,7 @@ class MainWindow(QMainWindow, WarningsMixin):
         return mbox
 
 
-class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
+class ModifyWindow1(QDialog, WarningsMixin, StringMixin, ScrollAreaItemsMixin):
     """Modify/edit the translation of an existing term1 (and/or its translation) and update the
     database. Then, ask for a another term to modify. Continue the above
     procedure of modifying terms until the user clicks the cancel button"""
@@ -969,7 +1005,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         self.vbox = QVBoxLayout()
         self.vbox.addStretch()  # https://stackoverflow.com/a/63438161/2173773
         self.vbox.setDirection(QBoxLayout.Direction.BottomToTop)
-        self.add_scroll_area_items(self.vbox)
+        self.add_scroll_area_items(self.vbox)  # type: ignore
         self.scrollwidget.setLayout(self.vbox)
         self.__scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.__scroll.setHorizontalScrollBarPolicy(
@@ -979,18 +1015,6 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
         self.__scroll.setWidget(self.scrollwidget)
         layout.addWidget(self.__scroll, vpos, 0, 1, 4)
         return
-
-    def add_scroll_area_items(self, vbox: QVBoxLayout, text: str | None = None) -> None:
-        terms = self.get_db().get_term1_list()
-        self.scroll_area_labels = []  # This list is used from pytest
-        for term in reversed(
-            terms
-        ):  # need reverse since vbox has bottom-to-top direction
-            if (text is None) or (text in term):
-                label = QLabelClickable(term)
-                label.addCallback(self.scroll_area_item_clicked(term))
-                self.scroll_area_labels.append(label)
-                vbox.addWidget(label)
 
     def cancel_button(self) -> None:
         self.done(1)
@@ -1017,12 +1041,6 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
     def ok_button(self) -> None:
         self.modify_item()
 
-    def scroll_area_item_clicked(self, item: str) -> Callable[[], None]:
-        def callback() -> None:
-            self.edits[self.header.term1].setText(item)
-
-        return callback
-
     def update_scroll_area_items(self, text: str) -> None:
         # See: https://stackoverflow.com/a/13103617/2173773
         layout = self.vbox
@@ -1033,7 +1051,7 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
                 widget = layout_item.widget()
                 if widget is not None:
                     widget.deleteLater()
-        self.add_scroll_area_items(self.vbox, text)
+        self.add_scroll_area_items(self.vbox, text)  # type: ignore
         # self.scrollwidget.setLayout(self.vbox)
         self.scrollwidget.update()
 
