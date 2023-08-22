@@ -10,6 +10,7 @@ Welcome to vocabuilder's documentation!
     :maxdepth: 2
     :caption: Contents:
 
+    introduction
     usage
     configuration
     shortcuts

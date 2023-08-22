@@ -4,7 +4,7 @@ Configuration
 The configuration file is named ``config.ini`` and is located in ``user_config_dir`` as defined
 by the `platformdirs <https://pypi.org/project/platformdirs/>`_ package.
 
-The language used in the file should follow the syntax described by the
+The syntax is described in the documentation for the
 `configparser <https://docs.python.org/3/library/configparser.html>`_ module
 in the Python standard library.
 
