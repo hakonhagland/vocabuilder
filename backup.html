@@ -81,8 +81,10 @@
   <section id="creating-backup">
 <h1>Creating backup<a class="headerlink" href="#creating-backup" title="Permalink to this heading"></a></h1>
 <p>Your database is backed up to a local git repository when you start the app
-or when you click the <code class="docutils literal notranslate"><span class="pre">Backup</span></code> button. From the backup repository you can
+or when you click the <code class="docutils literal notranslate"><span class="pre">Backup</span></code> button. From the backup repository you may
 recovery any earlier state of your vocabulary database.</p>
+<p>The git backup repository is located in <code class="docutils literal notranslate"><span class="pre">user_data_dir</span></code> as defined by the
+<a class="reference external" href="https://pypi.org/project/platformdirs/">platformdirs</a> package</p>
 <p>Extension to <a class="reference external" href="https://firebase.google.com/">firebase</a> cloud backup is planned.</p>
 </section>
 
