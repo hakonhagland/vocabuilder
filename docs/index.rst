@@ -15,6 +15,8 @@ Welcome to vocabuilder's documentation!
     configuration
     shortcuts
     input
+    database
+    backup
     macos
 
 Indices and tables
