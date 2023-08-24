@@ -7,7 +7,7 @@ Welcome to vocabuilder's documentation!
 =======================================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Contents:
 
     introduction
@@ -18,6 +18,7 @@ Welcome to vocabuilder's documentation!
     database
     backup
     macos
+    source
 
 Indices and tables
 ==================
