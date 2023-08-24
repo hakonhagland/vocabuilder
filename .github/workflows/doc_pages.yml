@@ -14,6 +14,8 @@ jobs:
           uses: actions/setup-python@v4
           with:
             python-version: "3.11"
+        - name: install extra qt packages linux
+          uses: tlambert03/setup-qt-libs@v1
         - name: Install poetry
           uses: abatilo/actions-poetry@v2
         - name: Install python dependencies
