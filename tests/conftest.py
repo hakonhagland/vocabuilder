@@ -17,6 +17,15 @@ from vocabuilder.vocabuilder import (
 from vocabuilder.vocabuilder import TestWindow as _TestWindow
 from .common import PytestDataDict, QtBot
 
+# @pytest.fixture(scope="session")
+# def qapp_args(args):
+#    return args
+
+
+@pytest.fixture(scope="session")
+def qapp_args() -> list[str]:
+    return ["vocabuilder"]
+
 
 @pytest.fixture(scope="session")
 def test_file_path() -> Path:

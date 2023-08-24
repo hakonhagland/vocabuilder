@@ -30,7 +30,7 @@ from types import TracebackType
 import git
 import platformdirs
 from PyQt6 import QtGui
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QCommandLineParser
 from PyQt6.QtGui import QIntValidator, QKeyEvent, QMouseEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -130,6 +130,14 @@ class WarningsMixin:
 # ----------------------
 #    Exceptions
 # ----------------------
+
+
+class CommandLineException(Exception):
+    def __init__(self, value: str):
+        self.value = value
+
+    def __str__(self) -> str:
+        return f"Command line exception: {self.value}"
 
 
 class ConfigException(Exception):
@@ -289,6 +297,29 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
 
     def update_scroll_area_items(self, text: str) -> None:
         self.scrollarea.update_items(text)
+
+
+class CommandLineOptions:
+    def __init__(self, app: QApplication) -> None:
+        app.setApplicationName("VocaBuilder")
+        app.setApplicationVersion("0.1")
+        parser = QCommandLineParser()
+        parser.addHelpOption()
+        parser.addVersionOption()
+        parser.addPositionalArgument("database", "Database to open")
+        parser.process(app)
+        arguments = parser.positionalArguments()
+        logging.info(f"Commandline database argument: {arguments}")
+        num_args = len(arguments)
+        if num_args > 1:
+            raise CommandLineException(
+                "Bad command line arguments. Expected zero or one argument"
+            )
+        self.database_name: str | None
+        if num_args == 1:
+            self.database_name = arguments[0]
+        else:
+            self.database_name = None
 
 
 class Config:
@@ -1521,10 +1552,12 @@ def main() -> None:
     #     level=logging.DEBUG,
     # )
     logging.basicConfig(level=logging.DEBUG)
+    app = QApplication(sys.argv)
+    # options = CommandLineOptions(app)
+    CommandLineOptions(app)
     config = Config()
     voca_name = select_vocabulary()
     db = Database(config, voca_name)
-    app = QApplication(sys.argv)
     set_app_options(app, config)
     window = MainWindow(app, db, config)
     window.show()

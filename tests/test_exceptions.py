@@ -1,6 +1,19 @@
 import re
 
-from vocabuilder.vocabuilder import ConfigException, CsvFileException, DatabaseException
+from vocabuilder.vocabuilder import (
+    CommandLineException,
+    ConfigException,
+    CsvFileException,
+    DatabaseException,
+)
+
+
+def test_commandline_exception() -> None:
+    try:
+        raise CommandLineException("Testing")
+    except CommandLineException as exc:
+        msg = str(exc)
+        assert re.search(r"Testing", msg)
 
 
 def test_config_exception() -> None:
