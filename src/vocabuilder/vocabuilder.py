@@ -75,8 +75,15 @@ DatabaseRow = dict[str, DatabaseValue]
 
 
 class StringMixin:
+    """String methods"""
+
     @staticmethod
     def check_space_or_empty_str(str_: str) -> bool:
+        """Is string empty or only space characters?
+
+        :param str str_: Input string
+        :return: True if string is empty or only space"""
+
         if len(str_) == 0 or str_.isspace():
             return True
         return False
@@ -774,12 +781,14 @@ class Database(TimeMixin):
                 )
 
     def write_cleaned_up(self) -> None:
-        """When a database item is modified it is appended to the database file rather than
+        """
+        When a database item is modified it is appended to the database file rather than
         having the whole database rewritten. Of course, this will make the database file
         temporarily contain duplicate items, but this is no problem since the database is read
         sequentially in the read_database() method, and items with larger line number will then
         overwrite items occurring at a lower line number.
-           However, the database in memory (the self.db dict) does not contain any duplicates
+
+        However, database in memory (the self.db dict) does not contain any duplicates
         so this method will remove any duplicates from the database on file
         """
         terms = self.get_term1_list()
@@ -976,7 +985,8 @@ class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
 
 class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
     """Modify/edit the translation of an existing term1 (and/or its translation) and update the
-    database."""
+    database.
+    """
 
     def __init__(self, parent: ModifyWindow1, term1: str, database: Database):
         super().__init__(parent)  # make dialog modal
@@ -1197,15 +1207,13 @@ class TestWindow(QDialog, WarningsMixin):
         # NOTE: TestWindowChooseParameters will call the callback when finished, i.e. the
         #   main_dialog() method below
 
-    def add_current_term_to_practice(
-        self, layout: QGridLayout, vpos: int, term1: str
-    ) -> int:
+    def add_current_term_to_practice(self, layout: QGridLayout, vpos: int) -> int:
         fontsize = self.config.config["FontSize"]["Large"]
         groupbox = QGroupBox("Word/term/phrase to practice")
         grid = QGridLayout()
         label11 = QLabel("Translate this term:")
         grid.addWidget(label11, 0, 0)
-        label12 = QLabel(f"{term1}")
+        label12 = QLabel(f"{self.lang1_term}")  # type: ignore
         self.term1_label = label12
         term1_color = self.config.config["FontColor"]["Blue"]
         label12.setStyleSheet(
@@ -1324,9 +1332,26 @@ class TestWindow(QDialog, WarningsMixin):
         hpos = i % 3
         grid.addWidget(radio, vpos + 1, hpos)
 
+    def assign_terms_to_practice(self) -> bool:
+        pair = self.__parent.db.get_random_pair()
+        if pair is None:
+            self.display_warning(self, "No terms ready for practice today!")
+            self.done(1)
+            return False
+        term1, term2 = pair
+        self.term1 = term1
+        self.term2 = term2
+        if self.params.test_direction == TestDirection._1to2:
+            self.lang1_term = self.term1
+            self.lang2_term = self.term2
+        else:
+            self.lang1_term = self.term2
+            self.lang2_term = self.term1
+        return True
+
     def done_button_clicked(self) -> None:
         delay = self.delay_edit.text()
-        self.__parent.db.update_retest_value(self.term1, int(delay))  # type: ignore
+        self.__parent.db.update_retest_value(self.term1, int(delay))
         self.done(0)
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
@@ -1337,49 +1362,37 @@ class TestWindow(QDialog, WarningsMixin):
     def main_dialog(self) -> TestWindow | None:
         if self.params.cancelled:
             return None
+        if not self.assign_terms_to_practice():
+            return None
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Practice term/phrase/word")
         layout = QGridLayout()
         vpos = 1
         vpos = self.add_param_info_labels(layout, vpos)
-        pair = self.__parent.db.get_random_pair()
-        if pair is None:
-            self.display_warning(self, "No terms ready for practice today!")
-            self.done(1)
-        else:
-            term1, term2 = pair
-            self.term1 = term1
-            self.term2 = term2
-            vpos = self.add_current_term_to_practice(layout, vpos, term1)
-            vpos = self.add_retest_options(layout, vpos)
-            vpos = self.add_next_done_buttons(layout, vpos)
-            layout.setRowStretch(layout.rowCount(), 1)
-            self.setLayout(layout)
-            self.user_edit.setFocus()
-            self.open()
+        vpos = self.add_current_term_to_practice(layout, vpos)
+        vpos = self.add_retest_options(layout, vpos)
+        vpos = self.add_next_done_buttons(layout, vpos)
+        layout.setRowStretch(layout.rowCount(), 1)
+        self.setLayout(layout)
+        self.user_edit.setFocus()
+        self.open()
         return self
 
     def next_button_clicked(self) -> None:
         delay = self.delay_edit.text()
         self.__parent.db.update_retest_value(self.term1, int(delay))
-        pair = self.__parent.db.get_random_pair()
-        if pair is None:
-            self.display_warning(self, "No more terms ready for practice today!")
-            self.done(1)
-        else:
-            term1, term2 = pair
-            self.term1 = term1
-            self.term2 = term2
-            self.term1_label.setText(term1)
-            self.hidden_label.setText(self.config.config["Practice"]["HiddenText"])
-            self.hidden_toggle = True
-            self.user_edit.setText("")
-            self.user_edit.setFocus()
+        if not self.assign_terms_to_practice():
+            return None
+        self.term1_label.setText(self.lang1_term)
+        self.hidden_label.setText(self.config.config["Practice"]["HiddenText"])
+        self.hidden_toggle = True
+        self.user_edit.setText("")
+        self.user_edit.setFocus()
 
     def show_hidden_translation(self, label: QLabel) -> Callable[[], None]:
         def callback() -> None:
             if self.hidden_toggle:
-                label.setText(self.term2)
+                label.setText(self.lang2_term)
                 self.hidden_toggle = False
             else:
                 label.setText(self.hidden_text_placeholder)

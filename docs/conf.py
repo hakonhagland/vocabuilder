@@ -12,9 +12,11 @@ author = "Håkon Hægland"
 release = "0.1"
 
 # -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+import os
+import sys
 
-extensions = []
+sys.path.insert(0, os.path.abspath("../src"))
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
