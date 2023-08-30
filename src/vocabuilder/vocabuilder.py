@@ -253,6 +253,8 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
             self.header.last_test: now,
         }
         self.__parent.db.add_item(item)
+        items = self.get_db().get_term1_list()
+        self.scrollarea.update_items_list(items)
         return True
 
     def add_line_edits(self, layout: QGridLayout, vpos: int) -> int:
@@ -1210,6 +1212,9 @@ class QSelectItemScrollArea(QScrollArea):
                     widget.deleteLater()
         self.add_items(text)
         self.scrollwidget.update()
+
+    def update_items_list(self, items: list[str]) -> None:
+        self.items = items
 
 
 class SelectVocabulary:
