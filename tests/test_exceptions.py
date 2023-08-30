@@ -5,6 +5,7 @@ from vocabuilder.vocabuilder import (
     ConfigException,
     CsvFileException,
     DatabaseException,
+    SelectVocabularyException,
 )
 
 
@@ -36,5 +37,13 @@ def test_database_exception() -> None:
     try:
         raise DatabaseException("Testing")
     except DatabaseException as exc:
+        msg = str(exc)
+        assert re.search(r"Testing", msg)
+
+
+def test_select_vocabulary_exception() -> None:
+    try:
+        raise SelectVocabularyException("Testing")
+    except SelectVocabularyException as exc:
         msg = str(exc)
         assert re.search(r"Testing", msg)

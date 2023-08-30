@@ -6,47 +6,45 @@ from pytest_mock.plugin import MockerFixture
 
 # from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
-from .common import QtBot
 from vocabuilder.vocabuilder import CommandLineException, CommandLineOptions
 
 
-class TestOk:
-    test_args = ["db1"]
-
-    @pytest.fixture(scope="session")
-    def qapp_args(self) -> list[str]:
-        return TestOk.test_args
-
-    def test_main(
+class TestGeneral:
+    def test_ok(
         self,
         mocker: MockerFixture,
         qapp: QApplication,
-        qtbot: QtBot,
     ) -> None:
+        cmd_line_args = ["db1"]
         mocker.patch(
             "vocabuilder.vocabuilder.QCommandLineParser.positionalArguments",
-            return_value=TestOk.test_args,
+            return_value=cmd_line_args,
         )
         args = CommandLineOptions(qapp)
-        assert args.database_name == TestOk.test_args[0]
+        assert args.database_name == cmd_line_args[0]
 
-
-class TestBad:
-    test_args = ["db1", "db2"]
-
-    @pytest.fixture(scope="session")
-    def qapp_args(self) -> list[str]:
-        return TestBad.test_args
-
-    def test_main(
+    def test_ok2(
         self,
         mocker: MockerFixture,
         qapp: QApplication,
-        qtbot: QtBot,
     ) -> None:
+        cmd_line_args: list[str] = []
         mocker.patch(
             "vocabuilder.vocabuilder.QCommandLineParser.positionalArguments",
-            return_value=TestBad.test_args,
+            return_value=cmd_line_args,
+        )
+        args = CommandLineOptions(qapp)
+        assert args.database_name is None
+
+    def test_bad(
+        self,
+        mocker: MockerFixture,
+        qapp: QApplication,
+    ) -> None:
+        cmd_line_args = ["db1", "db2"]
+        mocker.patch(
+            "vocabuilder.vocabuilder.QCommandLineParser.positionalArguments",
+            return_value=cmd_line_args,
         )
         with pytest.raises(CommandLineException) as excinfo:
             CommandLineOptions(qapp)

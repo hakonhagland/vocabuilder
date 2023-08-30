@@ -9,22 +9,15 @@ from PyQt6.QtWidgets import (
     QApplication,
 )
 
-from vocabuilder.vocabuilder import (
-    Config,
-    Database,
-    MainWindow,
-)
+from vocabuilder.vocabuilder import Config, Database, MainWindow, SelectVocabulary
 from vocabuilder.vocabuilder import TestWindow as _TestWindow
 from .common import PytestDataDict, QtBot
 
-# @pytest.fixture(scope="session")
-# def qapp_args(args):
-#    return args
 
-
+# This will override all qapp_args in all tests since it is session scoped
 @pytest.fixture(scope="session")
 def qapp_args() -> list[str]:
-    return ["vocabuilder"]
+    return ["vocabuilder", "english-korean"]
 
 
 @pytest.fixture(scope="session")
@@ -41,12 +34,6 @@ def test_data() -> PytestDataDict:
     }
 
 
-@pytest.fixture(scope="session")
-def config_dir_path(test_file_path: Path, test_data: PytestDataDict) -> Path:
-    cfg_dir = test_file_path / test_data["config_dir"]
-    return cfg_dir
-
-
 @pytest.fixture()
 def data_dir_path(
     tmp_path: Path, test_file_path: Path, test_data: PytestDataDict
@@ -56,6 +43,24 @@ def data_dir_path(
     data_dirlock_fn = test_file_path / test_data["data_dir"] / Config.dirlock_fn
     shutil.copy(data_dirlock_fn, data_dir)
     return data_dir
+
+
+@pytest.fixture()
+def config_dir_path(
+    test_file_path: Path,
+    test_data: PytestDataDict,
+    tmp_path: Path,
+) -> Path:
+    cfg_dir_src = test_file_path / test_data["config_dir"]
+    cfg_dir = tmp_path / test_data["config_dir"]
+    cfg_dir.mkdir()
+    cfg_dirlock_fn = cfg_dir_src / Config.dirlock_fn
+    shutil.copy(cfg_dirlock_fn, cfg_dir)
+    cfg_fn = cfg_dir_src / Config.config_fn
+    shutil.copy(cfg_fn, cfg_dir)
+    active_fn = cfg_dir_src / SelectVocabulary.active_voca_info_fn
+    shutil.copy(active_fn, cfg_dir)
+    return cfg_dir
 
 
 @pytest.fixture()

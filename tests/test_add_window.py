@@ -1,4 +1,4 @@
-# import logging
+import logging
 import pytest
 
 # import re
@@ -158,6 +158,7 @@ class TestGeneral:
         window = main_window
         dialog = window.add_new_entry()
         label = dialog.scrollarea.labels[0]
+        logging.info(f"scrollarea num_labels = {len(dialog.scrollarea.labels)}")
         edit = dialog.edits[dialog.header.term1]
         with qtbot.waitCallback() as callback:
             mocker.patch.object(edit, "setText", callback)

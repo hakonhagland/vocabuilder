@@ -164,6 +164,14 @@ class DatabaseException(Exception):
         return f"Database exception: {self.value}"
 
 
+class SelectVocabularyException(Exception):
+    def __init__(self, value: str):
+        self.value = value
+
+    def __str__(self) -> str:
+        return f"Select vocabulary exception: {self.value}"
+
+
 # -----------------------------
 #   CLASSES (alphabetically)
 # -----------------------------
@@ -275,6 +283,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
 
         def callback(text: str) -> None:
             self.edits[self.header.term1].setText(text)
+            self.edits[self.header.term1].setFocus()
 
         self.scrollarea = QSelectItemScrollArea(items=items, select_callback=callback)
         layout.addWidget(self.scrollarea, vpos, 0, 1, 3)
@@ -321,17 +330,21 @@ class CommandLineOptions:
         else:
             self.database_name = None
 
+    def get_database_name(self) -> str | None:
+        return self.database_name
+
 
 class Config:
     # NOTE: This is made a class variable since it must be accessible from
     #   pytest before creating an object of this class
     dirlock_fn = ".dirlock"
+    config_fn = "config.ini"
 
     def __init__(self) -> None:
         self.appname = "vocabuilder"
         self.lockfile_string = "author=HH"
         self.config_dir = self.check_config_dir()
-        self.config_path = Path(self.config_dir) / "config.ini"
+        self.config_path = Path(self.config_dir) / self.config_fn
         self.read_config()
         self.datadir_path = self.get_data_dir_path()
 
@@ -594,6 +607,7 @@ class Database(TimeMixin):
 
     def __init__(self, config: "Config", voca_name: str):
         self.config = config
+        self.voca_name = voca_name
         self.datadir = config.get_data_dir() / self.database_dir / voca_name
         self.datadir.mkdir(parents=True, exist_ok=True)
         self.db: dict[str, DatabaseRow] = {}
@@ -607,6 +621,12 @@ class Database(TimeMixin):
         self.read_database()
         self.create_backup()
         self.write_cleaned_up()
+        self.update_active_vocabulary_info()
+
+    def update_active_vocabulary_info(self) -> None:
+        cfg_dir = self.config.get_config_dir()
+        active_voca_info_fn_path = cfg_dir / SelectVocabulary.active_voca_info_fn
+        active_voca_info_fn_path.write_text(self.voca_name, encoding="utf-8")
 
     def add_item(self, item: DatabaseRow) -> None:
         item[self.header.status] = self.status.NOT_DELETED
@@ -1167,7 +1187,8 @@ class QSelectItemScrollArea(QScrollArea):
         ):  # need reverse since vbox has bottom-to-top direction
             if (match_str is None) or (match_str in term):
                 label = QLabelClickable(term)
-                label.addCallback(self.item_clicked(term))
+                callback = self.item_clicked(term)
+                label.addCallback(callback)
                 self.labels.append(label)
                 self.vbox.addWidget(label)
 
@@ -1192,11 +1213,153 @@ class QSelectItemScrollArea(QScrollArea):
 
 
 class SelectVocabulary:
-    def __init__(self) -> None:
-        self.selected_name = "english-korean"
+    active_voca_info_fn = "active_db.txt"
 
-    def get_name(self) -> str:
+    def __init__(
+        self, opts: CommandLineOptions, cfg: Config, app: QApplication
+    ) -> None:
+        self.opts = opts
+        self.cfg = cfg
+        self.app = app
+        self.selected_name = None
+        self.find_existing_vocabularies()
+        database_name = opts.get_database_name()
+        if database_name is not None:
+            self.selected_name = database_name
+        else:
+            if not self.read_active_name():
+                if not self.choose_most_recent():
+                    # app.setQuitOnLastWindowClosed(False)
+                    name = self.open_select_voca_window(app)
+                    logging.info(f"select voca returned: {name}")
+                    # app.setQuitOnLastWindowClosed(True)
+                    if name is not None:
+                        self.selected_name = name
+                    else:
+                        logging.info("No vocabulary name found. Exiting..")
+                        print("Aborted by user.")
+                        quit()
+
+    def choose_most_recent(self) -> bool:
+        db_dir = self.cfg.get_data_dir() / Database.database_dir
+        current_mtime = 0
+        candidate = None
+        logging.info("choose most recent..")
+        for name in self.existing_vocabularies:
+            dbfile = db_dir / name / Database.database_fn
+            mtime = dbfile.stat().st_mtime
+            if mtime > current_mtime:
+                candidate = name
+        if candidate is not None:
+            self.selected_name = name
+            return True
+        return False
+
+    def find_existing_vocabularies(self) -> None:
+        db_dir = self.cfg.get_data_dir() / Database.database_dir
+        self.existing_vocabularies = []
+        if db_dir.exists():
+            for file in db_dir.iterdir():
+                if file.is_dir():
+                    dbfile = file / Database.database_fn
+                    if dbfile.is_file():
+                        self.existing_vocabularies.append(file.name)
+
+    def get_name(self) -> str | None:
         return self.selected_name
+
+    def open_select_voca_window(self, app: QApplication) -> str | None:
+        win = SelectNewVocabularyName(self.cfg, self.app)
+        win.show()
+        self.app.exec()
+        return win.name
+
+    def read_active_name(self) -> bool:
+        cfg_dir = self.cfg.get_config_dir()
+        self.active_voca_info_fn_path = cfg_dir / self.active_voca_info_fn
+        if self.active_voca_info_fn_path.is_file():
+            txt = self.active_voca_info_fn_path.read_text(encoding="utf-8")
+            txt = txt.strip()
+            if txt in self.existing_vocabularies:
+                self.selected_name = txt
+                return True
+        return False
+
+
+class SelectNewVocabularyName(QMainWindow, StringMixin, WarningsMixin):
+    def __init__(self, cfg: Config, app: QApplication) -> None:
+        super().__init__()
+        self.app = app
+        self.cfg = cfg
+        self.name: str | None = (
+            None  # Return value to parent: The name the user selected
+        )
+        # Prevent self to be destroyed when the close button is clicked
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, False)
+        self.button_config = self.cfg.config["Buttons"]
+        self.resize(330, 200)
+        self.setWindowTitle("Select a vocabulary name")
+        layout = QGridLayout()
+        vpos = 0
+        vpos = self.add_info_label(layout, vpos)
+        vpos = self.add_line_edit(layout, vpos)
+        vpos = self.add_buttons(layout, vpos)
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+
+    def add_info_label(self, layout: QGridLayout, vpos: int) -> int:
+        label1 = QLabel("No vocabularies found.")
+        layout.addWidget(label1, vpos, 0, 1, 2)
+        vpos += 1
+        label2 = QLabel('Please select a name for a new, e.g. "english-korean"')
+        layout.addWidget(label2, vpos, 0, 1, 2)
+        vpos += 1
+        return vpos
+
+    def add_line_edit(self, layout: QGridLayout, vpos: int) -> int:
+        label = QLabel("Vocabulary name: ")
+        layout.addWidget(label, vpos, 0)
+        self.line_edit = QLineEdit()
+        layout.addWidget(self.line_edit, vpos, 1)
+        vpos += 1
+        return vpos
+
+    def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
+        self.buttons = []
+        self.button_names = ["&Ok", "&Cancel"]
+        positions = [(vpos, 0), (vpos, 1)]
+        callbacks = [self.ok_button, self.cancel_button]
+
+        for i, name in enumerate(self.button_names):
+            button = QPushButton(name, self)
+            self.buttons.append(button)
+            button.setMinimumWidth(int(self.button_config["MinWidth"]))
+            button.setMinimumHeight(int(self.button_config["MinHeight"]))
+            button.clicked.connect(callbacks[i])
+            layout.addWidget(button, *positions[i])
+        return vpos + 1
+
+    #    def closeEvent(self, event: QCloseEvent):
+    #        # do stuff
+    #        event.accept()
+
+    def ok_button(self) -> None:
+        name = self.line_edit.text()
+        if self.check_space_or_empty_str(name):
+            self.display_warning(
+                self, "Vocabulary name is empty! Please select a valid name"
+            )
+            return
+        else:
+            self.name = name
+            self.close()
+            self.app.exit()
+
+    def cancel_button(self) -> None:
+        self.name = None
+        self.close()
+        self.app.exit()
 
 
 class TermStatus:
@@ -1533,10 +1696,13 @@ class TestWindowChooseParameters(QDialog):
 # --------------------
 
 
-def select_vocabulary() -> str:
+def select_vocabulary(opts: CommandLineOptions, cfg: Config, app: QApplication) -> str:
     """The user can select between different databases with different vocabularies"""
-    select = SelectVocabulary()
-    return select.get_name()
+    select = SelectVocabulary(opts, cfg, app)
+    name = select.get_name()
+    if name is None:
+        raise SelectVocabularyException("No vocabulary name given")
+    return name
 
 
 def set_app_options(app: QApplication, cfg: Config) -> None:
@@ -1554,9 +1720,9 @@ def main() -> None:
     logging.basicConfig(level=logging.DEBUG)
     app = QApplication(sys.argv)
     # options = CommandLineOptions(app)
-    CommandLineOptions(app)
+    cmdline_opts = CommandLineOptions(app)
     config = Config()
-    voca_name = select_vocabulary()
+    voca_name = select_vocabulary(cmdline_opts, config, app)
     db = Database(config, voca_name)
     set_app_options(app, config)
     window = MainWindow(app, db, config)
