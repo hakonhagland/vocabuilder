@@ -85,11 +85,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.CommandLineException"><code class="docutils literal notranslate"><span class="pre">CommandLineException</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.CommandLineOptions"><code class="docutils literal notranslate"><span class="pre">CommandLineOptions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.CommandLineOptions"><code class="docutils literal notranslate"><span class="pre">CommandLineOptions</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.CommandLineOptions.get_database_name"><code class="docutils literal notranslate"><span class="pre">CommandLineOptions.get_database_name()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.Config"><code class="docutils literal notranslate"><span class="pre">Config</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Config.check_config_dir"><code class="docutils literal notranslate"><span class="pre">Config.check_config_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Config.check_correct_config_dir"><code class="docutils literal notranslate"><span class="pre">Config.check_correct_config_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Config.check_correct_data_dir"><code class="docutils literal notranslate"><span class="pre">Config.check_correct_data_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Config.config_fn"><code class="docutils literal notranslate"><span class="pre">Config.config_fn</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Config.dirlock_fn"><code class="docutils literal notranslate"><span class="pre">Config.dirlock_fn</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Config.get_config_dir"><code class="docutils literal notranslate"><span class="pre">Config.get_config_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Config.get_data_dir"><code class="docutils literal notranslate"><span class="pre">Config.get_data_dir()</span></code></a></li>
@@ -131,6 +135,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Database.maybe_create_backup_repo"><code class="docutils literal notranslate"><span class="pre">Database.maybe_create_backup_repo()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Database.maybe_create_db"><code class="docutils literal notranslate"><span class="pre">Database.maybe_create_db()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Database.read_database"><code class="docutils literal notranslate"><span class="pre">Database.read_database()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Database.update_active_vocabulary_info"><code class="docutils literal notranslate"><span class="pre">Database.update_active_vocabulary_info()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Database.update_dbfile_item"><code class="docutils literal notranslate"><span class="pre">Database.update_dbfile_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Database.update_item"><code class="docutils literal notranslate"><span class="pre">Database.update_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.Database.update_retest_value"><code class="docutils literal notranslate"><span class="pre">Database.update_retest_value()</span></code></a></li>
@@ -184,10 +189,24 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.QSelectItemScrollArea.update_items"><code class="docutils literal notranslate"><span class="pre">QSelectItemScrollArea.update_items()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary.get_name"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary.get_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectNewVocabularyName"><code class="docutils literal notranslate"><span class="pre">SelectNewVocabularyName</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.add_buttons"><code class="docutils literal notranslate"><span class="pre">SelectNewVocabularyName.add_buttons()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.add_info_label"><code class="docutils literal notranslate"><span class="pre">SelectNewVocabularyName.add_info_label()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.add_line_edit"><code class="docutils literal notranslate"><span class="pre">SelectNewVocabularyName.add_line_edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.cancel_button"><code class="docutils literal notranslate"><span class="pre">SelectNewVocabularyName.cancel_button()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.ok_button"><code class="docutils literal notranslate"><span class="pre">SelectNewVocabularyName.ok_button()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary.active_voca_info_fn"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary.active_voca_info_fn</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary.choose_most_recent"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary.choose_most_recent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary.find_existing_vocabularies"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary.find_existing_vocabularies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary.get_name"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary.get_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary.open_select_voca_window"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary.open_select_voca_window()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabulary.read_active_name"><code class="docutils literal notranslate"><span class="pre">SelectVocabulary.read_active_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.SelectVocabularyException"><code class="docutils literal notranslate"><span class="pre">SelectVocabularyException</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.vocabuilder.StringMixin"><code class="docutils literal notranslate"><span class="pre">StringMixin</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.vocabuilder.StringMixin.check_space_or_empty_str"><code class="docutils literal notranslate"><span class="pre">StringMixin.check_space_or_empty_str()</span></code></a></li>
 </ul>
@@ -411,6 +430,11 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <dt class="sig sig-object py" id="vocabuilder.vocabuilder.CommandLineOptions">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">CommandLineOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QApplication</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.vocabuilder.CommandLineOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.CommandLineOptions.get_database_name">
+<span class="sig-name descname"><span class="pre">get_database_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.CommandLineOptions.get_database_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -433,6 +457,11 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">check_correct_data_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lock_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.Config.check_correct_data_dir" title="Permalink to this definition"></a></dt>
 <dd><p>The data dir might be owned by another app with the same name</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.Config.config_fn">
+<span class="sig-name descname"><span class="pre">config_fn</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'config.ini'</span></em><a class="headerlink" href="#vocabuilder.vocabuilder.Config.config_fn" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="vocabuilder.vocabuilder.Config.dirlock_fn">
@@ -631,6 +660,11 @@ dates after year 2022)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.vocabuilder.Database.read_database">
 <span class="sig-name descname"><span class="pre">read_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.Database.read_database" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.Database.update_active_vocabulary_info">
+<span class="sig-name descname"><span class="pre">update_active_vocabulary_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.Database.update_active_vocabulary_info" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -861,14 +895,76 @@ database.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">SelectVocabulary</span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectNewVocabularyName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">SelectNewVocabularyName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vocabuilder.vocabuilder.Config" title="vocabuilder.vocabuilder.Config"><span class="pre">Config</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QApplication</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectNewVocabularyName" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code>, <a class="reference internal" href="#vocabuilder.vocabuilder.StringMixin" title="vocabuilder.vocabuilder.StringMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMixin</span></code></a>, <a class="reference internal" href="#vocabuilder.vocabuilder.WarningsMixin" title="vocabuilder.vocabuilder.WarningsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">WarningsMixin</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary.get_name">
-<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary.get_name" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectNewVocabularyName.add_buttons">
+<span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QGridLayout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.add_buttons" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectNewVocabularyName.add_info_label">
+<span class="sig-name descname"><span class="pre">add_info_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QGridLayout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.add_info_label" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectNewVocabularyName.add_line_edit">
+<span class="sig-name descname"><span class="pre">add_line_edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QGridLayout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.add_line_edit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectNewVocabularyName.cancel_button">
+<span class="sig-name descname"><span class="pre">cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.cancel_button" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectNewVocabularyName.ok_button">
+<span class="sig-name descname"><span class="pre">ok_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectNewVocabularyName.ok_button" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">SelectVocabulary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vocabuilder.vocabuilder.CommandLineOptions" title="vocabuilder.vocabuilder.CommandLineOptions"><span class="pre">CommandLineOptions</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vocabuilder.vocabuilder.Config" title="vocabuilder.vocabuilder.Config"><span class="pre">Config</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QApplication</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary.active_voca_info_fn">
+<span class="sig-name descname"><span class="pre">active_voca_info_fn</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'active_db.txt'</span></em><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary.active_voca_info_fn" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary.choose_most_recent">
+<span class="sig-name descname"><span class="pre">choose_most_recent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary.choose_most_recent" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary.find_existing_vocabularies">
+<span class="sig-name descname"><span class="pre">find_existing_vocabularies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary.find_existing_vocabularies" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary.get_name">
+<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary.get_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary.open_select_voca_window">
+<span class="sig-name descname"><span class="pre">open_select_voca_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QApplication</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary.open_select_voca_window" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabulary.read_active_name">
+<span class="sig-name descname"><span class="pre">read_active_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabulary.read_active_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="vocabuilder.vocabuilder.SelectVocabularyException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">SelectVocabularyException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.vocabuilder.SelectVocabularyException" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="py class">
@@ -1073,7 +1169,7 @@ picked at random, or should the user select the words from a list?</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vocabuilder.vocabuilder.select_vocabulary">
-<span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">select_vocabulary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.select_vocabulary" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">select_vocabulary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vocabuilder.vocabuilder.CommandLineOptions" title="vocabuilder.vocabuilder.CommandLineOptions"><span class="pre">CommandLineOptions</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vocabuilder.vocabuilder.Config" title="vocabuilder.vocabuilder.Config"><span class="pre">Config</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QApplication</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vocabuilder.vocabuilder.select_vocabulary" title="Permalink to this definition"></a></dt>
 <dd><p>The user can select between different databases with different vocabularies</p>
 </dd></dl>
 
