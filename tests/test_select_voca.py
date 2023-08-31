@@ -105,10 +105,13 @@ class TestGeneral:
         name = vocabuilder.vocabuilder.select_vocabulary(opts, cfg, app)
         assert name == retval
 
-    @pytest.mark.parametrize("valid_name", [True, False])
+    @pytest.mark.parametrize(
+        "valid_name, bad_char", [(True, False), (False, False), (False, True)]
+    )
     def test_select_name_window(
         self,
         valid_name: bool,
+        bad_char: bool,
         qapp: QApplication,
         config_object: Config,
         mocker: MockerFixture,
@@ -122,7 +125,7 @@ class TestGeneral:
         idx = win.button_names.index("&Ok")
         ok_button = win.buttons[idx]
         with qtbot.waitCallback() as callback:
-            if valid_name:
+            if not valid_name:
                 mocker.patch(
                     "vocabuilder.vocabuilder.WarningsMixin.display_warning",
                     callback,
@@ -130,8 +133,17 @@ class TestGeneral:
             else:
                 win.line_edit.setText("english-korean")
                 mocker.patch.object(app, "exit", callback)
+            if bad_char:
+                win.line_edit.setText("english/korean")
             ok_button.click()
-        assert True
+        if not valid_name:
+            msg = callback.args[1]
+            if bad_char:
+                assert re.search("cannot contain slashes", msg)
+            else:
+                assert re.search("name is empty", msg)
+        else:
+            assert True
 
     def test_select_name_window_cancel(
         self,

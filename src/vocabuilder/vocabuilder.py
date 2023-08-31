@@ -9,6 +9,7 @@ import platform  # determine os name
 
 # import pdb
 import random
+import re
 import shutil
 import sys
 import time
@@ -1327,6 +1328,7 @@ class SelectNewVocabularyName(QMainWindow, StringMixin, WarningsMixin):
         layout.addWidget(label, vpos, 0)
         self.line_edit = QLineEdit()
         layout.addWidget(self.line_edit, vpos, 1)
+        self.line_edit.returnPressed.connect(self.ok_button)
         vpos += 1
         return vpos
 
@@ -1356,6 +1358,13 @@ class SelectNewVocabularyName(QMainWindow, StringMixin, WarningsMixin):
                 self, "Vocabulary name is empty! Please select a valid name"
             )
             return
+        elif not self.validate_name(name):
+            self.display_warning(
+                self,
+                "The vocabulary name cannot contain slashes, quotes or spaces. "
+                "Please select a valid name",
+            )
+            return
         else:
             self.name = name
             self.close()
@@ -1365,6 +1374,11 @@ class SelectNewVocabularyName(QMainWindow, StringMixin, WarningsMixin):
         self.name = None
         self.close()
         self.app.exit()
+
+    def validate_name(self, name: str) -> bool:
+        if re.search(r"[\\/\"\']|\s", name):
+            return False
+        return True
 
 
 class TermStatus:
