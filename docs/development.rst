@@ -27,3 +27,6 @@ To set up an environment for developing and submitting a pull request, you could
    * run ``poetry shell`` to activate the virtual environment
    * run ``pytest`` to run the test suite
    * run ``pre-commit install`` to install the pre-commit hooks
+   * run ``make coverage`` to run unit tests and generate coverage report
+   * run ``make docker-image`` to build docker image
+   * run ``make run-docker-image`` to run the docker image
