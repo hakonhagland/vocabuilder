@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -84,12 +84,12 @@
            <div itemprop="articleBody">
              
   <section id="suggesting-changes-to-the-code">
-<h1>Suggesting changes to the code<a class="headerlink" href="#suggesting-changes-to-the-code" title="Permalink to this heading"></a></h1>
+<h1>Suggesting changes to the code<a class="headerlink" href="#suggesting-changes-to-the-code" title="Link to this heading"></a></h1>
 <p>Suggestions for improvements are very welcome. Please use the
 <a class="reference external" href="https://github.com/hakonhagland/vocabuilder/issues">GitHub issue tracker</a> or submit
 a pull request!</p>
 <section id="pull-request">
-<h2>Pull request<a class="headerlink" href="#pull-request" title="Permalink to this heading"></a></h2>
+<h2>Pull request<a class="headerlink" href="#pull-request" title="Link to this heading"></a></h2>
 <p>To set up an environment for developing and submitting a pull request, you could:</p>
 <ul class="simple">
 <li><p>Install pyenv</p></li>
@@ -116,6 +116,7 @@ a pull request!</p>
 <li><dl class="simple">
 <dt>Then, from the root directory of this repository:</dt><dd><ul>
 <li><p>run <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span></code> to install dependencies into a virtual environment</p></li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span> <span class="pre">--all-extras</span></code> to install the sphinx extras for documentation</p></li>
 <li><p>run <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">shell</span></code> to activate the virtual environment</p></li>
 <li><p>run <code class="docutils literal notranslate"><span class="pre">pytest</span></code> to run the test suite</p></li>
 <li><p>run <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code> to install the pre-commit hooks</p></li>
