@@ -31,7 +31,7 @@ from types import TracebackType
 import git
 import platformdirs
 from PyQt6 import QtGui
-from PyQt6.QtCore import Qt, QCommandLineParser
+from PyQt6.QtCore import Qt, QCommandLineParser, QSize
 from PyQt6.QtGui import QIntValidator, QKeyEvent, QMouseEvent
 from PyQt6.QtWidgets import (
     QApplication,
@@ -733,6 +733,9 @@ class Database(TimeMixin):
         assert isinstance(term2, str)
         return term2
 
+    def get_voca_name(self) -> str:
+        return self.voca_name
+
     def item_to_string(self, item: DatabaseRow) -> str:
         return (
             f"term1 = '{item[self.header.term1]}', "
@@ -866,17 +869,26 @@ class MainWindow(QMainWindow, WarningsMixin):
         self.resize(330, 200)
         self.setWindowTitle("VocaBuilder")
         layout = QGridLayout()
-        self.add_buttons(layout)
+        vpos = 0
+        vpos = self.add_database_info_label(layout, vpos)
+        self.add_buttons(layout, vpos)
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-    def add_buttons(self, layout: QGridLayout) -> None:
+    def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         self.buttons = []
         names = ["Add", "Modify", "Test", "Delete", "View", "Backup"]
         # NOTE: this dict is used only for testing purposes
         self.button_names = {names[i]: i for i in range(len(names))}
-        positions = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
+        positions = [
+            (vpos, 0),
+            (vpos, 1),
+            (vpos, 2),
+            (vpos + 1, 0),
+            (vpos + 1, 1),
+            (vpos + 1, 2),
+        ]
         callbacks = [
             self.add_new_entry,
             self.modify_entry,
@@ -897,6 +909,18 @@ class MainWindow(QMainWindow, WarningsMixin):
             callback = typing.cast(Callable[[], None], callbacks[i])
             button.clicked.connect(callback)
             layout.addWidget(button, *positions[i])
+        return vpos + 2
+
+    def add_database_info_label(self, layout: QGridLayout, vpos: int) -> int:
+        name = self.db.get_voca_name()
+        color = self.config.config["FontColor"]["Red"]
+        label = QGridMinimalLabel(
+            f"Vocabulary: <span style='color: {color};'>{name}</span>"
+        )
+        label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
+        layout.addWidget(label, vpos, 0, 1, 3)
+        layout.setRowStretch(vpos, 0)
+        return vpos + 1
 
     def add_new_entry(self) -> AddWindow:
         return AddWindow(self)
@@ -1164,6 +1188,14 @@ class QLabelClickable(QLabel):
             if self.clicked_callback is not None:
                 self.clicked_callback()
             return super().mousePressEvent(ev)
+
+
+class QGridMinimalLabel(QLabel):
+    def __init__(self, text: str, parent: QWidget | None = None):
+        super().__init__(text, parent)
+
+    def sizeHint(self) -> QSize:
+        return QSize(-1, 15)
 
 
 class QSelectItemScrollArea(QScrollArea):
