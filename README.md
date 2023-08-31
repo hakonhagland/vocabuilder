@@ -10,26 +10,3 @@
 ## Documentation
 
 See [hakonhagland.github.io/vocabuilder](https://hakonhagland.github.io/vocabuilder/)
-
-## Synchronization with firebase
-
-- If you use this script from serveral devices with the same firebase database,
-    - Data is only synchronized (downloaded) with firebase database at app startup
-      or when explicitly requested
-- Data is uploaded continuously (each time something in the database is modified locally)
-
-## Install
-
-For a development install in virtual environment:
-
-- Install pyenv
-- Install the python versions listed in [.python_version](.python-version) with pyenv
-- Install poetry : Run : `curl -sSL https://install.python-poetry.org | python3 -`
-- On macOS: update PATH environment variable in your `~/.zshrc` init file:
-`export PATH="/Users/hakonhaegland/.local/bin:$PATH"` such that zsh can find the poetry command
-- On windows: update PATH ...
-
-From the root directory of this repository:
-- Run `poetry install` to install dependencies into a virtual environment
-- Run `poetry shell` to activate the virtual environment
-- Run `pytest` to run the test suite
