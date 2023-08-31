@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usage &mdash; vocabuilder 0.1 documentation</title>
+  <title>Suggesting changes to the code &mdash; vocabuilder 0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Configuration" href="configuration.html" />
-    <link rel="prev" title="Introduction" href="introduction.html" /> 
+    <link rel="prev" title="Source code" href="source.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,11 +44,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#running">Running</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shortcuts.html">Keyboard shortcuts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input.html">Foreign language input</a></li>
@@ -57,7 +52,10 @@
 <li class="toctree-l1"><a class="reference internal" href="backup.html">Creating backup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="macos.html">MacOS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source.html">Source code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pull-request">Pull request</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -74,9 +72,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Usage</li>
+      <li class="breadcrumb-item active">Suggesting changes to the code</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/hakonhagland/vocabuilder/blob/master/docs/usage.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/hakonhagland/vocabuilder/blob/master/docs/development.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -84,44 +82,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
-<p>To install the vocabuilder script:</p>
+  <section id="suggesting-changes-to-the-code">
+<h1>Suggesting changes to the code<a class="headerlink" href="#suggesting-changes-to-the-code" title="Permalink to this heading"></a></h1>
+<p>Suggestions for improvements are very welcome. Please use the
+<a class="reference external" href="https://github.com/hakonhagland/vocabuilder/issues">GitHub issue tracker</a> or submit
+a pull request!</p>
+<section id="pull-request">
+<h2>Pull request<a class="headerlink" href="#pull-request" title="Permalink to this heading"></a></h2>
+<p>To set up an environment for developing and submitting a pull request, you could:</p>
 <ul class="simple">
-<li><p>Ensure that you have Python version 3.10 or higher</p></li>
-<li><p>Download the git source:</p></li>
+<li><p>Install pyenv</p></li>
+<li><p>Install the python versions listed in [.python_version](.python-version) with pyenv</p></li>
+<li><dl class="simple">
+<dt>On Linux and MacOs:</dt><dd><ul>
+<li><p>Install poetry : Run : <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-sSL</span> <span class="pre">https://install.python-poetry.org</span> <span class="pre">|</span> <span class="pre">python3</span> <span class="pre">-</span></code></p></li>
+<li><p>On macOS: update PATH environment variable in your <cite>~/.zshrc</cite> init file:
+<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=&quot;/Users/username/.local/bin:$PATH&quot;</span></code> such that zsh can find the <code class="docutils literal notranslate"><span class="pre">poetry</span></code> command</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="o">=</span><span class="m">1</span><span class="w"> </span>https://github.com/hakonhagland/vocabuilder.git
-$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>vocabuilder
-$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv<span class="w">  </span><span class="c1"># optionally create venv</span>
-$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>On Windows (powershell) type <code class="docutils literal notranslate"><span class="pre">.\.venv\Scripts\Activate.ps1</span></code> to activate the venv</p>
-</div>
-</section>
-<section id="running">
-<h2>Running<a class="headerlink" href="#running" title="Permalink to this heading"></a></h2>
-<p>In the terminal window type:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>vocabuilder
-</pre></div>
-</div>
-<p>This will present you with a dialog window to enter the name of the new vocabulary to create.
-For example, if you are an english speaking person and plan to learn korean you could call
-it “english-korean”.</p>
-<p>An alternative is to provide the name on the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>vocabuilder<span class="w"> </span>english-korean
-</pre></div>
-</div>
-<p>If you exit the app, it will remember the last used vocabulary name, so you do not have to
-specify it on the command line the next time.</p>
-<p>If you want to work on more than one vocabulary, you can create a new one by specifying a
-different name on the command line.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>On Windows (powershell):</dt><dd><ul>
+<li><p>Install poetry :
+<code class="docutils literal notranslate"><span class="pre">(Invoke-WebRequest</span> <span class="pre">-Uri</span> <span class="pre">https://install.python-poetry.org</span> <span class="pre">-UseBasicParsing).Content</span> <span class="pre">|</span> <span class="pre">py</span> <span class="pre">-</span></code></p></li>
+<li><p>update <code class="docutils literal notranslate"><span class="pre">PATH</span></code> to include the install folder, e.g.
+<code class="docutils literal notranslate"><span class="pre">C:\Users\username\AppData\Roaming\Python\Scripts</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Then, from the root directory of this repository:</dt><dd><ul>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span></code> to install dependencies into a virtual environment</p></li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">shell</span></code> to activate the virtual environment</p></li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">pytest</span></code> to run the test suite</p></li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code> to install the pre-commit hooks</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </section>
 </section>
 
@@ -129,8 +130,7 @@ different name on the command line.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="source.html" class="btn btn-neutral float-left" title="Source code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

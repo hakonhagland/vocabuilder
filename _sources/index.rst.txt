@@ -19,6 +19,7 @@ Welcome to vocabuilder's documentation!
     backup
     macos
     source
+    Development <development>
 
 Indices and tables
 ==================
