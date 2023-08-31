@@ -24,6 +24,7 @@ To set up an environment for developing and submitting a pull request, you could
 
 * Then, from the root directory of this repository:
    * run ``poetry install`` to install dependencies into a virtual environment
+   * run ``poetry install --all-extras`` to install the sphinx extras for documentation
    * run ``poetry shell`` to activate the virtual environment
    * run ``pytest`` to run the test suite
    * run ``pre-commit install`` to install the pre-commit hooks

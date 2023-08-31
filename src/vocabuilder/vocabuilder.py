@@ -205,6 +205,9 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         self.open()
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
+        """Adds the button widgets.
+        :param layout:
+        """
         self.buttons = []
         self.button_names = ["&Add", "&Ok", "&Cancel"]
         positions = [(vpos, 0), (vpos, 1), (vpos, 2)]

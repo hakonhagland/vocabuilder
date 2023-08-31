@@ -16,7 +16,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath("../src"))
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage", "sphinx_autodoc_typehints"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
