@@ -17,6 +17,10 @@ To install the vocabuilder script:
     $ source .venv/bin/activate
     $ pip install .
 
+.. note::
+    On Windows (powershell) type ``.\.venv\Scripts\Activate.ps1`` to activate the venv
+
+
 Running
 -------
 
