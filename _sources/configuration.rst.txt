@@ -1,7 +1,8 @@
 Configuration
 =============
 
-The configuration file is named ``config.ini`` and is located in ``user_config_dir`` as defined
+The configuration file is named ``config.ini`` and is located in sub directory
+``vocabuilder`` inside directory ``user_config_dir`` as defined
 by the `platformdirs <https://pypi.org/project/platformdirs/>`_ package.
 
 The syntax is described in the documentation for the
