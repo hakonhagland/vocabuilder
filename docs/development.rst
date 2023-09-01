@@ -11,7 +11,8 @@ Pull request
 To set up an environment for developing and submitting a pull request, you could:
 
 * Install pyenv
-* Install the python versions listed in [.python_version](.python-version) with pyenv
+* Install the python versions listed in
+  `.python_version <https://github.com/hakonhagland/vocabuilder/blob/main/.python-version>`_ with pyenv
 * On Linux and MacOs:
    * Install poetry : Run : ``curl -sSL https://install.python-poetry.org | python3 -``
    * On macOS: update PATH environment variable in your `~/.zshrc` init file:
