@@ -11,6 +11,7 @@ Welcome to vocabuilder's documentation!
     :caption: Contents:
 
     introduction
+    installation
     usage
     configuration
     shortcuts

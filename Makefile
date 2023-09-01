@@ -2,7 +2,7 @@
 ROOT := $(shell pwd)
 DOCKERDIR := $(ROOT)/docker
 
-.PHONY: docker-image run-docker-image coverage
+.PHONY: docker-image run-docker-image coverage docs
 
 docker-image:
 	docker build -t python-vocabuilder $(DOCKERDIR)
@@ -13,3 +13,6 @@ run-docker-image:
 coverage:
 	coverage run -m pytest tests
 	coverage report -m
+
+docs:
+	cd "$(ROOT)"/docs && make html
