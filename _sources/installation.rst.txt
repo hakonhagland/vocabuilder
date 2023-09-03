@@ -7,6 +7,7 @@ From PyPI
 ---------
 
 .. code-block:: bash
+
     $ pip install vocabuilder
 
 
