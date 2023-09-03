@@ -71,7 +71,7 @@ class TestModifyItem:
             )
             ok_button.click()
         msg = callback.args[1]
-        assert re.search(r"Term1 does not exist", msg)
+        assert re.search(r"Term1 is not a member of the list", msg)
 
     def test_valid(
         self,
@@ -86,7 +86,7 @@ class TestModifyItem:
         ok_button = dialog.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.ModifyWindow2.open",
+                "vocabuilder.vocabuilder.ModifyWindow.open",
                 callback,
             )
             ok_button.click()

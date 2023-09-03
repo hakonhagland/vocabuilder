@@ -1,10 +1,11 @@
 # import re
 # import logging
 import pytest
+import typing
 from pytest_mock.plugin import MockerFixture
 
 from PyQt6.QtCore import Qt
-from vocabuilder.vocabuilder import MainWindow
+from vocabuilder.vocabuilder import MainWindow, SelectWordFromList
 from vocabuilder.vocabuilder import (
     TestWindow as _TestWindow,
 )  # Cannot start with "Test"
@@ -72,6 +73,94 @@ class TestGeneral:
                 testwin.params.random_button.setAutoExclusive(True)
             testwin.params.buttons[idx].click()
         assert True
+
+    def test_main_dialog2(
+        self,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+    ) -> None:
+        window = main_window
+        with qtbot.waitCallback() as callback:
+            testwin = window.run_test()
+
+            def gen_wrapper() -> Callable[[], None]:
+                # original_method = _TestWindow.main_dialog
+                original_method = testwin.main_dialog2
+                _self = testwin
+
+                def wrapper(*args: Any, **kwargs: Any) -> None:
+                    original_method(*args, **kwargs)
+                    callback(_self, *args, **kwargs)
+
+                return wrapper
+
+            wrapper = gen_wrapper()
+            # TODO: See comment for test_main_dialog()
+            testwin.main_dialog2 = wrapper  # type: ignore
+            idx = testwin.params.button_names.index("&Ok")
+            testwin.params.lang1to2_button.setAutoExclusive(False)
+            testwin.params.lang1to2_button.setChecked(False)
+            testwin.params.lang2to1_button.setChecked(True)
+            testwin.params.lang1to2_button.setAutoExclusive(True)
+            testwin.params.buttons[idx].click()
+        assert True
+
+    @pytest.mark.parametrize("valid_pair", [True, False])
+    def test_select_from_list(
+        self,
+        valid_pair: bool,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+    ) -> None:
+        window = main_window
+        dialog: SelectWordFromList | None = None
+        callback3: Callable[[tuple[str, str]], None] | None = None
+        with qtbot.waitCallback() as callback:
+            testwin = window.run_test()
+            if not valid_pair:
+                mocker.patch.object(
+                    testwin.db,
+                    "get_pairs_exceeding_test_delay",
+                    return_value=[],
+                )
+
+            def gen_wrapper() -> Callable[[], None]:
+                # original_method = _TestWindow.main_dialog
+                original_method = testwin.choose_word_from_list
+                _self = testwin
+
+                def wrapper(*args: Any, **kwargs: Any) -> None:
+                    nonlocal dialog
+                    nonlocal callback3
+                    callback3 = kwargs["callback"]
+                    dialog = original_method(*args, **kwargs)
+                    callback(_self, *args, **kwargs)
+
+                return wrapper
+
+            wrapper = gen_wrapper()
+            # TODO: See comment for test_main_dialog()
+            testwin.choose_word_from_list = wrapper  # type: ignore
+            idx = testwin.params.button_names.index("&Ok")
+            testwin.params.random_button.setAutoExclusive(False)
+            testwin.params.random_button.setChecked(False)
+            testwin.params.choose_from_list_button.setChecked(True)
+            testwin.params.random_button.setAutoExclusive(True)
+            testwin.params.buttons[idx].click()
+        if dialog is not None:
+            dialog.edits[dialog.header.term1].setText("apple")
+            idx = dialog.button_names.index("&Ok")
+            ok_button = dialog.buttons[idx]
+            with qtbot.waitCallback() as callback2:
+                dialog.ok_action = callback2
+                ok_button.click()
+            pair = callback2.args[0]
+            assert len(pair) == 2
+            assert pair[1] == "사과"
+            callback3 = typing.cast(Callable[[tuple[str, str]], None], callback3)
+            callback3(pair)
 
     def test_done_button(
         self,

@@ -121,6 +121,18 @@ class WarningsMixin:
         return mbox
 
     @staticmethod
+    def display_warning_no_terms(
+        parent: QWidget, callback: Callable[[], None] | None = None
+    ) -> QMessageBox:
+        return WarningsMixin.display_warning(
+            parent,
+            "No terms ready for practice today!\n"
+            "That is: no terms with expired date left in database\n"
+            "Note: You can override the date check in the settings menu.",
+            callback,
+        )
+
+    @staticmethod
     def display_warning_callback(
         mbox: QMessageBox, msg: str
     ) -> None:  # pragma: no cover
@@ -951,8 +963,26 @@ class MainWindow(QMainWindow, WarningsMixin):
             if (event is not None) and event.key() == key:
                 callbacks[i]()
 
-    def modify_entry(self) -> ModifyWindow1:
-        return ModifyWindow1(self)
+    def modify_entry(self) -> SelectWordFromList:
+        """Modify/edit the translation of an existing term1 (and/or its translation)
+        and update the database. Then, ask for a another term to modify. Continue
+        the above procedure of modifying terms until the user clicks the cancel
+        button"""
+
+        def callback(pair: tuple[str, str]) -> None:
+            word = pair[0]
+            ModifyWindow(self, word, self.config, self.db)
+
+        win_title = "Choose item to modify"
+        self.items = self.db.get_term1_list()
+
+        def get_pair_callback(word: str, idx: int) -> tuple[str, str]:
+            return word, self.db.get_term2(word)
+
+        dialog = SelectWordFromList(
+            self, self.config, win_title, self.items, callback, get_pair_callback
+        )
+        return dialog
 
     def quit(self) -> None:
         self.app.quit()
@@ -965,122 +995,20 @@ class MainWindow(QMainWindow, WarningsMixin):
         return mbox
 
 
-class ModifyWindow1(QDialog, WarningsMixin, StringMixin):
-    """Modify/edit the translation of an existing term1 (and/or its translation) and update the
-    database. Then, ask for a another term to modify. Continue the above
-    procedure of modifying terms until the user clicks the cancel button"""
-
-    def __init__(self, parent: "MainWindow"):
-        super().__init__(parent)  # make dialog modal
-        # NOTE: using double underscore "__parent" to avoid confilict with "parent"
-        #      method in a parent class
-        self.__parent = parent
-        self.config = parent.config
-        self.header = CsvDatabaseHeader()
-        self.button_config = self.config.config["Buttons"]
-        self.window_config = self.config.config["ModifyWindow1"]
-        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
-        self.setWindowTitle("Choose item to modify")
-        self.edits: dict[str, QLineEdit] = {}
-        layout = QGridLayout()
-        vpos = 0
-        self.add_scroll_area(layout, vpos)
-        vpos += 1
-        vpos = self.add_line_edit(layout, vpos)
-        self.add_buttons(layout, vpos)
-        self.setLayout(layout)
-        self.open()
-
-    def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
-        self.buttons = []
-        self.button_names = ["&Ok", "&Cancel"]
-        positions = [(vpos, 0), (vpos, 2)]
-        callbacks = [self.ok_button, self.cancel_button]
-
-        for i, name in enumerate(self.button_names):
-            button = QPushButton(name, self)
-            self.buttons.append(button)
-            button.setMinimumWidth(int(self.button_config["MinWidth"]))
-            button.setMinimumHeight(int(self.button_config["MinHeight"]))
-            button.clicked.connect(callbacks[i])
-            layout.addWidget(button, *positions[i], 1, 2)
-        return vpos + 1
-
-    def add_line_edit(self, layout: QGridLayout, vpos: int) -> int:
-        large = self.config.config["FontSize"]["Large"]
-        descriptions = ["Term1:"]
-        fontsizes = [large]
-        names = [self.header.term1]
-        callbacks = [self.update_scroll_area_items]
-        for i, desc in enumerate(descriptions):
-            label = QLabel(desc)
-            layout.addWidget(label, vpos, 0)
-            edit = QLineEdit(self)
-            if fontsizes[i] is not None:
-                edit.setStyleSheet(f"QLineEdit {{font-size: {fontsizes[i]};}}")
-            if callbacks[i] is not None:
-                edit.textChanged.connect(callbacks[i])
-            self.edits[names[i]] = edit
-            layout.addWidget(edit, vpos, 1, 1, 3)
-            vpos += 1
-        return vpos
-
-    def add_scroll_area(self, layout: QGridLayout, vpos: int) -> None:
-        items = self.get_db().get_term1_list()
-
-        def callback(text: str) -> None:
-            self.edits[self.header.term1].setText(text)
-
-        self.scrollarea = QSelectItemScrollArea(items=items, select_callback=callback)
-        layout.addWidget(self.scrollarea, vpos, 0, 1, 4)
-        return
-
-    def cancel_button(self) -> None:
-        self.done(1)
-
-    def get_db(self) -> Database:
-        return self.__parent.db
-
-    def keyPressEvent(self, event: QKeyEvent | None) -> None:
-        # print(f"key code: {event.key()}, text: {event.text()}")
-        if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
-            self.done(1)
-
-    def modify_item(self) -> bool:
-        term1 = self.edits[self.header.term1].text()
-        if self.check_space_or_empty_str(term1):
-            self.display_warning(self, "Term1 is empty")
-            return False
-        if not self.get_db().check_term1_exists(term1):
-            self.display_warning(self, "Term1 does not exist in database")
-            return False
-        ModifyWindow2(self, term1, self.__parent.db)
-        return True
-
-    def ok_button(self) -> None:
-        self.modify_item()
-
-    def update_scroll_area_items(self, text: str) -> None:
-        self.scrollarea.update_items(text)
-
-
-class ModifyWindow2(QDialog, WarningsMixin, StringMixin):
+class ModifyWindow(QDialog, WarningsMixin, StringMixin):
     """Modify/edit the translation of an existing term1 (and/or its translation) and update the
     database.
     """
 
-    def __init__(self, parent: ModifyWindow1, term1: str, database: Database):
+    def __init__(self, parent: QWidget, term1: str, config: Config, database: Database):
         super().__init__(parent)  # make dialog modal
-        # NOTE: using double underscore "__parent" to avoid confilict with "parent"
-        #      method in a parent class
-        self.__parent = parent
         self.term1 = term1
         self.db = database
         self.header = CsvDatabaseHeader()
         self.term2 = self.db.get_term2(self.term1)
-        self.config = self.__parent.config
+        self.config = config
         self.button_config = self.config.config["Buttons"]
-        self.window_config = self.config.config["ModifyWindow2"]
+        self.window_config = self.config.config["ModifyWindow"]
         # NOTE: resize(.., -1) means: let QT figure out the optimal height of the window
         self.resize(int(self.window_config["Width"]), -1)
         self.setWindowTitle("Modify item")
@@ -1285,7 +1213,6 @@ class SelectVocabulary:
         db_dir = self.cfg.get_data_dir() / Database.database_dir
         current_mtime = 0
         candidate = None
-        logging.info("choose most recent..")
         for name in self.existing_vocabularies:
             dbfile = db_dir / name / Database.database_fn
             mtime = dbfile.stat().st_mtime
@@ -1416,6 +1343,129 @@ class SelectNewVocabularyName(QMainWindow, StringMixin, WarningsMixin):
         return True
 
 
+class SelectWordFromList(QDialog, StringMixin, WarningsMixin):
+    def __init__(
+        self,
+        parent: QWidget,
+        config: Config,
+        win_title: str,
+        words: list[str],
+        callback: Callable[[tuple[str, str]], None],
+        get_pair_callback: Callable[[str, int], tuple[str, str]],
+    ) -> None:
+        """Dialog that lets the user select a word from a list of words.
+
+        :param words: The list of candidate words
+
+        :param callback: If the user selects a word, the callback is called to
+        continue execution. The callback is given as an argument a pair of
+        words. The first item of the pair is the selected word, the seconds item
+        of the pair is determined by calling the ``get_pair_callback()`` function
+
+        :param get_pair_callback: The callback is given the selected word and its
+        index into the ``words`` array, and is expected to produce a pair of words
+        as its return value"""
+        super().__init__(parent)
+        self.config = config
+        self.words = words
+        self.ok_action = callback
+        self.get_pair_callback = get_pair_callback
+        self.button_config = self.config.config["Buttons"]
+        self.window_config = self.config.config["SelectWordFromListWindow"]
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
+        self.setWindowTitle(win_title)
+        self.header = CsvDatabaseHeader()
+        self.edits: dict[str, QLineEdit] = {}
+        layout = QGridLayout()
+        vpos = 0
+        self.add_scroll_area(layout, vpos)
+        vpos += 1
+        vpos = self.add_line_edit(layout, vpos)
+        self.add_buttons(layout, vpos)
+        self.setLayout(layout)
+        self.open()
+
+    def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
+        self.buttons = []
+        self.button_names = ["&Ok", "&Cancel"]
+        positions = [(vpos, 0), (vpos, 2)]
+        callbacks = [self.ok_button, self.cancel_button]
+
+        for i, name in enumerate(self.button_names):
+            button = QPushButton(name, self)
+            self.buttons.append(button)
+            button.setMinimumWidth(int(self.button_config["MinWidth"]))
+            button.setMinimumHeight(int(self.button_config["MinHeight"]))
+            button.clicked.connect(callbacks[i])
+            layout.addWidget(button, *positions[i], 1, 2)
+        return vpos + 1
+
+    def add_line_edit(self, layout: QGridLayout, vpos: int) -> int:
+        large = self.config.config["FontSize"]["Large"]
+        descriptions = ["Term1:"]
+        fontsizes = [large]
+        names = [self.header.term1]
+        callbacks = [self.update_scroll_area_items]
+        for i, desc in enumerate(descriptions):
+            label = QLabel(desc)
+            layout.addWidget(label, vpos, 0)
+            edit = QLineEdit(self)
+            if fontsizes[i] is not None:
+                edit.setStyleSheet(f"QLineEdit {{font-size: {fontsizes[i]};}}")
+            if callbacks[i] is not None:
+                edit.textChanged.connect(callbacks[i])
+            self.edits[names[i]] = edit
+            layout.addWidget(edit, vpos, 1, 1, 3)
+            vpos += 1
+        return vpos
+
+    def add_scroll_area(self, layout: QGridLayout, vpos: int) -> None:
+        def callback(text: str) -> None:
+            self.edits[self.header.term1].setText(text)
+
+        self.scrollarea = QSelectItemScrollArea(
+            items=self.words, select_callback=callback
+        )
+        layout.addWidget(self.scrollarea, vpos, 0, 1, 4)
+        return
+
+    def cancel_button(self) -> None:
+        self.done(1)
+
+    def check_term_in_list(self, term: str) -> bool:
+        try:
+            self.words.index(term)
+        except ValueError:
+            return False
+        return True
+
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:
+        # print(f"key code: {event.key()}, text: {event.text()}")
+        if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
+            self.done(1)
+
+    def ok_button(self) -> None:
+        term1 = self.edits[self.header.term1].text()
+        if self.check_space_or_empty_str(term1):
+            self.display_warning(self, "Term1 is empty")
+            return
+        if not self.check_term_in_list(term1):
+            self.display_warning(
+                self,
+                "Term1 is not a member of the list.\n"
+                "Please choose an item from the list",
+            )
+            return
+        self.edits[self.header.term1].setText("")
+        # self.done(0)
+        idx = self.words.index(term1)
+        pair = (self.get_pair_callback)(term1, idx)
+        self.ok_action(pair)
+
+    def update_scroll_area_items(self, text: str) -> None:
+        self.scrollarea.update_items(text)
+
+
 class TermStatus:
     """Has this term been deleted from the database?"""
 
@@ -1443,10 +1493,8 @@ class TestMethod:
 
 class TestWindow(QDialog, WarningsMixin):
     def __init__(self, parent: MainWindow):
-        super().__init__(parent)  # make dialog modal
-        # NOTE: using double underscore "__parent" to avoid confilict with "parent"
-        #      method in a parent class
-        self.__parent = parent
+        super().__init__(parent)
+        self.db = parent.db
         self.config = parent.config
         self.window_config = self.config.config["TestWindow"]
         # NOTE: This complicated approach with callback is mainly done to make it easier
@@ -1580,26 +1628,78 @@ class TestWindow(QDialog, WarningsMixin):
         hpos = i % 3
         grid.addWidget(radio, vpos + 1, hpos)
 
-    def assign_terms_to_practice(self) -> bool:
-        pair = self.__parent.db.get_random_pair()
-        if pair is None:
-            self.display_warning(self, "No terms ready for practice today!")
-            self.done(1)
-            return False
-        term1, term2 = pair
-        self.term1 = term1
-        self.term2 = term2
-        if self.params.test_direction == TestDirection._1to2:
-            self.lang1_term = self.term1
-            self.lang2_term = self.term2
+    def assign_terms_to_practice(  # type: ignore
+        self, callback: Callable[[], None] | Callable[[], TestWindow]
+    ) -> None | TestWindow:
+        """Determine the term to practice, either from a list of words, or select
+        a word randomly.
+
+        :param callback: called to continue execution after
+        the term to practice has been determined. Note that the callback is needed
+        since a non-blocking dialog will be opened if the term is selected from a list.
+        """
+
+        def callback2(pair: tuple[str, str] | None) -> None:
+            if pair is None:
+                self.display_warning_no_terms(self)
+                self.done(1)
+                return
+            term1, term2 = pair
+            self.term1 = term1
+            self.term2 = term2
+            if self.params.test_direction == TestDirection._1to2:
+                self.lang1_term = self.term1
+                self.lang2_term = self.term2
+            else:
+                self.lang1_term = self.term2
+                self.lang2_term = self.term1
+            callback()  # continue execution, see main_dialog2()
+
+        if self.params.test_method == TestMethod.List:
+            self.choose_word_from_list(callback=callback2)
         else:
-            self.lang1_term = self.term2
-            self.lang2_term = self.term1
-        return True
+            pair = self.db.get_random_pair()
+            callback2(pair)
+
+    def choose_word_from_list(
+        self,
+        callback: Callable[[tuple[str, str]], None],
+    ) -> SelectWordFromList | None:
+        """Choose a word to practice from a dialog showing a list of all words
+        available for practice.
+
+        :param callback: Callback to be called to continue execution after the
+        the user has selected a word from the non-blocking dialog
+
+        """
+        pairs = self.db.get_pairs_exceeding_test_delay()
+        if len(pairs) > 0:
+            if self.params.test_direction == TestDirection._1to2:
+                idx1 = 0
+                idx2 = 1
+            else:
+                idx1 = 1
+                idx2 = 0
+            words = [item[idx1] for item in pairs]
+
+            def get_pair(word: str, idx: int) -> tuple[str, str]:
+                """given a word and an index, recover the pair of words to be
+                practiced"""
+                return word, pairs[idx][idx2]
+
+            # NOTE: it is assumed that callback function holds a reference to
+            #       self, such that self will not be garbage collected until
+            #       the callback is done
+            title = "Select word to practice"
+            return SelectWordFromList(
+                self, self.config, title, words, callback, get_pair
+            )
+        self.display_warning_no_terms(self)
+        return None
 
     def done_button_clicked(self) -> None:
         delay = self.delay_edit.text()
-        self.__parent.db.update_retest_value(self.term1, int(delay))
+        self.db.update_retest_value(self.term1, int(delay))
         self.done(0)
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
@@ -1607,11 +1707,20 @@ class TestWindow(QDialog, WarningsMixin):
         if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.done(1)
 
-    def main_dialog(self) -> TestWindow | None:
+    def main_dialog(self) -> None:
+        """Callback: Called after the test parameters has been chosen from the
+        TestWindowChooseParameters dialog"""
         if self.params.cancelled:
             return None
-        if not self.assign_terms_to_practice():
-            return None
+        # NOTE: asssign_terms_to_practice() might open a new dialog window, so
+        #   we need to pass it a callback such that execution can be continued
+        #   in main_dialog2() at a later time. (We are using these nonblocking
+        #   dialogs because it makes it easier to write unit tests)
+        self.assign_terms_to_practice(callback=self.main_dialog2)
+
+    def main_dialog2(self) -> TestWindow:
+        """Callback: Called after the current pair of words to practice has been
+        assigned"""
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Practice term/phrase/word")
         layout = QGridLayout()
@@ -1628,14 +1737,16 @@ class TestWindow(QDialog, WarningsMixin):
 
     def next_button_clicked(self) -> None:
         delay = self.delay_edit.text()
-        self.__parent.db.update_retest_value(self.term1, int(delay))
-        if not self.assign_terms_to_practice():
-            return None
-        self.term1_label.setText(self.lang1_term)
-        self.hidden_label.setText(self.config.config["Practice"]["HiddenText"])
-        self.hidden_toggle = True
-        self.user_edit.setText("")
-        self.user_edit.setFocus()
+        self.db.update_retest_value(self.term1, int(delay))
+
+        def callback() -> None:
+            self.term1_label.setText(self.lang1_term)
+            self.hidden_label.setText(self.config.config["Practice"]["HiddenText"])
+            self.hidden_toggle = True
+            self.user_edit.setText("")
+            self.user_edit.setFocus()
+
+        self.assign_terms_to_practice(callback=callback)
 
     def show_hidden_translation(self, label: QLabel) -> Callable[[], None]:
         def callback() -> None:

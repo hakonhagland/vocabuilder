@@ -2,7 +2,7 @@ import re
 
 from pytest_mock.plugin import MockerFixture
 from PyQt6.QtCore import Qt
-from vocabuilder.vocabuilder import MainWindow, ModifyWindow2
+from vocabuilder.vocabuilder import MainWindow, ModifyWindow
 from .common import QtBot
 
 
@@ -15,7 +15,7 @@ class TestGeneral:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2 = ModifyWindow(dialog, "apple", dialog.config, window.db)
         idx = dialog2.button_names.index("&Cancel")
         cancel_button = dialog2.buttons[idx]
         with qtbot.waitSignal(dialog2.finished, timeout=1000):
@@ -29,7 +29,7 @@ class TestGeneral:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2 = ModifyWindow(dialog, "apple", dialog.config, window.db)
         with qtbot.waitSignal(dialog2.finished, timeout=1000):
             qtbot.keyClick(dialog2, Qt.Key.Key_Escape)
         assert True
@@ -42,7 +42,7 @@ class TestGeneral:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2 = ModifyWindow(dialog, "apple", dialog.config, window.db)
         dialog2.edits[dialog.header.term1].setText("")
         idx = dialog2.button_names.index("&Ok")
         ok_button = dialog2.buttons[idx]
@@ -63,7 +63,7 @@ class TestGeneral:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2 = ModifyWindow(dialog, "apple", dialog.config, window.db)
         dialog2.edits[dialog.header.term2].setText("")
         idx = dialog2.button_names.index("&Ok")
         ok_button = dialog2.buttons[idx]
@@ -84,7 +84,7 @@ class TestGeneral:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2 = ModifyWindow(dialog, "apple", dialog.config, window.db)
         dialog2.edits[dialog.header.term2].setText("사과를")
         idx = dialog2.button_names.index("&Ok")
         ok_button = dialog2.buttons[idx]
@@ -101,7 +101,7 @@ class TestGeneral:
     ) -> None:
         window = main_window
         dialog = window.modify_entry()
-        dialog2 = ModifyWindow2(dialog, "apple", dialog.get_db())
+        dialog2 = ModifyWindow(dialog, "apple", dialog.config, window.db)
         dialog2.edits[dialog.header.term1].setText("apples")
         idx = dialog2.button_names.index("&Ok")
         ok_button = dialog2.buttons[idx]

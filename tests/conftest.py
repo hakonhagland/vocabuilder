@@ -154,7 +154,6 @@ def test_window(
             return wrapper
 
         wrapper = gen_wrapper()
-        # TODO: see comment for test_main_dialog() above
         testwin.main_dialog = wrapper  # type: ignore
         idx = testwin.params.button_names.index("&Ok")
         testwin.params.buttons[idx].click()
