@@ -58,7 +58,7 @@ class TestOther:
         window = main_window
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.WarningsMixin.display_warning_callback",
+                "vocabuilder.mixins.WarningsMixin.display_warning_callback",
                 callback,
             )
             mbox = window.delete_entry()
@@ -96,7 +96,7 @@ class TestOther:
     ) -> None:
         window = main_window
         with qtbot.waitCallback() as callback:
-            mocker.patch("vocabuilder.vocabuilder.TestWindow.main_dialog", callback)
+            mocker.patch("vocabuilder.test_window.TestWindow.main_dialog", callback)
             testwin = window.run_test()
             testwin.params.buttons[0].click()
         assert True
@@ -110,7 +110,7 @@ class TestOther:
         window = main_window
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.WarningsMixin.display_warning_callback",
+                "vocabuilder.mixins.WarningsMixin.display_warning_callback",
                 callback,
             )
             mbox = window.view_entries()

@@ -1,6 +1,6 @@
 import re
 
-from vocabuilder.vocabuilder import (
+from vocabuilder.exceptions import (
     CommandLineException,
     ConfigException,
     CsvFileException,

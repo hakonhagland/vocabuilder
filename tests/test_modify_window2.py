@@ -2,7 +2,8 @@ import re
 
 from pytest_mock.plugin import MockerFixture
 from PyQt6.QtCore import Qt
-from vocabuilder.vocabuilder import MainWindow, ModifyWindow
+from vocabuilder.modify_window import ModifyWindow
+from vocabuilder.vocabuilder import MainWindow
 from .common import QtBot
 
 
@@ -48,7 +49,7 @@ class TestGeneral:
         ok_button = dialog2.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.WarningsMixin.display_warning",
+                "vocabuilder.mixins.WarningsMixin.display_warning",
                 callback,
             )
             ok_button.click()
@@ -69,7 +70,7 @@ class TestGeneral:
         ok_button = dialog2.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.WarningsMixin.display_warning",
+                "vocabuilder.mixins.WarningsMixin.display_warning",
                 callback,
             )
             ok_button.click()

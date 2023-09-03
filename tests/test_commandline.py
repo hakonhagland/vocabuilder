@@ -6,7 +6,8 @@ from pytest_mock.plugin import MockerFixture
 
 # from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
-from vocabuilder.vocabuilder import CommandLineException, CommandLineOptions
+from vocabuilder.vocabuilder import CommandLineOptions
+from vocabuilder.exceptions import CommandLineException
 
 
 class TestGeneral:
@@ -17,7 +18,7 @@ class TestGeneral:
     ) -> None:
         cmd_line_args = ["db1"]
         mocker.patch(
-            "vocabuilder.vocabuilder.QCommandLineParser.positionalArguments",
+            "vocabuilder.commandline.QCommandLineParser.positionalArguments",
             return_value=cmd_line_args,
         )
         args = CommandLineOptions(qapp)
@@ -30,7 +31,7 @@ class TestGeneral:
     ) -> None:
         cmd_line_args: list[str] = []
         mocker.patch(
-            "vocabuilder.vocabuilder.QCommandLineParser.positionalArguments",
+            "vocabuilder.commandline.QCommandLineParser.positionalArguments",
             return_value=cmd_line_args,
         )
         args = CommandLineOptions(qapp)
@@ -43,7 +44,7 @@ class TestGeneral:
     ) -> None:
         cmd_line_args = ["db1", "db2"]
         mocker.patch(
-            "vocabuilder.vocabuilder.QCommandLineParser.positionalArguments",
+            "vocabuilder.commandline.QCommandLineParser.positionalArguments",
             return_value=cmd_line_args,
         )
         with pytest.raises(CommandLineException) as excinfo:

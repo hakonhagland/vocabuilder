@@ -9,8 +9,10 @@ from PyQt6.QtWidgets import (
     QApplication,
 )
 
-from vocabuilder.vocabuilder import Config, Database, MainWindow, SelectVocabulary
-from vocabuilder.vocabuilder import TestWindow as _TestWindow
+from vocabuilder.vocabuilder import Config, Database, MainWindow
+
+# from vocabuilder.select_voca import SelectVocabulary
+from vocabuilder.test_window import TestWindow as _TestWindow
 from .common import PytestDataDict, QtBot
 
 
@@ -58,7 +60,7 @@ def config_dir_path(
     shutil.copy(cfg_dirlock_fn, cfg_dir)
     cfg_fn = cfg_dir_src / Config.config_fn
     shutil.copy(cfg_fn, cfg_dir)
-    active_fn = cfg_dir_src / SelectVocabulary.active_voca_info_fn
+    active_fn = cfg_dir_src / Database.active_voca_info_fn
     shutil.copy(active_fn, cfg_dir)
     return cfg_dir
 
@@ -70,11 +72,11 @@ def config_object(
     cfg_dir = config_dir_path
     data_dir = data_dir_path
     mocker.patch(
-        "vocabuilder.vocabuilder.platformdirs.user_config_dir",
+        "vocabuilder.config.platformdirs.user_config_dir",
         return_value=cfg_dir,
     )
     mocker.patch(
-        "vocabuilder.vocabuilder.platformdirs.user_data_dir",
+        "vocabuilder.config.platformdirs.user_data_dir",
         return_value=data_dir,
     )
     cfg = Config()

@@ -4,7 +4,8 @@ import re
 
 from pathlib import Path
 from pytest_mock.plugin import MockerFixture
-from vocabuilder.vocabuilder import Config, ConfigException
+from vocabuilder.vocabuilder import Config
+from vocabuilder.exceptions import ConfigException
 from typing import Any, Callable
 
 # from .common import QtBot, P
@@ -22,11 +23,11 @@ class TestContructor:
     ) -> None:
         data_dir = data_dir_path
         mocker.patch(
-            "vocabuilder.vocabuilder.platformdirs.user_config_dir",
+            "vocabuilder.config.platformdirs.user_config_dir",
             return_value=data_dir,
         )
         mocker.patch(
-            "vocabuilder.vocabuilder.platformdirs.user_data_dir",
+            "vocabuilder.config.platformdirs.user_data_dir",
             return_value=data_dir,
         )
 
@@ -71,11 +72,11 @@ class TestContructor:
                 fp.write("xyz")
         cfg_dir = config_dir_path
         mocker.patch(
-            "vocabuilder.vocabuilder.platformdirs.user_config_dir",
+            "vocabuilder.config.platformdirs.user_config_dir",
             return_value=cfg_dir,
         )
         mocker.patch(
-            "vocabuilder.vocabuilder.platformdirs.user_data_dir",
+            "vocabuilder.config.platformdirs.user_data_dir",
             return_value=data_dir,
         )
         if path_is_file:
@@ -150,7 +151,7 @@ class TestOther:
         cfg = config_object
         cfg_dir_fake = data_dir_path / "foobar"
         mocker.patch(
-            "vocabuilder.vocabuilder.platformdirs.user_config_dir",
+            "vocabuilder.config.platformdirs.user_config_dir",
             return_value=cfg_dir_fake,
         )
         if path_is_file:

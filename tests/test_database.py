@@ -6,15 +6,11 @@ import pytest
 from _pytest.logging import LogCaptureFixture
 from pytest_mock.plugin import MockerFixture
 from typing import Callable
-from vocabuilder.vocabuilder import (
-    Config,
-    CsvDatabaseHeader,
-    CsvFileException,
-    Database,
-    DatabaseException,
-    DatabaseRow,
-    TermStatus,
-)
+from vocabuilder.constants import TermStatus
+from vocabuilder.csv_helpers import CsvDatabaseHeader
+from vocabuilder.exceptions import CsvFileException, DatabaseException
+from vocabuilder.type_aliases import DatabaseRow
+from vocabuilder.vocabuilder import Config, Database
 from .common import PytestDataDict
 
 # from .conftest import database_object, test_data, data_dir_path
@@ -188,7 +184,7 @@ class TestGetPairs:
     def test_get_single(self, database_object: Database, mocker: MockerFixture) -> None:
         db = database_object
         mocker.patch(
-            "vocabuilder.vocabuilder.random.randint",
+            "vocabuilder.database.random.randint",
             return_value=3,
         )
         pair = db.get_random_pair()

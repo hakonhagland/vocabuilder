@@ -46,7 +46,7 @@ class TestModifyItem:
         ok_button = dialog.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.WarningsMixin.display_warning",
+                "vocabuilder.mixins.WarningsMixin.display_warning",
                 callback,
             )
             ok_button.click()
@@ -66,7 +66,7 @@ class TestModifyItem:
         ok_button = dialog.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.WarningsMixin.display_warning",
+                "vocabuilder.mixins.WarningsMixin.display_warning",
                 callback,
             )
             ok_button.click()
@@ -86,7 +86,7 @@ class TestModifyItem:
         ok_button = dialog.buttons[idx]
         with qtbot.waitCallback() as callback:
             mocker.patch(
-                "vocabuilder.vocabuilder.ModifyWindow.open",
+                "vocabuilder.modify_window.ModifyWindow.open",
                 callback,
             )
             ok_button.click()

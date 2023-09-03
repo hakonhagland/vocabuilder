@@ -96,7 +96,7 @@ class TestGeneral:
         ok_button = dialog.buttons[idx]
         if term1_exists or term1_empty or term2_empty:
             mocker.patch(
-                "vocabuilder.vocabuilder.WarningsMixin.display_warning",
+                "vocabuilder.mixins.WarningsMixin.display_warning",
                 return_value=None,
             )
         if term1_exists:

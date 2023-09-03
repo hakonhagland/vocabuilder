@@ -5,10 +5,11 @@ import typing
 from pytest_mock.plugin import MockerFixture
 
 from PyQt6.QtCore import Qt
-from vocabuilder.vocabuilder import MainWindow, SelectWordFromList
-from vocabuilder.vocabuilder import (
+from vocabuilder.test_window import (
     TestWindow as _TestWindow,
 )  # Cannot start with "Test"
+from vocabuilder.widgets import SelectWordFromList
+from vocabuilder.vocabuilder import MainWindow
 from .common import QtBot
 from typing import Any, Callable
 

@@ -26,11 +26,11 @@ class TestMain:
         cfg_dir = config_dir_path
         data_dir = data_dir_path
         mocker.patch(
-            "vocabuilder.vocabuilder.platformdirs.user_config_dir",
+            "vocabuilder.config.platformdirs.user_config_dir",
             return_value=cfg_dir,
         )
         mocker.patch(
-            "vocabuilder.vocabuilder.platformdirs.user_data_dir",
+            "vocabuilder.config.platformdirs.user_data_dir",
             return_value=data_dir,
         )
         setup_database_dir()

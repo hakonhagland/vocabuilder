@@ -1,6 +1,6 @@
 import re
 
-from vocabuilder.vocabuilder import TimeMixin
+from vocabuilder.mixins import TimeMixin
 
 
 class MyTimer(TimeMixin):
