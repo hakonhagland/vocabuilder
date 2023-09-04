@@ -3,12 +3,13 @@ ROOT := $(shell pwd)
 DOCKERDIR := $(ROOT)/docker
 
 .PHONY: docker-image run-docker-image coverage docs mypy test flake8
+.PHONY: black-check black
 
 docker-image:
-	docker build -t python-vocabuilder $(DOCKERDIR)
+	"$(DOCKERDIR)"/build-docker.sh "$(DOCKERDIR)"
 
 run-docker-image:
-	docker run -v "$(ROOT)":/root/vocabuilder -it python-vocabuilder
+	docker run -it python-vocabuilder
 
 coverage:
 	coverage run -m pytest tests
@@ -25,3 +26,9 @@ test:
 
 flake8:
 	flake8 src/ tests/
+
+black-check:
+	black --diff --color src/ tests/
+
+black:
+	black src/ tests/

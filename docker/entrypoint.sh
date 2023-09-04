@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# PWD = /root (was set in Dockerfile)
-# Create venv here and not pollute the mapped volume in the /root/vocabuilder folder
+# PWD = /root/vocabuilder (was set in Dockerfile)
 python -m venv .venv
-cd vocabuilder
-source ../.venv/bin/activate
+source .venv/bin/activate
 pip install .
 exec bash
