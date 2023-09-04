@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+# import logging
 from typing import Callable
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QKeyEvent
@@ -222,8 +224,9 @@ class TestWindow(QDialog, WarningsMixin):
             #       self, such that self will not be garbage collected until
             #       the callback is done
             title = "Select word to practice"
+            options = {"click_accept": True, "close_on_accept": True}
             return SelectWordFromList(
-                self, self.config, title, words, callback, get_pair
+                self, self.config, title, words, callback, get_pair, options
             )
         self.display_warning_no_terms(self)
         return None

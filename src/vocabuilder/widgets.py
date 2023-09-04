@@ -1,4 +1,6 @@
-from typing import Callable
+# import logging
+import typing
+from typing import Any, Callable
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QKeyEvent, QMouseEvent
 from PyQt6.QtWidgets import (
@@ -101,6 +103,7 @@ class SelectWordFromList(QDialog, StringMixin, WarningsMixin):
         words: list[str],
         callback: Callable[[tuple[str, str]], None],
         get_pair_callback: Callable[[str, int], tuple[str, str]],
+        options: dict[str, Any] | None = None,
     ) -> None:
         """Dialog that lets the user select a word from a list of words.
 
@@ -119,6 +122,9 @@ class SelectWordFromList(QDialog, StringMixin, WarningsMixin):
         self.words = words
         self.ok_action = callback
         self.get_pair_callback = get_pair_callback
+        if options is None:
+            options = {}
+        self.options = options
         self.button_config = self.config.config["Buttons"]
         self.window_config = self.config.config["SelectWordFromListWindow"]
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
@@ -171,6 +177,8 @@ class SelectWordFromList(QDialog, StringMixin, WarningsMixin):
     def add_scroll_area(self, layout: QGridLayout, vpos: int) -> None:
         def callback(text: str) -> None:
             self.edits[self.header.term1].setText(text)
+            if self.check_bool_option("click_accept"):
+                self.ok_button()
 
         self.scrollarea = QSelectItemScrollArea(
             items=self.words, select_callback=callback
@@ -180,6 +188,12 @@ class SelectWordFromList(QDialog, StringMixin, WarningsMixin):
 
     def cancel_button(self) -> None:
         self.done(1)
+
+    def check_bool_option(self, option: str) -> bool:
+        if option in self.options:
+            return typing.cast(bool, self.options[option])
+        else:
+            return False
 
     def check_term_in_list(self, term: str) -> bool:
         try:
@@ -206,7 +220,8 @@ class SelectWordFromList(QDialog, StringMixin, WarningsMixin):
             )
             return
         self.edits[self.header.term1].setText("")
-        # self.done(0)
+        if self.check_bool_option("close_on_accept"):
+            self.done(0)
         idx = self.words.index(term1)
         pair = (self.get_pair_callback)(term1, idx)
         self.ok_action(pair)

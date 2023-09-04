@@ -151,10 +151,13 @@ class TestGeneral:
             testwin.params.buttons[idx].click()
         assert True
 
-    @pytest.mark.parametrize("valid_pair", [True, False])
+    @pytest.mark.parametrize(
+        "valid_pair,click_label", [(True, False), (False, False), (True, True)]
+    )
     def test_select_from_list(
         self,
         valid_pair: bool,
+        click_label: bool,
         main_window: MainWindow,
         qtbot: QtBot,
         mocker: MockerFixture,
@@ -195,12 +198,18 @@ class TestGeneral:
             testwin.params.random_button.setAutoExclusive(True)
             testwin.params.buttons[idx].click()
         if dialog is not None:
-            dialog.edits[dialog.header.term1].setText("apple")
-            idx = dialog.button_names.index("&Ok")
-            ok_button = dialog.buttons[idx]
-            with qtbot.waitCallback() as callback2:
-                dialog.ok_action = callback2
-                ok_button.click()
+            if click_label:
+                with qtbot.waitCallback() as callback2:
+                    dialog.ok_action = callback2
+                    label = dialog.scrollarea.labels[2]
+                    qtbot.mouseClick(label, Qt.MouseButton.LeftButton)
+            else:
+                idx = dialog.button_names.index("&Ok")
+                ok_button = dialog.buttons[idx]
+                dialog.edits[dialog.header.term1].setText("apple")
+                with qtbot.waitCallback() as callback2:
+                    dialog.ok_action = callback2
+                    ok_button.click()
             pair = callback2.args[0]
             assert len(pair) == 2
             assert pair[1] == "사과"
