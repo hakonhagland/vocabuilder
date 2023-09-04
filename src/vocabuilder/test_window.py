@@ -375,6 +375,54 @@ class TestWindowChooseParameters(QDialog):
         # method(self.testwin)
         method()
 
+    def keyPressEvent(self, event: QKeyEvent | None) -> None:  # noqa: C901
+        # print(f"key code: {event.key()}, text: {event.text()}")
+        if event is not None:
+            if event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
+                self.cancel_button()
+            if event.key() == Qt.Key.Key_L:
+
+                def callback() -> None:
+                    self.random_button.setChecked(False)
+                    self.choose_from_list_button.setChecked(True)
+
+                self.modify_checkbox_group1(callback)
+            elif event.key() == Qt.Key.Key_R:
+
+                def callback() -> None:
+                    self.random_button.setChecked(True)
+                    self.choose_from_list_button.setChecked(False)
+
+                self.modify_checkbox_group1(callback)
+            elif event.key() == Qt.Key.Key_1:
+
+                def callback() -> None:
+                    self.lang1to2_button.setChecked(True)
+                    self.lang2to1_button.setChecked(False)
+
+                self.modify_checkbox_group2(callback)
+            elif event.key() == Qt.Key.Key_2:
+
+                def callback() -> None:
+                    self.lang2to1_button.setChecked(True)
+                    self.lang1to2_button.setChecked(False)
+
+                self.modify_checkbox_group2(callback)
+
+    def modify_checkbox_group1(self, callback: Callable[[], None]) -> None:
+        self.random_button.setAutoExclusive(False)
+        self.choose_from_list_button.setAutoExclusive(False)
+        callback()
+        self.random_button.setAutoExclusive(True)
+        self.choose_from_list_button.setAutoExclusive(True)
+
+    def modify_checkbox_group2(self, callback: Callable[[], None]) -> None:
+        self.lang1to2_button.setAutoExclusive(False)
+        self.lang2to1_button.setAutoExclusive(False)
+        callback()
+        self.lang1to2_button.setAutoExclusive(True)
+        self.lang2to1_button.setAutoExclusive(True)
+
     def ok_button(self) -> None:
         if self.random_button.isChecked():
             self.test_method = TestMethod.Random

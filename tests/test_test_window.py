@@ -75,6 +75,50 @@ class TestGeneral:
             testwin.params.buttons[idx].click()
         assert True
 
+    @pytest.mark.parametrize(
+        "keycode, ok_button",
+        [
+            (Qt.Key.Key_R, True),
+            (Qt.Key.Key_L, True),
+            (Qt.Key.Key_1, True),
+            (Qt.Key.Key_2, False),
+        ],
+    )
+    def test_click_param_radio_buttons(
+        self,
+        keycode: Qt.Key,
+        ok_button: bool,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+    ) -> None:
+        window = main_window
+        with qtbot.waitCallback() as callback:
+            testwin = window.run_test()
+
+            def gen_wrapper() -> Callable[[], None]:
+                # original_method = _TestWindow.main_dialog
+                original_method = testwin.main_dialog
+                _self = testwin
+
+                def wrapper(*args: Any, **kwargs: Any) -> None:
+                    original_method(*args, **kwargs)
+                    callback(_self, *args, **kwargs)
+
+                return wrapper
+
+            wrapper = gen_wrapper()
+            testwin.main_dialog = wrapper  # type: ignore
+            if ok_button:
+                idx = testwin.params.button_names.index("&Ok")
+                qtbot.keyClick(testwin.params, keycode)
+                testwin.params.buttons[idx].click()
+            else:
+                qtbot.keyClick(testwin.params, keycode)
+                qtbot.keyClick(testwin.params, Qt.Key.Key_Escape)
+
+        assert True
+
     def test_main_dialog2(
         self,
         main_window: MainWindow,
