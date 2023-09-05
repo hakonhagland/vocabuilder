@@ -3,7 +3,7 @@ ROOT := $(shell pwd)
 DOCKERDIR := $(ROOT)/docker
 
 .PHONY: docker-image run-docker-image coverage docs mypy test flake8
-.PHONY: black-check black
+.PHONY: black-check black publish-to-pypi
 
 docker-image:
 	"$(DOCKERDIR)"/build-docker.sh "$(DOCKERDIR)"
@@ -32,3 +32,6 @@ black-check:
 
 black:
 	black src/ tests/
+
+publish-to-pypi:
+	poetry publish --build

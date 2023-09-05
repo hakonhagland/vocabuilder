@@ -125,8 +125,15 @@ class MainWindow(QMainWindow, WarningsMixin):
         def get_pair_callback(word: str, idx: int) -> tuple[str, str]:
             return word, self.db.get_term2(word)
 
+        options = {"click_accept": True}
         dialog = SelectWordFromList(
-            self, self.config, win_title, self.items, callback, get_pair_callback
+            self,
+            self.config,
+            win_title,
+            self.items,
+            callback,
+            get_pair_callback,
+            options,
         )
         return dialog
 

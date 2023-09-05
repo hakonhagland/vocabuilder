@@ -116,7 +116,14 @@ class SelectWordFromList(QDialog, StringMixin, WarningsMixin):
 
         :param get_pair_callback: The callback is given the selected word and its
         index into the ``words`` array, and is expected to produce a pair of words
-        as its return value"""
+        as its return value
+
+        :param options: A dictionary of options. The following options are available:
+        * ``click_accept``: If True, the dialog is accepted when the user
+           clicks on a word in the list. Default: False
+        * ``close_on_accept``: If True, the dialog is closed when the user clicks
+           the "Ok" button. Default: False
+        """
         super().__init__(parent)
         self.config = config
         self.words = words
