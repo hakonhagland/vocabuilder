@@ -14,6 +14,7 @@ By adding values to the config file you can change things like:
 * Window and dialog sizes,
 * font sizes,
 * font colors,
+* firebase configuration,
 * other platform specific behaviors.
 
 See the default config file

@@ -57,6 +57,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Firebase</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#synchronization-with-firebase">Synchronization with firebase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plan-for-implementation">Plan for implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-firebase-database">Creating a firebase database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#downloading-the-firebase-credentials">Downloading the firebase credentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#saving-the-database-url">Saving the database URL</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
@@ -107,6 +110,62 @@ or when explicitly requested</p></li>
 </dl>
 </li>
 </ul>
+</section>
+<section id="creating-a-firebase-database">
+<h2>Creating a firebase database<a class="headerlink" href="#creating-a-firebase-database" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Go to <a class="reference external" href="https://firebase.google.com/">https://firebase.google.com/</a></p></li>
+<li><p>Create a new project</p></li>
+</ul>
+<a class="reference internal image-reference" href="_images/firebase_create_project.png"><img alt="_images/firebase_create_project.png" src="_images/firebase_create_project.png" style="width: 600px;" /></a>
+<ul class="simple">
+<li><p>Go to the database section</p></li>
+<li><p>Create a new database</p></li>
+</ul>
+<a class="reference internal image-reference" href="_images/firebase_create_database.png"><img alt="_images/firebase_create_database.png" src="_images/firebase_create_database.png" style="width: 600px;" /></a>
+<ul class="simple">
+<li><p>Select “Start in test mode”</p></li>
+<li><p>Go to the “Rules” tab</p></li>
+<li><p>Replace the content of the text box with the following:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;rules&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.read&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;.write&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Click on “Enable”</p></li>
+</ul>
+</section>
+<section id="downloading-the-firebase-credentials">
+<h2>Downloading the firebase credentials<a class="headerlink" href="#downloading-the-firebase-credentials" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Go to the settings of your firebase project</p></li>
+<li><p>Go to the “Service accounts” tab</p></li>
+<li><p>Click on “Generate new private key”</p></li>
+<li><p>Save the json file somewhere on your computer</p></li>
+<li><p>In the <a class="reference internal" href="configuration.html"><span class="doc">vocabuilder config file</span></a>, set the path to the json file in the “Firebase” section:</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">Firebase</span><span class="p p-Indicator">]</span>
+<span class="l l-Scalar l-Scalar-Plain">credentials = /path/to/credentials.json</span>
+</pre></div>
+</div>
+</section>
+<section id="saving-the-database-url">
+<h2>Saving the database URL<a class="headerlink" href="#saving-the-database-url" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Go to the realtime database section of your firebase project</p></li>
+<li><p>Go to the data tab</p></li>
+<li><p>Copy the URL of your database</p></li>
+<li><p>In the <a class="reference internal" href="configuration.html"><span class="doc">vocabuilder config file</span></a>, insert the URL in the “Firebase” section:</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span><span class="nv">Firebase</span><span class="p p-Indicator">]</span>
+<span class="l l-Scalar l-Scalar-Plain">databaseURL = https://your-project.firebasedatabase.app</span>
+</pre></div>
+</div>
 </section>
 </section>
 
