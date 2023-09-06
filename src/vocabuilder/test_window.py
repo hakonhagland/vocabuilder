@@ -168,8 +168,8 @@ class TestWindow(QDialog, WarningsMixin):
         a word randomly.
 
         :param callback: called to continue execution after
-        the term to practice has been determined. Note that the callback is needed
-        since a non-blocking dialog will be opened if the term is selected from a list.
+           the term to practice has been determined. Note that the callback is needed
+           since a non-blocking dialog will be opened if the term is selected from a list.
         """
 
         def callback2(pair: tuple[str, str] | None) -> None:
@@ -202,8 +202,7 @@ class TestWindow(QDialog, WarningsMixin):
         available for practice.
 
         :param callback: Callback to be called to continue execution after the
-        the user has selected a word from the non-blocking dialog
-
+           the user has selected a word from the non-blocking dialog
         """
         pairs = self.db.get_pairs_exceeding_test_delay()
         if len(pairs) > 0:
@@ -242,8 +241,8 @@ class TestWindow(QDialog, WarningsMixin):
             self.done(1)
 
     def main_dialog(self) -> None:
-        """Callback: Called after the test parameters has been chosen from the
-        TestWindowChooseParameters dialog"""
+        """This is a callback method which is called after the test parameters has
+        been chosen from the ``TestWindowChooseParameters`` dialog"""
         if self.params.cancelled:
             return None
         # NOTE: asssign_terms_to_practice() might open a new dialog window, so
@@ -253,8 +252,8 @@ class TestWindow(QDialog, WarningsMixin):
         self.assign_terms_to_practice(callback=self.main_dialog2)
 
     def main_dialog2(self) -> TestWindow:
-        """Callback: Called after the current pair of words to practice has been
-        assigned"""
+        """This is a callback that is called after the current pair of words
+        to practice has been assigned"""
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("Practice term/phrase/word")
         layout = QGridLayout()

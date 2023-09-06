@@ -10,12 +10,12 @@ from vocabuilder.type_aliases import DatabaseRow, DatabaseValue
 
 class CsvDatabaseHeader:
     """
-    status        : 0 = The item has been deleted, 1, 2, 3,.. the item is not deleted
-    term1         : "From" term
-    term2         : "To" term (translation of Term1)
-    test_delay    : Number of days to next possible test, 0 or negative means no delay
-    last_test     : timestamp (epoch) of last time this term was practiced
-    last_modified : timestamp (epoch) of last time any of the previous was modified
+    * status        : 0 = The item has been deleted, 1, 2, 3,.. the item is not deleted
+    * term1         : "From" term
+    * term2         : "To" term (translation of Term1)
+    * test_delay    : Number of days to next possible test, 0 or negative means no delay
+    * last_test     : timestamp (epoch) of last time this term was practiced
+    * last_modified : timestamp (epoch) of last time any of the previous was modified
     """
 
     status = "Status"
