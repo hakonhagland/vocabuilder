@@ -55,7 +55,7 @@ def main() -> None:
     #     filemode='w',
     #     level=logging.DEBUG,
     # )
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     app = QApplication(sys.argv)
     # options = CommandLineOptions(app)
     cmdline_opts = CommandLineOptions(app)

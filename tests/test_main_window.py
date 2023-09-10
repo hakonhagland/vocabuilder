@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QDialog, QMessageBox
 from vocabuilder.vocabuilder import (
     MainWindow,
 )
+from typing import Any, Callable
 from .common import QtBot
 
 
@@ -25,16 +26,12 @@ class TestOther:
     def test_add(
         self,
         main_window: MainWindow,
-        qtbot: QtBot,
+        #        qtbot: QtBot,
     ) -> None:
         window = main_window
-        # with qtbot.wait_exposed(window):
-        # idx = window.button_names['Add']
-        # button = window.buttons[idx]
-        # qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
         dialog = window.add_new_entry()
-        # qtbot.add_widget(dialog)
         assert isinstance(dialog, QDialog)
+        # qtbot.add_widget(dialog)
         dialog.done(0)
 
     def test_create_backup(
@@ -119,6 +116,33 @@ class TestOther:
                 ok_button.click()
         msg = callback.args[1]
         assert re.search(r"View entries", msg)
+
+
+class TestMenuActions:
+    def test_edit_config(
+        self,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+    ) -> None:
+        window = main_window
+        with qtbot.waitCallback() as callback:
+
+            def gen_wrapper() -> Callable[[], None]:
+                original_method = window.edit_config
+                _self = window
+
+                def wrapper(**kwargs: Any) -> None:
+                    original_method(**kwargs)
+                    callback(_self, **kwargs)
+
+                return wrapper
+
+            wrapper = gen_wrapper()
+            main_window.edit_config_action.disconnect()
+            main_window.edit_config_action.triggered.connect(wrapper)
+            main_window.edit_config_action.trigger()
+        assert True
 
 
 class TestKeyPressEvent:

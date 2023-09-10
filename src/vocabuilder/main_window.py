@@ -1,13 +1,16 @@
+# import logging
 import typing
 from typing import Callable
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeyEvent
+from PyQt6.QtGui import QKeyEvent, QAction
 from PyQt6.QtWidgets import (
     QApplication,
     QGridLayout,
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QMenu,
+    QMenuBar,
     QSizePolicy,
     QWidget,
 )
@@ -25,11 +28,19 @@ class MainWindow(QMainWindow, WarningsMixin):
         super().__init__()
         self.config = config
         self.button_config = self.config.config["Buttons"]
+        self.window_config = self.config.config["MainWindow"]
         self.app = app
         self.db = db
-        self.resize(330, 200)
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("VocaBuilder")
+        self.create_menus()
         layout = QGridLayout()
+        layout.setContentsMargins(
+            int(self.window_config["MarginLeft"]),
+            int(self.window_config["MarginTop"]),
+            int(self.window_config["MarginRight"]),
+            int(self.window_config["MarginBottom"]),
+        )
         vpos = 0
         vpos = self.add_database_info_label(layout, vpos)
         self.add_buttons(layout, vpos)
@@ -89,9 +100,26 @@ class MainWindow(QMainWindow, WarningsMixin):
     def backup(self) -> None:
         self.db.create_backup()
 
+    def create_file_menu(self) -> None:
+        file_menu = QMenu("&File", self)
+        self.menu_bar.addMenu(file_menu)
+        self.edit_config_action = QAction("&Edit config file", self)
+        file_menu.addAction(self.edit_config_action)
+        self.edit_config_action.triggered.connect(self.edit_config)
+
+    def create_menus(self) -> None:
+        self.menu_bar = QMenuBar(self)
+        self.setMenuBar(self.menu_bar)
+        self.create_file_menu()
+        # self.create_edit_menu()
+        # self.create_help_menu()
+
     def delete_entry(self) -> QMessageBox:
         mbox = self.display_warning(self, "Delete entry. Not implemented yet")
         return mbox
+
+    def edit_config(self) -> None:
+        print("Edit config file")
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
