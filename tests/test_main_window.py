@@ -138,16 +138,16 @@ class TestMenuActions:
             orig_method = window.run_task
 
             def wrapper(
-                orig_task: Callable[[], None], *args: Any, **kwargs: Any
+                orig_task: Callable[[str, list[str]], None], cmd: str, args: list[str]
             ) -> None:
                 nonlocal callback_called
                 nonlocal execvp_mock
                 mock = mocker.MagicMock()
                 mocker.patch("vocabuilder.main_window.multiprocessing.Process", mock)
                 mocker.patch("vocabuilder.main_window.os.execvp", execvp_mock)
-                orig_method(orig_task, *args, **kwargs)
+                orig_method(orig_task, cmd, args)
                 callback_called = True
-                orig_task()
+                orig_task(cmd, args)
                 callback_called = True
 
             return wrapper

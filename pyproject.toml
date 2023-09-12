@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vocabuilder"
-version = "0.1.2"
+version = "0.1.3"
 description = "Vocabulary builder for language learners"
 authors = ["Håkon Hægland <hakon.hagland@gmail.com>"]
 readme = "README.md"

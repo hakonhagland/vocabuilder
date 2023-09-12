@@ -1,4 +1,4 @@
-import logging
+# import logging
 import multiprocessing
 import os
 import platform
@@ -122,8 +122,15 @@ class MainWindow(QMainWindow, WarningsMixin):
         mbox = self.display_warning(self, "Delete entry. Not implemented yet")
         return mbox
 
+    # NOTE: this function cannot be defined inside edit_config() as an anonymous
+    #  function because on Windows, the task will be pickled by the multiprocessing
+    #  module, see run_task() below, and the pickle module does not support
+    #  anonymous functions
+    @staticmethod
+    def open_editor_task(cmd: str, args: list[str]) -> None:
+        os.execvp(cmd, args)
+
     def edit_config(self) -> None:
-        logging.info("edit_config called")
         cfg = self.config.config["Editor"]
         config_path = str(self.config.get_config_path())
         if platform.system() == "Linux":
@@ -141,10 +148,7 @@ class MainWindow(QMainWindow, WarningsMixin):
         else:
             raise ConfigException(f"Unknown platform: {platform.system()}")
 
-        def task() -> None:
-            os.execvp(cmd, args)
-
-        self.run_task(task)
+        self.run_task(MainWindow.open_editor_task, cmd, args)
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
@@ -195,9 +199,11 @@ class MainWindow(QMainWindow, WarningsMixin):
 
     def run_task(
         self,
-        task: Callable[[], None],
+        task: Callable[[str, list[str]], None],
+        cmd: str,
+        args: list[str],
     ) -> None:
-        process = multiprocessing.Process(target=task, daemon=False)
+        process = multiprocessing.Process(target=task, daemon=False, args=(cmd, args))
         process.start()
 
     def run_test(self) -> TestWindow:
