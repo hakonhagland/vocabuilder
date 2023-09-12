@@ -1,13 +1,15 @@
 import logging
+import pytest
 import re
 from _pytest.logging import LogCaptureFixture
 from pytest_mock.plugin import MockerFixture
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QMessageBox
+from typing import Any, Callable
 from vocabuilder.vocabuilder import (
     MainWindow,
 )
-from typing import Any, Callable
+from vocabuilder.exceptions import ConfigException
 from .common import QtBot
 
 
@@ -119,30 +121,61 @@ class TestOther:
 
 
 class TestMenuActions:
+    @pytest.mark.parametrize("os_name", ["Linux", "Windows", "Darwin"])
     def test_edit_config(
         self,
+        os_name: str,
         main_window: MainWindow,
         qtbot: QtBot,
         mocker: MockerFixture,
     ) -> None:
         window = main_window
-        with qtbot.waitCallback() as callback:
+        mocker.patch("vocabuilder.main_window.platform.system", return_value=os_name)
+        execvp_mock = mocker.MagicMock()
+        callback_called = False
 
-            def gen_wrapper() -> Callable[[], None]:
-                original_method = window.edit_config
-                _self = window
+        def gen_wrapper() -> Any:
+            orig_method = window.run_task
 
-                def wrapper(**kwargs: Any) -> None:
-                    original_method(**kwargs)
-                    callback(_self, **kwargs)
+            def wrapper(
+                orig_task: Callable[[], None], *args: Any, **kwargs: Any
+            ) -> None:
+                nonlocal callback_called
+                nonlocal execvp_mock
+                mock = mocker.MagicMock()
+                mocker.patch("vocabuilder.main_window.multiprocessing.Process", mock)
+                mocker.patch("vocabuilder.main_window.os.execvp", execvp_mock)
+                orig_method(orig_task, *args, **kwargs)
+                callback_called = True
+                orig_task()
+                callback_called = True
 
-                return wrapper
+            return wrapper
 
-            wrapper = gen_wrapper()
-            main_window.edit_config_action.disconnect()
-            main_window.edit_config_action.triggered.connect(wrapper)
-            main_window.edit_config_action.trigger()
-        assert True
+        wrapper = gen_wrapper()
+        mocker.patch.object(window, "run_task", wrapper)
+        # window.edit_config_action.disconnect()
+        # window.edit_config_action.triggered.connect(wrapper)
+        window.edit_config_action.trigger()
+        qtbot.waitUntil(lambda: callback_called)
+        execvp_args = execvp_mock.call_args.args
+        if os_name == "Linux":
+            assert execvp_args[0] == "gedit"
+        elif os_name == "Windows":
+            assert execvp_args[0] == "notepad.exe"
+        elif os_name == "Darwin":
+            assert execvp_args[0] == "open"
+
+    def test_edit_config_bad_os(
+        self,
+        main_window: MainWindow,
+        mocker: MockerFixture,
+    ) -> None:
+        window = main_window
+        mocker.patch("vocabuilder.main_window.platform.system", return_value="Unknown")
+        with pytest.raises(ConfigException) as excinfo:
+            window.edit_config()
+        assert re.search(r"Unknown platform", str(excinfo))
 
 
 class TestKeyPressEvent:

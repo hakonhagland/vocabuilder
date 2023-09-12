@@ -95,19 +95,22 @@ class Config:
                 fp.write(self.lockfile_string)
         return path
 
+    def get_config_path(self) -> Path:
+        return self.config_path
+
     def read_config(self) -> None:
-        path = Path(self.config_path)
+        path = self.get_config_path()
         if path.exists():
             if not path.is_file():
                 raise ConfigException(
                     f"Config filename {str(path)} exists, but filetype is not file"
                 )
         else:
-            with open(str(self.config_path), "w", encoding="utf_8") as _:
+            with open(str(self.get_config_path()), "w", encoding="utf_8") as _:
                 pass  # only create empty file
         config = configparser.ConfigParser()
         self.read_defaults(config)
-        config.read(str(self.config_path))
+        config.read(str(self.get_config_path()))
         self.config = config
 
     def read_defaults(self, config: ConfigParser) -> None:

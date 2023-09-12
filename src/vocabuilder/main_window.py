@@ -1,4 +1,7 @@
-# import logging
+import logging
+import multiprocessing
+import os
+import platform
 import typing
 from typing import Callable
 from PyQt6.QtCore import Qt
@@ -17,6 +20,7 @@ from PyQt6.QtWidgets import (
 from vocabuilder.add_window import AddWindow
 from vocabuilder.config import Config
 from vocabuilder.database import Database
+from vocabuilder.exceptions import ConfigException
 from vocabuilder.widgets import QGridMinimalLabel, SelectWordFromList
 from vocabuilder.modify_window import ModifyWindow
 from vocabuilder.test_window import TestWindow
@@ -119,7 +123,28 @@ class MainWindow(QMainWindow, WarningsMixin):
         return mbox
 
     def edit_config(self) -> None:
-        print("Edit config file")
+        logging.info("edit_config called")
+        cfg = self.config.config["Editor"]
+        config_path = str(self.config.get_config_path())
+        if platform.system() == "Linux":
+            editor = cfg["Linux"]
+            cmd = editor
+            args = [editor, config_path]
+        elif platform.system() == "Darwin":
+            cmd = "open"
+            editor = cfg["MacOS"]
+            args = ["open", "-a", editor, config_path]
+        elif platform.system() == "Windows":
+            editor = cfg["Windows"]
+            cmd = editor
+            args = [editor, config_path]
+        else:
+            raise ConfigException(f"Unknown platform: {platform.system()}")
+
+        def task() -> None:
+            os.execvp(cmd, args)
+
+        self.run_task(task)
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
@@ -167,6 +192,13 @@ class MainWindow(QMainWindow, WarningsMixin):
 
     def quit(self) -> None:
         self.app.quit()
+
+    def run_task(
+        self,
+        task: Callable[[], None],
+    ) -> None:
+        process = multiprocessing.Process(target=task, daemon=False)
+        process.start()
 
     def run_test(self) -> TestWindow:
         return TestWindow(self, self.config, self.db)
