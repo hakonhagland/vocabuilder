@@ -109,6 +109,7 @@ class MainWindow(QMainWindow, WarningsMixin):
         self.menu_bar.addMenu(file_menu)
         self.edit_config_action = QAction("&Edit config file", self)
         file_menu.addAction(self.edit_config_action)
+        self.edit_config_action.setShortcut("Ctrl+E")
         self.edit_config_action.triggered.connect(self.edit_config)
 
     def create_menus(self) -> None:
