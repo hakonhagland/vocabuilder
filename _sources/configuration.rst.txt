@@ -5,6 +5,10 @@ The configuration file is named ``config.ini`` and is located in sub directory
 ``vocabuilder`` inside directory ``user_config_dir`` as defined
 by the `platformdirs <https://pypi.org/project/platformdirs/>`_ package.
 
+.. note::
+    You can open the config file by selecting
+    ``File -> Edit config file`` from the menu in the main window.
+
 The syntax is described in the documentation for the
 `configparser <https://docs.python.org/3/library/configparser.html>`_ module
 in the Python standard library.
