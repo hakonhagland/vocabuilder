@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
 )
 from vocabuilder.commandline import CommandLineOptions
 from vocabuilder.config import Config
-from vocabuilder.database import Database
+from vocabuilder.local_database import LocalDatabase
 from vocabuilder.mixins import StringMixin, WarningsMixin
 
 
@@ -44,11 +44,11 @@ class SelectVocabulary:
                         quit()
 
     def choose_most_recent(self) -> bool:
-        db_dir = self.cfg.get_data_dir() / Database.database_dir
+        db_dir = self.cfg.get_data_dir() / LocalDatabase.database_dir
         current_mtime = 0
         candidate = None
         for name in self.existing_vocabularies:
-            dbfile = db_dir / name / Database.database_fn
+            dbfile = db_dir / name / LocalDatabase.database_fn
             mtime = dbfile.stat().st_mtime
             if mtime > current_mtime:
                 candidate = name
@@ -58,12 +58,12 @@ class SelectVocabulary:
         return False
 
     def find_existing_vocabularies(self) -> None:
-        db_dir = self.cfg.get_data_dir() / Database.database_dir
+        db_dir = self.cfg.get_data_dir() / LocalDatabase.database_dir
         self.existing_vocabularies = []
         if db_dir.exists():
             for file in db_dir.iterdir():
                 if file.is_dir():
-                    dbfile = file / Database.database_fn
+                    dbfile = file / LocalDatabase.database_fn
                     if dbfile.is_file():
                         self.existing_vocabularies.append(file.name)
 
@@ -78,7 +78,7 @@ class SelectVocabulary:
 
     def read_active_name(self) -> bool:
         cfg_dir = self.cfg.get_config_dir()
-        self.active_voca_info_fn_path = cfg_dir / Database.active_voca_info_fn
+        self.active_voca_info_fn_path = cfg_dir / LocalDatabase.active_voca_info_fn
         if self.active_voca_info_fn_path.is_file():
             txt = self.active_voca_info_fn_path.read_text(encoding="utf-8")
             txt = txt.strip()

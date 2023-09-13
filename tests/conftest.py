@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
     QApplication,
 )
 
-from vocabuilder.vocabuilder import Config, Database, MainWindow
+from vocabuilder.vocabuilder import Config, LocalDatabase, MainWindow
 
 # from vocabuilder.select_voca import SelectVocabulary
 from vocabuilder.test_window import TestWindow as _TestWindow
@@ -60,7 +60,7 @@ def config_dir_path(
     shutil.copy(cfg_dirlock_fn, cfg_dir)
     cfg_fn = cfg_dir_src / Config.config_fn
     shutil.copy(cfg_fn, cfg_dir)
-    active_fn = cfg_dir_src / Database.active_voca_info_fn
+    active_fn = cfg_dir_src / LocalDatabase.active_voca_info_fn
     shutil.copy(active_fn, cfg_dir)
     return cfg_dir
 
@@ -88,11 +88,11 @@ def database_object(
     setup_database_dir: Callable[[], Path],
     config_object: Config,
     test_data: PytestDataDict,
-) -> Database:
+) -> LocalDatabase:
     setup_database_dir()
     cfg = config_object
     voca_name = test_data["vocaname"]
-    db = Database(cfg, voca_name)
+    db = LocalDatabase(cfg, voca_name)
     return db
 
 
@@ -105,8 +105,8 @@ def setup_database_dir(
     def setup_() -> Path:
         data_dir = data_dir_path
         voca_name = test_data["vocaname"]
-        dbname = Database.database_fn
-        db_dir = Database.database_dir
+        dbname = LocalDatabase.database_fn
+        db_dir = LocalDatabase.database_dir
         db_src_path = (
             test_file_path / test_data["data_dir"] / db_dir / voca_name / dbname
         )
@@ -121,7 +121,7 @@ def setup_database_dir(
 @pytest.fixture()
 def main_window(
     config_object: Config,
-    database_object: Database,
+    database_object: LocalDatabase,
     qtbot: QtBot,
 ) -> MainWindow:
     db = database_object

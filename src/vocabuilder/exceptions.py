@@ -22,7 +22,7 @@ class CsvFileException(Exception):
         return f"CSV file exception: {self.value}"
 
 
-class DatabaseException(Exception):
+class LocalDatabaseException(Exception):
     def __init__(self, value: str):
         self.value = value
 

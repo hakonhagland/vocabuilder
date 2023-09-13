@@ -10,12 +10,12 @@ import shutil
 from vocabuilder.config import Config
 from vocabuilder.constants import TermStatus
 from vocabuilder.csv_helpers import CsvDatabaseHeader, CSVwrapper
-from vocabuilder.exceptions import DatabaseException
+from vocabuilder.exceptions import LocalDatabaseException
 from vocabuilder.mixins import TimeMixin
 from vocabuilder.type_aliases import DatabaseRow, DatabaseValue
 
 
-class Database(TimeMixin):
+class LocalDatabase(TimeMixin):
     # NOTE: This is made a class variable since it must be accessible from
     #   pytest before creating an object of this class
     database_fn = "database.csv"
@@ -62,7 +62,7 @@ class Database(TimeMixin):
 
     def assert_term1_exists(self, term1: str) -> None:
         if term1 not in self.db:
-            raise DatabaseException(
+            raise LocalDatabaseException(
                 f"Unexpected: trying to update non-existent term '{term1}'"
             )
 
@@ -81,7 +81,7 @@ class Database(TimeMixin):
 
     def delete_item(self, term1: str) -> None:
         if term1 not in self.db:
-            raise DatabaseException(f"Term1 '{term1}' does not exist in database")
+            raise LocalDatabaseException(f"Term1 '{term1}' does not exist in database")
         item = self.db[term1].copy()
         item[self.header.status] = self.status.DELETED
         item[self.header.term1] = term1
@@ -94,7 +94,7 @@ class Database(TimeMixin):
         in this application they should always be positive (corresponding to
         dates after year 2022)"""
         if t1 > t2:
-            raise DatabaseException(
+            raise LocalDatabaseException(
                 "Bad timestamp. Smaller than previous timestamp. Expected larger"
             )
         diff = (t2 - t1) // (24 * 60 * 60)
@@ -135,7 +135,7 @@ class Database(TimeMixin):
 
     def get_term1_data(self, term1: str) -> DatabaseRow:
         if term1 not in self.db:
-            raise DatabaseException(
+            raise LocalDatabaseException(
                 f"Tried to access non-existing item with key '{term1}'"
             )
         return self.db[term1]
@@ -164,7 +164,7 @@ class Database(TimeMixin):
     def maybe_create_backup_repo(self) -> None:
         if self.backupdir.exists():
             if self.backupdir.is_file():
-                raise DatabaseException(
+                raise LocalDatabaseException(
                     f"Backup dir {str(self.backupdir)} is a file. Expected directory"
                 )
         else:
@@ -172,7 +172,7 @@ class Database(TimeMixin):
         gitdir = self.backupdir / self.git_dirname
         if gitdir.exists():
             if gitdir.is_file():
-                raise DatabaseException(
+                raise LocalDatabaseException(
                     f"Git directory {str(gitdir)} is a file. Expected directory"
                 )
         else:
@@ -181,7 +181,7 @@ class Database(TimeMixin):
     def maybe_create_db(self) -> None:
         if self.dbname.exists():
             if not self.dbname.is_file():
-                raise DatabaseException(
+                raise LocalDatabaseException(
                     f"CSV database file {str(self.dbname)} exists "
                     f"but filetype is not file."
                 )
@@ -210,7 +210,7 @@ class Database(TimeMixin):
                     if term1 in self.db:
                         del self.db[term1]
                 else:
-                    raise DatabaseException(
+                    raise LocalDatabaseException(
                         f"Unexpected value for status at line {lineno} in file "
                         f"{self.csvwrapper.filename}"
                     )
@@ -241,14 +241,14 @@ class Database(TimeMixin):
 
     def validate_item_content(self, item: DatabaseRow) -> None:
         if len(item.keys()) != len(self.header.header):
-            raise DatabaseException("unexpected number of elements for item")
+            raise LocalDatabaseException("unexpected number of elements for item")
         for key in self.header.header:
             if not (key in item):
-                raise DatabaseException(f"item missing key '{key}'")
+                raise LocalDatabaseException(f"item missing key '{key}'")
         # header = [status, term1, term2, test_delay, last_test, last_modified]
         for key in item:
             if not isinstance(item[key], self.header.types[key]):
-                raise DatabaseException(
+                raise LocalDatabaseException(
                     f"validate_item: the value '{item[key]}' of element {key} has type "
                     f"{type(item[key])}, expected type {self.header.types[key]}"
                 )

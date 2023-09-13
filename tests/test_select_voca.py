@@ -5,7 +5,7 @@ import shutil
 from pytest_mock.plugin import MockerFixture
 from PyQt6.QtWidgets import QApplication
 import vocabuilder.vocabuilder
-from vocabuilder.database import Database
+from vocabuilder.local_database import LocalDatabase
 from vocabuilder.select_voca import SelectNewVocabularyName
 from vocabuilder.vocabuilder import (
     CommandLineOptions,
@@ -50,7 +50,7 @@ class TestGeneral:
             mocker.patch("builtins.quit", return_value=None)
             shutil.rmtree(datadir)
         if not info_fn_exists:
-            fn = cfg.get_config_dir() / Database.active_voca_info_fn
+            fn = cfg.get_config_dir() / LocalDatabase.active_voca_info_fn
             fn.unlink()
         if not cmdline_arg and not voca_exists:
             with pytest.raises(SelectVocabularyException) as excinfo:
@@ -90,7 +90,7 @@ class TestGeneral:
         if most_recent:
             retval = "english-korean"
         else:
-            fn = cfg.get_config_dir() / Database.active_voca_info_fn
+            fn = cfg.get_config_dir() / LocalDatabase.active_voca_info_fn
             fn.unlink()
             if cmdline_param is None:
                 retval = "english-korean"

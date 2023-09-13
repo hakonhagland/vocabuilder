@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from vocabuilder.config import Config
-from vocabuilder.database import Database
+from vocabuilder.local_database import LocalDatabase
 from vocabuilder.csv_helpers import CsvDatabaseHeader
 from vocabuilder.mixins import WarningsMixin, StringMixin, TimeMixin
 from vocabuilder.type_aliases import DatabaseRow
@@ -23,7 +23,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
     Continue the above procedure of adding terms until the user clicks the cancel button
     """
 
-    def __init__(self, parent: QWidget, config: Config, database: Database):
+    def __init__(self, parent: QWidget, config: Config, database: LocalDatabase):
         super().__init__(parent)  # make dialog modal
         # NOTE: using double underscore "__parent" to avoid confilict with "parent"
         #      method in a parent class
@@ -139,7 +139,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
     def cancel_button(self) -> None:
         self.done(1)
 
-    def get_db(self) -> Database:
+    def get_db(self) -> LocalDatabase:
         return self.db
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:

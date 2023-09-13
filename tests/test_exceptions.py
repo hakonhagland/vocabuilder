@@ -4,7 +4,7 @@ from vocabuilder.exceptions import (
     CommandLineException,
     ConfigException,
     CsvFileException,
-    DatabaseException,
+    LocalDatabaseException,
     SelectVocabularyException,
 )
 
@@ -33,10 +33,10 @@ def test_csvfile_exception() -> None:
         assert re.search(r"Testing", msg)
 
 
-def test_database_exception() -> None:
+def test_localdatabase_exception() -> None:
     try:
-        raise DatabaseException("Testing")
-    except DatabaseException as exc:
+        raise LocalDatabaseException("Testing")
+    except LocalDatabaseException as exc:
         msg = str(exc)
         assert re.search(r"Testing", msg)
 

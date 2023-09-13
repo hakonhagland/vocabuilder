@@ -421,7 +421,7 @@ files = [
 [[package]]
 name = "gitdb"
 version = "4.0.10"
-description = "Git Object Database"
+description = "Git Object LocalDatabase"
 optional = false
 python-versions = ">=3.7"
 files = [
