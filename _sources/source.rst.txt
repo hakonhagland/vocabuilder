@@ -45,10 +45,10 @@ Module ``vocabuilder.csv_helpers``
    :undoc-members:
    :show-inheritance:
 
-Module ``vocabuilder.database``
+Module ``vocabuilder.local_database``
 -------------------------------
 
-.. automodule:: vocabuilder.database
+.. automodule:: vocabuilder.local_database
    :members:
    :undoc-members:
    :show-inheritance:
