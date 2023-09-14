@@ -90,10 +90,15 @@ def database_object(
     setup_database_dir: Callable[[], Path],
     config_object: Config,
     test_data: PytestDataDict,
+    mocker: MockerFixture,
 ) -> Database:
     setup_database_dir()
     cfg = config_object
     voca_name = test_data["vocaname"]
+    mocker.patch(
+        "vocabuilder.database.FirebaseDatabase._initialize_service_account",
+        return_value=False,
+    )
     db = Database(cfg, voca_name)
     return db
 

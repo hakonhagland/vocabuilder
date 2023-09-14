@@ -1,4 +1,5 @@
 from vocabuilder.config import Config
+from vocabuilder.firebase_database import FirebaseDatabase
 from vocabuilder.local_database import LocalDatabase
 from vocabuilder.mixins import TimeMixin
 from vocabuilder.type_aliases import DatabaseRow
@@ -7,6 +8,7 @@ from vocabuilder.type_aliases import DatabaseRow
 class Database(TimeMixin):
     def __init__(self, config: Config, voca_name: str) -> None:
         self.local_database = LocalDatabase(config, voca_name)
+        self.firebase_database = FirebaseDatabase(config, voca_name)
         self.config = config
         self.voca_name = voca_name
 

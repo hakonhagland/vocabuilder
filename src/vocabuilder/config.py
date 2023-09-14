@@ -1,4 +1,5 @@
 import configparser
+import logging
 import platformdirs
 from pathlib import Path
 
@@ -98,6 +99,9 @@ class Config:
     def get_config_path(self) -> Path:
         return self.config_path
 
+    def get_section(self, section: str) -> configparser.SectionProxy:
+        return self.config[section]
+
     def read_config(self) -> None:
         path = self.get_config_path()
         if path.exists():
@@ -110,7 +114,8 @@ class Config:
                 pass  # only create empty file
         config = configparser.ConfigParser()
         self.read_defaults(config)
-        config.read(str(self.get_config_path()))
+        config.read(str(path))
+        logging.info(f"Read config file: {str(path)}")
         self.config = config
 
     def read_defaults(self, config: ConfigParser) -> None:
