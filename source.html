@@ -88,6 +88,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.config.Config.get_config_path"><code class="docutils literal notranslate"><span class="pre">Config.get_config_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.config.Config.get_data_dir"><code class="docutils literal notranslate"><span class="pre">Config.get_data_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.config.Config.get_data_dir_path"><code class="docutils literal notranslate"><span class="pre">Config.get_data_dir_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.config.Config.get_section"><code class="docutils literal notranslate"><span class="pre">Config.get_section()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.config.Config.read_config"><code class="docutils literal notranslate"><span class="pre">Config.read_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.config.Config.read_defaults"><code class="docutils literal notranslate"><span class="pre">Config.read_defaults()</span></code></a></li>
 </ul>
@@ -140,7 +141,27 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder-local-database">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.local_database</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder.database">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.database</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.database.Database"><code class="docutils literal notranslate"><span class="pre">Database</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.add_item"><code class="docutils literal notranslate"><span class="pre">Database.add_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.check_term1_exists"><code class="docutils literal notranslate"><span class="pre">Database.check_term1_exists()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.create_backup"><code class="docutils literal notranslate"><span class="pre">Database.create_backup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.delete_item"><code class="docutils literal notranslate"><span class="pre">Database.delete_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_local_database"><code class="docutils literal notranslate"><span class="pre">Database.get_local_database()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_pairs_exceeding_test_delay"><code class="docutils literal notranslate"><span class="pre">Database.get_pairs_exceeding_test_delay()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_random_pair"><code class="docutils literal notranslate"><span class="pre">Database.get_random_pair()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_term1_data"><code class="docutils literal notranslate"><span class="pre">Database.get_term1_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_term1_list"><code class="docutils literal notranslate"><span class="pre">Database.get_term1_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_term2"><code class="docutils literal notranslate"><span class="pre">Database.get_term2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_voca_name"><code class="docutils literal notranslate"><span class="pre">Database.get_voca_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_item"><code class="docutils literal notranslate"><span class="pre">Database.update_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_retest_value"><code class="docutils literal notranslate"><span class="pre">Database.update_retest_value()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder-firebase">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.firebase</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder.local_database">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.local_database</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase"><code class="docutils literal notranslate"><span class="pre">LocalDatabase</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.active_voca_info_fn"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.active_voca_info_fn</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.add_item"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.add_item()</span></code></a></li>
@@ -426,7 +447,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">get_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.get_db" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.database.Database" title="vocabuilder.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -567,6 +588,16 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.config.Config.get_section">
+<span class="sig-name descname"><span class="pre">get_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.get_section" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SectionProxy</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -810,9 +841,151 @@ picked at random, or should the user select the words from a list?</p>
 </dd></dl>
 
 </section>
-<section id="module-vocabuilder-local-database">
-<h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.local_database</span></code><a class="headerlink" href="#module-vocabuilder-local-database" title="Link to this heading"></a></h2>
-<dl class="py class" id="module-vocabuilder.local_database">
+<section id="module-vocabuilder.database">
+<span id="module-vocabuilder-database"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.database</span></code><a class="headerlink" href="#module-vocabuilder.database" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="vocabuilder.database.Database">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voca_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vocabuilder.mixins.TimeMixin" title="vocabuilder.mixins.TimeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeMixin</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.add_item">
+<span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.add_item" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.check_term1_exists">
+<span class="sig-name descname"><span class="pre">check_term1_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.check_term1_exists" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.create_backup">
+<span class="sig-name descname"><span class="pre">create_backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.create_backup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.delete_item">
+<span class="sig-name descname"><span class="pre">delete_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.delete_item" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.get_local_database">
+<span class="sig-name descname"><span class="pre">get_local_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_local_database" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase" title="vocabuilder.local_database.LocalDatabase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalDatabase</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.get_pairs_exceeding_test_delay">
+<span class="sig-name descname"><span class="pre">get_pairs_exceeding_test_delay</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_pairs_exceeding_test_delay" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.get_random_pair">
+<span class="sig-name descname"><span class="pre">get_random_pair</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_random_pair" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.get_term1_data">
+<span class="sig-name descname"><span class="pre">get_term1_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_term1_data" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.get_term1_list">
+<span class="sig-name descname"><span class="pre">get_term1_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_term1_list" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.get_term2">
+<span class="sig-name descname"><span class="pre">get_term2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_term2" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.get_voca_name">
+<span class="sig-name descname"><span class="pre">get_voca_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_voca_name" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.update_item">
+<span class="sig-name descname"><span class="pre">update_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.update_item" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.update_retest_value">
+<span class="sig-name descname"><span class="pre">update_retest_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.update_retest_value" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-vocabuilder-firebase">
+<h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.firebase</span></code><a class="headerlink" href="#module-vocabuilder-firebase" title="Link to this heading"></a></h2>
+</section>
+<section id="module-vocabuilder.local_database">
+<span id="module-vocabuilder-local-database"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.local_database</span></code><a class="headerlink" href="#module-vocabuilder.local_database" title="Link to this heading"></a></h2>
+<dl class="py class">
 <dt class="sig sig-object py" id="vocabuilder.local_database.LocalDatabase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.local_database.</span></span><span class="sig-name descname"><span class="pre">LocalDatabase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voca_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vocabuilder.mixins.TimeMixin" title="vocabuilder.mixins.TimeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeMixin</span></code></a></p>

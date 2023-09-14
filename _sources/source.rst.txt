@@ -45,8 +45,24 @@ Module ``vocabuilder.csv_helpers``
    :undoc-members:
    :show-inheritance:
 
-Module ``vocabuilder.local_database``
+Module ``vocabuilder.database``
 -------------------------------
+
+.. automodule:: vocabuilder.database
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module ``vocabuilder.firebase``
+-------------------------------
+
+.. automodule:: vocabuilder.firebase
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module ``vocabuilder.local_database``
+-------------------------------------
 
 .. automodule:: vocabuilder.local_database
    :members:
