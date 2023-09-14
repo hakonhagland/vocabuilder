@@ -35,22 +35,20 @@ class LocalDatabase(TimeMixin):
         self.dbname = self.datadir / self.database_fn
         self.csvwrapper = CSVwrapper(self.dbname)
         self.backupdir = self.datadir / self.backup_dirname
-        self.maybe_create_db()
-        self.maybe_create_backup_repo()
-        self.read_database()
+        self._maybe_create_db()
+        self._maybe_create_backup_repo()
+        self._read_database()
         self.create_backup()
-        self.write_cleaned_up()
-        self.update_active_vocabulary_info()
+        self._write_cleaned_up()
+        self._update_active_vocabulary_info()
 
-    def update_active_vocabulary_info(self) -> None:
-        cfg_dir = self.config.get_config_dir()
-        active_voca_info_fn_path = cfg_dir / self.active_voca_info_fn
-        active_voca_info_fn_path.write_text(self.voca_name, encoding="utf-8")
+    # public methods alfabetically sorted below
+    # ------------------------------------------
 
     def add_item(self, item: DatabaseRow) -> None:
         item[self.header.status] = self.status.NOT_DELETED
         item[self.header.last_modified] = self.epoch_in_seconds()  # epoch
-        self.validate_item_content(item)
+        self._validate_item_content(item)
         db_object = item.copy()
         # NOTE: according to the type hints term1 will have type str | int | None,
         #   but we can be sure that term1 will always be of type str, so we skip
@@ -58,13 +56,7 @@ class LocalDatabase(TimeMixin):
         term1 = typing.cast(str, db_object.pop(self.header.term1))
         self.db[term1] = db_object
         self.csvwrapper.append_line(item)
-        logging.info("ADDED: " + self.item_to_string(item))
-
-    def assert_term1_exists(self, term1: str) -> None:
-        if term1 not in self.db:
-            raise LocalDatabaseException(
-                f"Unexpected: trying to update non-existent term '{term1}'"
-            )
+        logging.info("ADDED: " + self._item_to_string(item))
 
     def check_term1_exists(self, term1: str) -> bool:
         return term1 in self.db
@@ -86,19 +78,11 @@ class LocalDatabase(TimeMixin):
         item[self.header.status] = self.status.DELETED
         item[self.header.term1] = term1
         self.csvwrapper.append_line(item)
-        logging.info("DELETED: " + self.item_to_string(item))
+        logging.info("DELETED: " + self._item_to_string(item))
         del self.db[term1]
 
-    def get_epoch_diff_in_days(self, t1: int, t2: int) -> int:
-        """t1, t2: epoch times. In general these times could be negative, but
-        in this application they should always be positive (corresponding to
-        dates after year 2022)"""
-        if t1 > t2:
-            raise LocalDatabaseException(
-                "Bad timestamp. Smaller than previous timestamp. Expected larger"
-            )
-        diff = (t2 - t1) // (24 * 60 * 60)
-        return diff
+    def get_header(self) -> CsvDatabaseHeader:
+        return self.header
 
     def get_pairs_exceeding_test_delay(self) -> list[tuple[str, str]]:
         """Get all candidates for a practice session."""
@@ -152,7 +136,31 @@ class LocalDatabase(TimeMixin):
     def get_voca_name(self) -> str:
         return self.voca_name
 
-    def item_to_string(self, item: DatabaseRow) -> str:
+    def update_item(self, term1: str, item: DatabaseRow) -> None:
+        self._assert_term1_exists(term1)
+        self.db[term1] = item.copy()
+        self._update_dbfile_item(term1)
+
+    def update_retest_value(self, term1: str, delay: int) -> None:
+        """Set a delay (in days) until next time this term should be practiced"""
+        self._assert_term1_exists(term1)
+        # NOTE: we can assume that delay is a non-negative integer
+        assert delay >= 0
+        self.db[term1][self.header.test_delay] = delay
+        now = self.epoch_in_seconds()
+        self.db[term1][self.header.last_test] = str(now)
+        self._update_dbfile_item(term1)
+
+    # private methods alfabetically sorted below
+    # -------------------------------------------
+
+    def _assert_term1_exists(self, term1: str) -> None:
+        if term1 not in self.db:
+            raise LocalDatabaseException(
+                f"Unexpected: trying to update non-existent term '{term1}'"
+            )
+
+    def _item_to_string(self, item: DatabaseRow) -> str:
         return (
             f"term1 = '{item[self.header.term1]}', "
             f"term2 = '{item[self.header.term2]}', "
@@ -161,7 +169,7 @@ class LocalDatabase(TimeMixin):
             f"last_modified = '{item[self.header.last_modified]}'"
         )
 
-    def maybe_create_backup_repo(self) -> None:
+    def _maybe_create_backup_repo(self) -> None:
         if self.backupdir.exists():
             if self.backupdir.is_file():
                 raise LocalDatabaseException(
@@ -178,7 +186,7 @@ class LocalDatabase(TimeMixin):
         else:
             git.Repo.init(self.backupdir)
 
-    def maybe_create_db(self) -> None:
+    def _maybe_create_db(self) -> None:
         if self.dbname.exists():
             if not self.dbname.is_file():
                 raise LocalDatabaseException(
@@ -190,7 +198,7 @@ class LocalDatabase(TimeMixin):
                 typing.cast(list[DatabaseValue], self.header.header)
             )  # This will create the file
 
-    def read_database(self) -> None:
+    def _read_database(self) -> None:
         with self.csvwrapper.open_for_read(self.header) as fp:
             for lineno, row in enumerate(fp, start=1):
                 # NOTE: It should be impossible (?) that len(row) != len(header) here,
@@ -216,30 +224,7 @@ class LocalDatabase(TimeMixin):
                     )
         logging.info(f"Read {len(self.db.keys())} lines from database")
 
-    def update_dbfile_item(self, term1: str) -> None:
-        """Write the data for db[term1] to the database file"""
-        self.db[term1][self.header.last_modified] = self.epoch_in_seconds()  # epoch
-        item = self.db[term1].copy()
-        item[self.header.term1] = term1
-        self.csvwrapper.append_line(item)
-        logging.info("UPDATED: " + self.item_to_string(item))
-
-    def update_item(self, term1: str, item: DatabaseRow) -> None:
-        self.assert_term1_exists(term1)
-        self.db[term1] = item.copy()
-        self.update_dbfile_item(term1)
-
-    def update_retest_value(self, term1: str, delay: int) -> None:
-        """Set a delay (in days) until next time this term should be practiced"""
-        self.assert_term1_exists(term1)
-        # NOTE: we can assume that delay is a non-negative integer
-        assert delay >= 0
-        self.db[term1][self.header.test_delay] = delay
-        now = self.epoch_in_seconds()
-        self.db[term1][self.header.last_test] = str(now)
-        self.update_dbfile_item(term1)
-
-    def validate_item_content(self, item: DatabaseRow) -> None:
+    def _validate_item_content(self, item: DatabaseRow) -> None:
         if len(item.keys()) != len(self.header.header):
             raise LocalDatabaseException("unexpected number of elements for item")
         for key in self.header.header:
@@ -253,7 +238,20 @@ class LocalDatabase(TimeMixin):
                     f"{type(item[key])}, expected type {self.header.types[key]}"
                 )
 
-    def write_cleaned_up(self) -> None:
+    def _update_active_vocabulary_info(self) -> None:
+        cfg_dir = self.config.get_config_dir()
+        active_voca_info_fn_path = cfg_dir / self.active_voca_info_fn
+        active_voca_info_fn_path.write_text(self.voca_name, encoding="utf-8")
+
+    def _update_dbfile_item(self, term1: str) -> None:
+        """Write the data for db[term1] to the database file"""
+        self.db[term1][self.header.last_modified] = self.epoch_in_seconds()  # epoch
+        item = self.db[term1].copy()
+        item[self.header.term1] = term1
+        self.csvwrapper.append_line(item)
+        logging.info("UPDATED: " + self._item_to_string(item))
+
+    def _write_cleaned_up(self) -> None:
         """
         When a database item is modified it is appended to the database file rather than
         having the whole database rewritten. Of course, this will make the database file

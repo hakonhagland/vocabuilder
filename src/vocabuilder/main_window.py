@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
 )
 from vocabuilder.add_window import AddWindow
 from vocabuilder.config import Config
-from vocabuilder.local_database import LocalDatabase
+from vocabuilder.database import Database
 from vocabuilder.exceptions import ConfigException
 from vocabuilder.widgets import QGridMinimalLabel, SelectWordFromList
 from vocabuilder.modify_window import ModifyWindow
@@ -28,7 +28,7 @@ from vocabuilder.mixins import WarningsMixin
 
 
 class MainWindow(QMainWindow, WarningsMixin):
-    def __init__(self, app: QApplication, db: LocalDatabase, config: "Config"):
+    def __init__(self, app: QApplication, db: Database, config: "Config"):
         super().__init__()
         self.config = config
         self.button_config = self.config.config["Buttons"]

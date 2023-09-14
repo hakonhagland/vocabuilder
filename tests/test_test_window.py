@@ -58,7 +58,7 @@ class TestGeneral:
             testwin.main_dialog = wrapper  # type: ignore
             if not pair:
                 mocker.patch(
-                    "vocabuilder.vocabuilder.LocalDatabase.get_random_pair",
+                    "vocabuilder.local_database.LocalDatabase.get_random_pair",
                     return_value=None,
                 )
             idx = testwin.params.button_names.index(button_name)
@@ -293,7 +293,7 @@ class TestGeneral:
             testwin.next_button.clicked.connect(wrapper)
             if not pair:
                 mocker.patch(
-                    "vocabuilder.vocabuilder.LocalDatabase.get_random_pair",
+                    "vocabuilder.local_database.LocalDatabase.get_random_pair",
                     return_value=None,
                 )
             testwin.next_button.click()

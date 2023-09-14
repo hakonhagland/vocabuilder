@@ -17,13 +17,13 @@ from PyQt6.QtWidgets import (
 )
 from vocabuilder.config import Config
 from vocabuilder.constants import TestDirection, TestMethod
-from vocabuilder.local_database import LocalDatabase
+from vocabuilder.database import Database
 from vocabuilder.mixins import WarningsMixin
 from vocabuilder.widgets import SelectWordFromList
 
 
 class TestWindow(QDialog, WarningsMixin):
-    def __init__(self, parent: QWidget, config: Config, database: LocalDatabase):
+    def __init__(self, parent: QWidget, config: Config, database: Database):
         super().__init__(parent)
         self.db = database
         self.config = config

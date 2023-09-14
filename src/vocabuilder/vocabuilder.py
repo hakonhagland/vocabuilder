@@ -20,7 +20,7 @@ from PyQt6.QtWidgets import QApplication
 from vocabuilder.exceptions import SelectVocabularyException
 from vocabuilder.commandline import CommandLineOptions
 from vocabuilder.config import Config
-from vocabuilder.local_database import LocalDatabase
+from vocabuilder.database import Database
 from vocabuilder.main_window import MainWindow
 from vocabuilder.select_voca import SelectVocabulary
 
@@ -61,7 +61,7 @@ def main() -> None:
     cmdline_opts = CommandLineOptions(app)
     config = Config()
     voca_name = select_vocabulary(cmdline_opts, config, app)
-    db = LocalDatabase(config, voca_name)
+    db = Database(config, voca_name)
     set_app_options(app, config)
     window = MainWindow(app, db, config)
     window.show()

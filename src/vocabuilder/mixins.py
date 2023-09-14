@@ -3,6 +3,7 @@ import time
 from typing import Callable
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6.QtCore import Qt
+from vocabuilder.exceptions import TimeException
 
 
 class StringMixin:
@@ -24,6 +25,18 @@ class TimeMixin:
     @staticmethod
     def epoch_in_seconds() -> int:
         return int(time.time())
+
+    @staticmethod
+    def get_epoch_diff_in_days(t1: int, t2: int) -> int:
+        """t1, t2: epoch times. In general these times could be negative, but
+        in this application they should always be positive (corresponding to
+        dates after year 2022)"""
+        if t1 > t2:
+            raise TimeException(
+                "Bad timestamp. Smaller than previous timestamp. Expected larger"
+            )
+        diff = (t2 - t1) // (24 * 60 * 60)
+        return diff
 
 
 class WarningsMixin:

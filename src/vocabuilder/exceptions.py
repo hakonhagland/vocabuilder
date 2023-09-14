@@ -36,3 +36,11 @@ class SelectVocabularyException(Exception):
 
     def __str__(self) -> str:
         return f"Select vocabulary exception: {self.value}"
+
+
+class TimeException(Exception):
+    def __init__(self, value: str):
+        self.value = value
+
+    def __str__(self) -> str:
+        return f"Time exception: {self.value}"

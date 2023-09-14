@@ -9,7 +9,9 @@ from PyQt6.QtWidgets import (
     QApplication,
 )
 
-from vocabuilder.vocabuilder import Config, LocalDatabase, MainWindow
+from vocabuilder.vocabuilder import Config, MainWindow
+from vocabuilder.database import Database
+from vocabuilder.local_database import LocalDatabase
 
 # from vocabuilder.select_voca import SelectVocabulary
 from vocabuilder.test_window import TestWindow as _TestWindow
@@ -88,11 +90,11 @@ def database_object(
     setup_database_dir: Callable[[], Path],
     config_object: Config,
     test_data: PytestDataDict,
-) -> LocalDatabase:
+) -> Database:
     setup_database_dir()
     cfg = config_object
     voca_name = test_data["vocaname"]
-    db = LocalDatabase(cfg, voca_name)
+    db = Database(cfg, voca_name)
     return db
 
 
@@ -121,7 +123,7 @@ def setup_database_dir(
 @pytest.fixture()
 def main_window(
     config_object: Config,
-    database_object: LocalDatabase,
+    database_object: Database,
     qtbot: QtBot,
 ) -> MainWindow:
     db = database_object

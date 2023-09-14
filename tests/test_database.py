@@ -8,66 +8,78 @@ from pytest_mock.plugin import MockerFixture
 from typing import Callable
 from vocabuilder.constants import TermStatus
 from vocabuilder.csv_helpers import CsvDatabaseHeader
-from vocabuilder.exceptions import CsvFileException, LocalDatabaseException
+from vocabuilder.database import Database
+from vocabuilder.exceptions import (
+    CsvFileException,
+    LocalDatabaseException,
+    TimeException,
+)
 from vocabuilder.type_aliases import DatabaseRow
-from vocabuilder.vocabuilder import Config, LocalDatabase
+from vocabuilder.vocabuilder import Config
+from vocabuilder.local_database import LocalDatabase
 from .common import PytestDataDict
 
 # from .conftest import database_object, test_data, data_dir_path
 
 
 class TestAddItem:
-    def test_add_ok(
-        self, caplog: LogCaptureFixture, database_object: LocalDatabase
-    ) -> None:
+    def test_add_ok(self, caplog: LogCaptureFixture, database_object: Database) -> None:
         db = database_object
         caplog.set_level(logging.INFO)
         now = db.epoch_in_seconds()
+        ldb = db.get_local_database()
+        header = ldb.get_header()
         item: DatabaseRow = {
-            db.header.term1: "yes",
-            db.header.term2: "네",
-            db.header.test_delay: 1,
-            db.header.last_test: now,
+            header.term1: "yes",
+            header.term2: "네",
+            header.test_delay: 1,
+            header.last_test: now,
         }
         db.add_item(item)
         assert caplog.records[-1].msg.startswith("ADDED: term1 = 'yes'")
 
-    def test_extra_item(self, database_object: LocalDatabase) -> None:
+    def test_extra_item(self, database_object: Database) -> None:
         """A specific number of keys are required in a DatabaseRow"""
         db = database_object
+        ldb = db.get_local_database()
         now = db.epoch_in_seconds()
+        header = ldb.get_header()
         item: DatabaseRow = {
-            db.header.term1: "yes2",
-            db.header.term2: "네2",
-            db.header.test_delay: 1,
-            db.header.last_test: now,
+            header.term1: "yes2",
+            header.term2: "네2",
+            header.test_delay: 1,
+            header.last_test: now,
             "xyx": "bad_item",  # extra item will not be accepted
         }
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.add_item(item)
         assert "unexpected number of elements" in str(excinfo)
 
-    def test_bad_key(self, database_object: LocalDatabase) -> None:
+    def test_bad_key(self, database_object: Database) -> None:
         db = database_object
         now = db.epoch_in_seconds()
+        ldb = db.get_local_database()
+        header = ldb.get_header()
         item: DatabaseRow = {
-            db.header.term1: "yes3",
-            db.header.term2: "네3",
-            db.header.test_delay: 1,
+            header.term1: "yes3",
+            header.term2: "네3",
+            header.test_delay: 1,
             "zzz": now,  # bad key
         }
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.add_item(item)
         assert re.search(r"item missing key", str(excinfo))
 
-    def test_bad_type(self, database_object: LocalDatabase) -> None:
+    def test_bad_type(self, database_object: Database) -> None:
         db = database_object
         now = db.epoch_in_seconds()
+        ldb = db.get_local_database()
+        header = ldb.get_header()
         item: DatabaseRow = {
-            db.header.term1: "yes2",
-            db.header.term2: "네2",
-            db.header.test_delay: "1",  # this value should be of type int not str
-            db.header.last_test: now,
+            header.term1: "yes2",
+            header.term2: "네2",
+            header.test_delay: "1",  # this value should be of type int not str
+            header.last_test: now,
         }
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.add_item(item)
@@ -141,14 +153,14 @@ class TestDatabaseCreate:
 
 
 class TestDeleteItem:
-    def test_missing(self, database_object: LocalDatabase) -> None:
+    def test_missing(self, database_object: Database) -> None:
         db = database_object
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.delete_item("xyz")
         assert re.search(r"Term1 'xyz' does not exist", str(excinfo))
 
     def test_success(
-        self, caplog: LogCaptureFixture, database_object: LocalDatabase
+        self, caplog: LogCaptureFixture, database_object: Database
     ) -> None:
         db = database_object
         caplog.set_level(logging.INFO)
@@ -159,15 +171,15 @@ class TestDeleteItem:
 class TestEpochDiff:
     day = 24 * 60 * 60
 
-    def test_bad_timestamp(self, database_object: LocalDatabase) -> None:
+    def test_bad_timestamp(self, database_object: Database) -> None:
         db = database_object
         now = db.epoch_in_seconds()
         t2 = now - 1 * self.day
-        with pytest.raises(LocalDatabaseException) as excinfo:
+        with pytest.raises(TimeException) as excinfo:
             db.get_epoch_diff_in_days(now, t2)
         assert re.search(r"Bad timestamp", str(excinfo))
 
-    def test_one_day(self, database_object: LocalDatabase) -> None:
+    def test_one_day(self, database_object: Database) -> None:
         db = database_object
         now = db.epoch_in_seconds()
         t2 = now + 1 * self.day
@@ -175,19 +187,17 @@ class TestEpochDiff:
 
 
 class TestGetPairs:
-    def test_get_all(
-        self, database_object: LocalDatabase, mocker: MockerFixture
-    ) -> None:
+    def test_get_all(self, database_object: Database, mocker: MockerFixture) -> None:
         db = database_object
-        mocker.patch.object(
-            db, "epoch_in_seconds", autospec=True, return_value=1687329957
+        mocker.patch(
+            "vocabuilder.mixins.TimeMixin.epoch_in_seconds",
+            autospec=True,
+            return_value=1687329957,
         )
         pairs = db.get_pairs_exceeding_test_delay()
         assert len(pairs) == 5
 
-    def test_get_single(
-        self, database_object: LocalDatabase, mocker: MockerFixture
-    ) -> None:
+    def test_get_single(self, database_object: Database, mocker: MockerFixture) -> None:
         db = database_object
         mocker.patch(
             "vocabuilder.local_database.random.randint",
@@ -197,41 +207,44 @@ class TestGetPairs:
         assert pair is not None
         assert pair[0] == "apple"
 
-    def test_get_none(
-        self, database_object: LocalDatabase, mocker: MockerFixture
-    ) -> None:
+    def test_get_none(self, database_object: Database, mocker: MockerFixture) -> None:
         db = database_object
-        mocker.patch.object(
-            db, "get_pairs_exceeding_test_delay", autospec=True, return_value=[]
+        mocker.patch(
+            "vocabuilder.local_database.LocalDatabase.get_pairs_exceeding_test_delay",
+            autospec=True,
+            return_value=[],
         )
         pair = db.get_random_pair()
         assert pair is None
 
 
 class TestGetTermData:
-    def test_term1_data(self, database_object: LocalDatabase) -> None:
+    def test_term1_data(self, database_object: Database) -> None:
         db = database_object
         row = db.get_term1_data("apple")
-        assert row[db.header.term2] == "사과"
+        ldb = db.get_local_database()
+        header = ldb.get_header()
+        assert row[header.term2] == "사과"
 
-    def test_term1_data_bad_key(self, database_object: LocalDatabase) -> None:
+    def test_term1_data_bad_key(self, database_object: Database) -> None:
         db = database_object
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.get_term1_data("milk")
         assert re.search(r"non-existing", str(excinfo))
 
-    def test_get_term2(self, database_object: LocalDatabase) -> None:
+    def test_get_term2(self, database_object: Database) -> None:
         db = database_object
         term2 = db.get_term2("apple")
         assert term2 == "사과"
 
 
 class TestOther:
-    def test_datadir(self, database_object: LocalDatabase, data_dir_path: Path) -> None:
+    def test_datadir(self, database_object: Database, data_dir_path: Path) -> None:
         db = database_object
-        assert db.config.datadir_path == data_dir_path
+        ldb = db.get_local_database()
+        assert ldb.config.datadir_path == data_dir_path
 
-    def test_check_term1_exists(self, database_object: LocalDatabase) -> None:
+    def test_check_term1_exists(self, database_object: Database) -> None:
         db = database_object
         assert db.check_term1_exists("apple")
 
@@ -309,7 +322,7 @@ class TestReadDatabase:
 
 
 class TestUpdateDatabase:
-    def test_bad_key(self, database_object: LocalDatabase) -> None:
+    def test_bad_key(self, database_object: Database) -> None:
         db = database_object
         header = CsvDatabaseHeader()
         status = TermStatus()
@@ -325,7 +338,7 @@ class TestUpdateDatabase:
         assert re.search(r"trying to update non-existent term", str(excinfo))
 
     def test_success(
-        self, caplog: LogCaptureFixture, database_object: LocalDatabase
+        self, caplog: LogCaptureFixture, database_object: Database
     ) -> None:
         db = database_object
         header = CsvDatabaseHeader()
@@ -342,7 +355,7 @@ class TestUpdateDatabase:
         assert caplog.records[-1].msg.startswith("UPDATED: term1 = 'apple'")
 
     def test_update_retest(
-        self, caplog: LogCaptureFixture, database_object: LocalDatabase
+        self, caplog: LogCaptureFixture, database_object: Database
     ) -> None:
         db = database_object
         caplog.set_level(logging.INFO)

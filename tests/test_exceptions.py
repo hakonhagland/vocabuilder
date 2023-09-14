@@ -6,6 +6,7 @@ from vocabuilder.exceptions import (
     CsvFileException,
     LocalDatabaseException,
     SelectVocabularyException,
+    TimeException,
 )
 
 
@@ -45,5 +46,13 @@ def test_select_vocabulary_exception() -> None:
     try:
         raise SelectVocabularyException("Testing")
     except SelectVocabularyException as exc:
+        msg = str(exc)
+        assert re.search(r"Testing", msg)
+
+
+def test_time_exception() -> None:
+    try:
+        raise TimeException("Testing")
+    except TimeException as exc:
         msg = str(exc)
         assert re.search(r"Testing", msg)

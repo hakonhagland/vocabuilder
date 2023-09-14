@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
 
 from vocabuilder.config import Config
 from vocabuilder.csv_helpers import CsvDatabaseHeader
-from vocabuilder.local_database import LocalDatabase
+from vocabuilder.database import Database
 from vocabuilder.mixins import StringMixin, WarningsMixin
 
 
@@ -20,9 +20,7 @@ class ModifyWindow(QDialog, WarningsMixin, StringMixin):
     database.
     """
 
-    def __init__(
-        self, parent: QWidget, term1: str, config: Config, database: LocalDatabase
-    ):
+    def __init__(self, parent: QWidget, term1: str, config: Config, database: Database):
         super().__init__(parent)  # make dialog modal
         self.term1 = term1
         self.db = database
