@@ -1,6 +1,7 @@
 import logging
 
 # import re
+from firebase_admin.exceptions import FirebaseError  # type: ignore
 from pathlib import Path
 
 import pytest
@@ -44,12 +45,11 @@ class TestAddItem:
         [
             (True, False, False, False),
             (False, True, False, False),
-            (False, False, False, False),
             (False, False, True, False),
             (False, False, False, True),
         ],
     )
-    def test_add_ok(
+    def test_init_failure(
         self,
         file_not_found: bool,
         file_invalid: bool,
@@ -101,6 +101,10 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
                 "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
                 return_value=None,
             )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
         FirebaseDatabase(cfg, voca_name)
         if file_not_found or file_invalid or cred_missing or url_missing:
             if file_not_found:
@@ -119,6 +123,137 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
                 assert caplog.records[-2].msg.startswith(
                     "Missing firebase databaseURL in config file"
                 )
+            assert caplog.records[-1].msg.startswith("Firebase status: NOT_INITIALIZED")
+
+    @pytest.mark.parametrize(
+        "ref_error, child_error", [(True, False), (False, True), (False, False)]
+    )
+    def test_init(
+        self,
+        ref_error: bool,
+        child_error: bool,
+        caplog: LogCaptureFixture,
+        config_dir_path: Path,
+        data_dir_path: Path,
+        test_data: PytestDataDict,
+        mocker: MockerFixture,
+    ) -> None:
+        caplog.set_level(logging.INFO)
+        cfg_fn = config_dir_path / Config.config_fn
+        cred_fn = self.create_credentials_file(config_dir_path)
+        str_ = f"""[Firebase]
+credentials = {str(cred_fn)}
+databaseURL = https://vocabuilder.firebasedatabase.app"""
+        self.append_to_config_file(cfg_fn, str_)
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_config_dir",
+            return_value=config_dir_path,
+        )
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_data_dir",
+            return_value=data_dir_path,
+        )
+        cfg = Config()
+        voca_name = test_data["vocaname"]
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+            return_value=None,
+        )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
+        if ref_error:
+            mocker.patch(
+                "vocabuilder.firebase_database.firebase_admin.db.reference",
+                side_effect=ValueError,
+            )
+        else:
+            mock = mocker.MagicMock()
+            mocker.patch(
+                "vocabuilder.firebase_database.firebase_admin.db.reference",
+                return_value=mock,
+            )
+            if child_error:
+                mock.child.side_effect = ValueError
+        FirebaseDatabase(cfg, voca_name)
+        if ref_error:
+            assert caplog.records[-2].msg.startswith(
+                "Firebase database reference is invalid"
+            )
+        if child_error:
+            assert caplog.records[-2].msg.startswith("firebase: invalid child path")
+        if ref_error or child_error:
+            assert caplog.records[-1].msg.startswith("Firebase status: NOT_INITIALIZED")
+        else:
+            assert caplog.records[-1].msg.startswith("Firebase status: INITIALIZED")
+
+    @pytest.mark.parametrize(
+        "get_error, db_empty", [(True, False), (False, True), (False, False)]
+    )
+    def test_read(
+        self,
+        get_error: bool,
+        db_empty: bool,
+        caplog: LogCaptureFixture,
+        config_dir_path: Path,
+        data_dir_path: Path,
+        test_data: PytestDataDict,
+        mocker: MockerFixture,
+    ) -> None:
+        caplog.set_level(logging.INFO)
+        cfg_fn = config_dir_path / Config.config_fn
+        cred_fn = self.create_credentials_file(config_dir_path)
+        str_ = f"""[Firebase]
+credentials = {str(cred_fn)}
+databaseURL = https://vocabuilder.firebasedatabase.app"""
+        self.append_to_config_file(cfg_fn, str_)
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_config_dir",
+            return_value=config_dir_path,
+        )
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_data_dir",
+            return_value=data_dir_path,
+        )
+        cfg = Config()
+        voca_name = test_data["vocaname"]
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+            return_value=None,
+        )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
+        mock = mocker.MagicMock()
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.db.reference",
+            return_value=mock,
+        )
+        child_mock = mocker.MagicMock()
+        mock.child.return_value = child_mock
+        if get_error:
+            child_mock.get.side_effect = FirebaseError(
+                "code", "message", cause=None, http_response=None
+            )
+        elif db_empty:
+            child_mock.get.return_value = None
+        else:
+            db_dict = {"NYJ18uc": {"Term1": "100", "Status": "1"}}
+            child_mock.get.return_value = db_dict
+        FirebaseDatabase(cfg, voca_name)
+        if get_error:
+            assert caplog.records[-2].msg.startswith(
+                "Firebase: could not get database content"
+            )
+        elif db_empty:
+            assert caplog.records[-2].msg.startswith("Firebase database is empty")
+        else:
+            assert caplog.records[-2].msg.startswith(
+                "Firebase: read item: NYJ18uc, value: {'Term1': '100', 'Status': '1'}"
+            )
+        if get_error:
             assert caplog.records[-1].msg.startswith("Firebase status: NOT_INITIALIZED")
         else:
             assert caplog.records[-1].msg.startswith("Firebase status: INITIALIZED")

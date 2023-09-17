@@ -34,14 +34,15 @@ Creating a firebase database
 
 * Select "Start in test mode"
 * Go to the "Rules" tab
-* Replace the content of the text box with the following:
+* Replace the content of the text box
+  `with the following <https://firebase.google.com/docs/rules/basics?authuser=0#all_authenticated_users>`_:
 
 .. code-block:: json
 
     {
       "rules": {
-        ".read": true,
-        ".write": true
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid !== null"
       }
     }
 
