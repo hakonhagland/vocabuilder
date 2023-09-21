@@ -154,6 +154,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_term1_list"><code class="docutils literal notranslate"><span class="pre">Database.get_term1_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_term2"><code class="docutils literal notranslate"><span class="pre">Database.get_term2()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_voca_name"><code class="docutils literal notranslate"><span class="pre">Database.get_voca_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.push_updated_items_to_firebase"><code class="docutils literal notranslate"><span class="pre">Database.push_updated_items_to_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_item"><code class="docutils literal notranslate"><span class="pre">Database.update_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_retest_value"><code class="docutils literal notranslate"><span class="pre">Database.update_retest_value()</span></code></a></li>
 </ul>
@@ -172,6 +173,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.database_fn"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.database_fn</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.delete_item"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.delete_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.get_header"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.get_header()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.get_items"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.get_items()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.get_pairs_exceeding_test_delay"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.get_pairs_exceeding_test_delay()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.get_random_pair"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.get_random_pair()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.get_term1_data"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.get_term1_data()</span></code></a></li>
@@ -958,6 +960,16 @@ picked at random, or should the user select the words from a list?</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.push_updated_items_to_firebase">
+<span class="sig-name descname"><span class="pre">push_updated_items_to_firebase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.push_updated_items_to_firebase" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.database.Database.update_item">
 <span class="sig-name descname"><span class="pre">update_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.update_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -1055,6 +1067,16 @@ picked at random, or should the user select the words from a list?</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.csv_helpers.CsvDatabaseHeader" title="vocabuilder.csv_helpers.CsvDatabaseHeader"><code class="xref py py-class docutils literal notranslate"><span class="pre">CsvDatabaseHeader</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.local_database.LocalDatabase.get_items">
+<span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_items" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]]</p>
 </dd>
 </dl>
 </dd></dl>
