@@ -53,7 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="source.html">Source code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="firebase.html">Firebase</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="todo.html">TODO (further work)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">TODO</a></li>
 </ul>
 
         </div>
@@ -188,6 +188,8 @@
       <li><a href="source.html#vocabuilder.csv_helpers.CSVwrapper.append_line">append_line() (vocabuilder.csv_helpers.CSVwrapper method)</a>
 </li>
       <li><a href="source.html#vocabuilder.csv_helpers.CSVwrapper.append_row">append_row() (vocabuilder.csv_helpers.CSVwrapper method)</a>
+</li>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseDatabase.appname">appname (vocabuilder.firebase_database.FirebaseDatabase attribute)</a>
 </li>
       <li><a href="source.html#vocabuilder.test_window.TestWindow.assign_terms_to_practice">assign_terms_to_practice() (vocabuilder.test_window.TestWindow method)</a>
 </li>
@@ -333,8 +335,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source.html#vocabuilder.select_voca.SelectVocabulary.find_existing_vocabularies">find_existing_vocabularies() (vocabuilder.select_voca.SelectVocabulary method)</a>
 </li>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseDatabase">FirebaseDatabase (class in vocabuilder.firebase_database)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseStatus">FirebaseStatus (class in vocabuilder.firebase_database)</a>
+</li>
       <li><a href="source.html#vocabuilder.csv_helpers.CSVwrapperReader.fixup_datatypes">fixup_datatypes() (vocabuilder.csv_helpers.CSVwrapperReader method)</a>
 </li>
       <li><a href="source.html#vocabuilder.csv_helpers.CSVwrapperWriter.fixup_none_datavalues">fixup_none_datavalues() (vocabuilder.csv_helpers.CSVwrapperWriter method)</a>
@@ -361,8 +367,12 @@
 </li>
       <li><a href="source.html#vocabuilder.local_database.LocalDatabase.get_header">get_header() (vocabuilder.local_database.LocalDatabase method)</a>
 </li>
-      <li><a href="source.html#vocabuilder.local_database.LocalDatabase.get_items">get_items() (vocabuilder.local_database.LocalDatabase method)</a>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseDatabase.get_items">get_items() (vocabuilder.firebase_database.FirebaseDatabase method)</a>
+
+      <ul>
+        <li><a href="source.html#vocabuilder.local_database.LocalDatabase.get_items">(vocabuilder.local_database.LocalDatabase method)</a>
 </li>
+      </ul></li>
       <li><a href="source.html#vocabuilder.database.Database.get_local_database">get_local_database() (vocabuilder.database.Database method)</a>
 </li>
       <li><a href="source.html#vocabuilder.select_voca.SelectVocabulary.get_name">get_name() (vocabuilder.select_voca.SelectVocabulary method)</a>
@@ -423,6 +433,12 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseStatus.INITIALIZED">INITIALIZED (vocabuilder.firebase_database.FirebaseStatus attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseDatabase.is_initialized">is_initialized() (vocabuilder.firebase_database.FirebaseDatabase method)</a>
+</li>
       <li><a href="source.html#vocabuilder.widgets.QSelectItemScrollArea.item_clicked">item_clicked() (vocabuilder.widgets.QSelectItemScrollArea method)</a>
 </li>
   </ul></td>
@@ -505,6 +521,8 @@
 </li>
         <li><a href="source.html#module-vocabuilder.exceptions">vocabuilder.exceptions</a>
 </li>
+        <li><a href="source.html#module-vocabuilder.firebase_database">vocabuilder.firebase_database</a>
+</li>
         <li><a href="source.html#module-vocabuilder.local_database">vocabuilder.local_database</a>
 </li>
         <li><a href="source.html#module-vocabuilder.main_window">vocabuilder.main_window</a>
@@ -540,6 +558,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source.html#vocabuilder.constants.TermStatus.NOT_DELETED">NOT_DELETED (vocabuilder.constants.TermStatus attribute)</a>
 </li>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseStatus.NOT_INITIALIZED">NOT_INITIALIZED (vocabuilder.firebase_database.FirebaseStatus attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -574,6 +594,10 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseDatabase.push_item">push_item() (vocabuilder.firebase_database.FirebaseDatabase method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source.html#vocabuilder.database.Database.push_updated_items_to_firebase">push_updated_items_to_firebase() (vocabuilder.database.Database method)</a>
 </li>
   </ul></td>
@@ -606,6 +630,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="source.html#vocabuilder.firebase_database.FirebaseDatabase.read_database">read_database() (vocabuilder.firebase_database.FirebaseDatabase method)</a>
+</li>
       <li><a href="source.html#vocabuilder.config.Config.read_defaults">read_defaults() (vocabuilder.config.Config method)</a>
 </li>
       <li><a href="source.html#vocabuilder.main_window.MainWindow.run_task">run_task() (vocabuilder.main_window.MainWindow method)</a>
@@ -762,14 +788,21 @@
 </li>
       </ul></li>
       <li>
+    vocabuilder.firebase_database
+
+      <ul>
+        <li><a href="source.html#module-vocabuilder.firebase_database">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
     vocabuilder.local_database
 
       <ul>
         <li><a href="source.html#module-vocabuilder.local_database">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     vocabuilder.main_window
 

@@ -22,7 +22,7 @@ Welcome to vocabuilder's documentation!
     source
     firebase
     Development <development>
-    todo
+    TODO <todo>
 
 Indices and tables
 ==================

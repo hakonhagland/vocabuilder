@@ -161,7 +161,22 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder-firebase">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.firebase</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder.firebase_database">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.firebase_database</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.appname"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.appname</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.get_items"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.get_items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.is_initialized"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.is_initialized()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.push_item"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.push_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.read_database"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.read_database()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseStatus"><code class="docutils literal notranslate"><span class="pre">FirebaseStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseStatus.INITIALIZED"><code class="docutils literal notranslate"><span class="pre">FirebaseStatus.INITIALIZED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseStatus.NOT_INITIALIZED"><code class="docutils literal notranslate"><span class="pre">FirebaseStatus.NOT_INITIALIZED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder.local_database">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.local_database</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase"><code class="docutils literal notranslate"><span class="pre">LocalDatabase</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase.active_voca_info_fn"><code class="docutils literal notranslate"><span class="pre">LocalDatabase.active_voca_info_fn</span></code></a></li>
@@ -342,7 +357,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="firebase.html">Firebase</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="todo.html">TODO (further work)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">TODO</a></li>
 </ul>
 
         </div>
@@ -993,8 +1008,75 @@ picked at random, or should the user select the words from a list?</p>
 </dd></dl>
 
 </section>
-<section id="module-vocabuilder-firebase">
-<h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.firebase</span></code><a class="headerlink" href="#module-vocabuilder-firebase" title="Link to this heading"></a></h2>
+<section id="module-vocabuilder.firebase_database">
+<span id="module-vocabuilder-firebase-database"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.firebase_database</span></code><a class="headerlink" href="#module-vocabuilder.firebase_database" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.firebase_database.</span></span><span class="sig-name descname"><span class="pre">FirebaseDatabase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voca_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vocabuilder.mixins.TimeMixin" title="vocabuilder.mixins.TimeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeMixin</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.appname">
+<span class="sig-name descname"><span class="pre">appname</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vocabuilder'</span></em><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.appname" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.get_items">
+<span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.get_items" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.is_initialized">
+<span class="sig-name descname"><span class="pre">is_initialized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.is_initialized" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.push_item">
+<span class="sig-name descname"><span class="pre">push_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.push_item" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.read_database">
+<span class="sig-name descname"><span class="pre">read_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.read_database" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.firebase_database.</span></span><span class="sig-name descname"><span class="pre">FirebaseStatus</span></span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseStatus.INITIALIZED">
+<span class="sig-name descname"><span class="pre">INITIALIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseStatus.INITIALIZED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseStatus.NOT_INITIALIZED">
+<span class="sig-name descname"><span class="pre">NOT_INITIALIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseStatus.NOT_INITIALIZED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-vocabuilder.local_database">
 <span id="module-vocabuilder-local-database"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.local_database</span></code><a class="headerlink" href="#module-vocabuilder.local_database" title="Link to this heading"></a></h2>
