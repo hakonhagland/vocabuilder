@@ -1,3 +1,6 @@
+import logging
+import typing
+
 from vocabuilder.config import Config
 from vocabuilder.firebase_database import FirebaseDatabase
 from vocabuilder.local_database import LocalDatabase
@@ -9,6 +12,8 @@ class Database(TimeMixin):
     def __init__(self, config: Config, voca_name: str) -> None:
         self.local_database = LocalDatabase(config, voca_name)
         self.firebase_database = FirebaseDatabase(config, voca_name)
+        if self.firebase_database.is_initialized():
+            self.push_updated_items_to_firebase()
         self.config = config
         self.voca_name = voca_name
 
@@ -26,6 +31,33 @@ class Database(TimeMixin):
 
     def delete_item(self, term1: str) -> None:
         self.local_database.delete_item(term1)
+
+    def push_updated_items_to_firebase(self) -> None:
+        csv_items = self.local_database.get_items()
+        logging.info(f"csv_items: {csv_items}")
+        firebase_items = self.firebase_database.get_items()
+        header = self.local_database.header
+        num_items = 0
+        logging.info("updating firebase..")
+        for key, value in csv_items.items():
+            if key in firebase_items:
+                last_mod_local = int(typing.cast(str, value[header.last_modified]))
+                last_mod_fb = int(
+                    typing.cast(str, firebase_items[key][header.last_modified])
+                )
+                if last_mod_local > last_mod_fb:
+                    logging.info(
+                        f"Updating firebase item: {key} (local value is newer)"
+                    )
+                    self.firebase_database.push_item(key, value)
+                    num_items += 1
+            else:
+                self.firebase_database.push_item(key, value)
+                num_items += 1
+        if num_items > 0:
+            logging.info(f"Pushed {num_items} items to firebase")
+        else:
+            logging.info("No items pushed to firebase")
 
     def get_local_database(self) -> LocalDatabase:
         return self.local_database

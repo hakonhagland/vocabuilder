@@ -3,9 +3,12 @@ import re
 from pathlib import Path
 
 import pytest
+
+from firebase_admin.exceptions import FirebaseError  # type: ignore
 from _pytest.logging import LogCaptureFixture
 from pytest_mock.plugin import MockerFixture
 from typing import Callable
+
 from vocabuilder.constants import TermStatus
 from vocabuilder.csv_helpers import CsvDatabaseHeader
 from vocabuilder.database import Database
@@ -120,7 +123,101 @@ class TestBackupRepo:
         assert re.search(r"Expected directory", str(excinfo))
 
 
-class TestDatabaseCreate:
+class TestDataBase:
+    @pytest.mark.parametrize(
+        "local_db_empty, push_error, value_error, type_error",
+        [
+            (True, False, False, False),
+            (False, False, False, False),
+            (False, True, False, False),
+            (False, False, True, False),
+            (False, False, False, True),
+        ],
+    )
+    def test_create(
+        self,
+        local_db_empty: bool,
+        push_error: bool,
+        value_error: bool,
+        type_error: bool,
+        caplog: LogCaptureFixture,
+        config_object_fb: Config,
+        setup_database_dir: Callable[[], Path],
+        mocker: MockerFixture,
+        test_data: PytestDataDict,
+    ) -> None:
+        caplog.set_level(logging.INFO)
+        cfg = config_object_fb
+        setup_database_dir()
+        voca_name = test_data["vocaname"]
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+            return_value=None,
+        )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
+        mock = mocker.MagicMock()
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.db.reference",
+            return_value=mock,
+        )
+        child_mock = mocker.MagicMock()
+        mock.child.return_value = child_mock
+        header = CsvDatabaseHeader()
+        db_dict = {
+            "NYJ18uc": {
+                header.term1: "apple",
+                header.term2: "사과",
+                header.test_delay: "1",
+                header.last_test: "1684886400",
+                header.last_modified: "1677329957",  # local db: 1687329957
+                header.status: TermStatus.NOT_DELETED,
+            },
+            "NYJ18ud": {  # first duplicate item
+                header.term1: "apple",
+                header.term2: "사과",
+                header.test_delay: "1",
+                header.last_test: "1684886400",
+                header.last_modified: "1677329959",  # local db: 1687329957
+                header.status: TermStatus.NOT_DELETED,
+            },
+            "NYJ18ue": {  # second duplicate item
+                header.term1: "apple",
+                header.term2: "사과",
+                header.test_delay: "1",
+                header.last_test: "1684886400",
+                header.last_modified: "1677329958",  # local db: 1687329957
+                header.status: TermStatus.NOT_DELETED,
+            },
+        }
+        child_mock.get.return_value = db_dict
+        if push_error:
+            child_mock.push.side_effect = FirebaseError(
+                code="code", message="message", http_response=None
+            )
+        elif value_error:
+            child_mock.push.side_effect = ValueError
+        elif type_error:
+            child_mock.push.side_effect = TypeError
+        if local_db_empty:
+            mocker.patch(
+                "vocabuilder.local_database.LocalDatabase.get_items",
+                return_value={},
+            )
+        db = Database(cfg, voca_name)
+        if push_error:
+            assert caplog.records[-2].msg.startswith("Firebase: could not push item: ")
+        elif value_error:
+            assert caplog.records[-2].msg.startswith("Firebase: invalid value error: ")
+        elif type_error:
+            assert caplog.records[-2].msg.startswith("Firebase: invalid type error: ")
+        else:
+            assert db is not None
+
+
+class TestLocalDatabaseCreate:
     def test_create_fail(
         self,
         setup_database_dir: Callable[[], Path],

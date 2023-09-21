@@ -8,6 +8,12 @@ from vocabuilder.csv_helpers import CsvDatabaseHeader
 
 # from vocabuilder.local_database import LocalDatabase
 from vocabuilder.mixins import TimeMixin
+from vocabuilder.type_aliases import DatabaseRow, DatabaseType
+
+
+class FirebaseStatus:
+    NOT_INITIALIZED = 0
+    INITIALIZED = 1
 
 
 class FirebaseDatabase(TimeMixin):
@@ -18,6 +24,7 @@ class FirebaseDatabase(TimeMixin):
         self.voca_name = voca_name
         self.header = CsvDatabaseHeader()
         self.status = FirebaseStatus.NOT_INITIALIZED
+        self.data: DatabaseType = {}
         if self._read_config_parameters():
             if self._initialize_service_account():
                 if self._get_database_reference():
@@ -27,6 +34,32 @@ class FirebaseDatabase(TimeMixin):
 
     # public methods sorted alphabetically
     # ------------------------------------
+
+    def get_items(self) -> DatabaseType:
+        return self.data
+
+    def is_initialized(self) -> bool:
+        return self.status == FirebaseStatus.INITIALIZED
+
+    def push_item(self, key: str, value: DatabaseRow) -> None:
+        object = value.copy()
+        object[self.header.term1] = key
+        try:
+            self.db.push(object)
+        except FirebaseError as exc:
+            logging.info(
+                "Firebase: could not push item: cause:"
+                f" {exc.cause}, error: {exc.code}, "
+                f"http_response: {exc.http_response}"
+            )
+            return
+        except ValueError:
+            logging.info(f"Firebase: invalid value error: {object}")
+            return
+        except TypeError:
+            logging.info(f"Firebase: invalid type error: {object}")
+            return
+        logging.info(f"Firebase: pushed item: '{key}'")
 
     def read_database(self) -> bool:
         try:
@@ -41,15 +74,28 @@ class FirebaseDatabase(TimeMixin):
                 f"http_response: {exc.http_response}"
             )
             return False
+        self.data = {}
         if snapshot is None:
             logging.info("Firebase database is empty")
             return True
-        self.data = {}
+        num_duplicates = 0
+        num_items = 0
+        logging.info("Firebase: reading database..")
         for raw_key in snapshot.keys():
             item = snapshot[raw_key].copy()
-            logging.info(f"Firebase: read item: {raw_key}, value: {item}")
+            # logging.info(f"Firebase: read item: {raw_key}, value: {item}")
             key = item.pop(self.header.term1)
+            if key in self.data:
+                num_duplicates += 1
+                lm1 = self.data[key][self.header.last_modified]
+                lm2 = item[self.header.last_modified]
+                if lm1 > lm2:  # old value is newer, so do nothing
+                    continue
             self.data[key] = item
+            num_items += 1
+        if num_duplicates > 0:
+            logging.info(f"Firebase: found {num_duplicates} duplicate items")
+        logging.info(f"Firebase: read {num_items} items from database")
         return True
 
     # private methods sorted alphabetically
@@ -110,8 +156,3 @@ class FirebaseDatabase(TimeMixin):
             return "INITIALIZED"
         else:
             return "UNKNOWN"  # pragma: no cover
-
-
-class FirebaseStatus:
-    NOT_INITIALIZED = 0
-    INITIALIZED = 1

@@ -12,7 +12,7 @@ from vocabuilder.constants import TermStatus
 from vocabuilder.csv_helpers import CsvDatabaseHeader, CSVwrapper
 from vocabuilder.exceptions import LocalDatabaseException
 from vocabuilder.mixins import TimeMixin
-from vocabuilder.type_aliases import DatabaseRow, DatabaseValue
+from vocabuilder.type_aliases import DatabaseRow, DatabaseValue, DatabaseType
 
 
 class LocalDatabase(TimeMixin):
@@ -29,7 +29,7 @@ class LocalDatabase(TimeMixin):
         self.voca_name = voca_name
         self.datadir = config.get_data_dir() / self.database_dir / voca_name
         self.datadir.mkdir(parents=True, exist_ok=True)
-        self.db: dict[str, DatabaseRow] = {}
+        self.db: DatabaseType = {}
         self.status = TermStatus()
         self.header = CsvDatabaseHeader()
         self.dbname = self.datadir / self.database_fn
@@ -80,6 +80,9 @@ class LocalDatabase(TimeMixin):
         self.csvwrapper.append_line(item)
         logging.info("DELETED: " + self._item_to_string(item))
         del self.db[term1]
+
+    def get_items(self) -> DatabaseType:
+        return self.db
 
     def get_header(self) -> CsvDatabaseHeader:
         return self.header
@@ -222,7 +225,7 @@ class LocalDatabase(TimeMixin):
                         f"Unexpected value for status at line {lineno} in file "
                         f"{self.csvwrapper.filename}"
                     )
-        logging.info(f"Read {len(self.db.keys())} lines from database")
+        logging.info(f"Read {len(self.db.keys())} lines from local database")
 
     def _validate_item_content(self, item: DatabaseRow) -> None:
         if len(item.keys()) != len(self.header.header):

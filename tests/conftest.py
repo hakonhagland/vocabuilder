@@ -86,8 +86,59 @@ def config_object(
 
 
 @pytest.fixture()
+def config_object_fb(
+    config_dir_path: Path,
+    credentials_file: Path,
+    mocker: MockerFixture,
+    data_dir_path: Path,
+) -> Config:
+    cfg_dir = config_dir_path
+    data_dir = data_dir_path
+    mocker.patch(
+        "vocabuilder.config.platformdirs.user_config_dir",
+        return_value=cfg_dir,
+    )
+    mocker.patch(
+        "vocabuilder.config.platformdirs.user_data_dir",
+        return_value=data_dir,
+    )
+    cfg_fn = cfg_dir / Config.config_fn
+    cred_fn = credentials_file
+    str_ = f"""[Firebase]
+credentials = {str(cred_fn)}
+databaseURL = https://vocabuilder.firebasedatabase.app"""
+    with open(str(cfg_fn), "a", encoding="utf_8") as fp:
+        fp.write(str_)
+    cfg = Config()
+    return cfg
+
+
+@pytest.fixture()
+def credentials_file(config_dir_path: Path) -> Path:
+    cred_fn = config_dir_path / "credentials.json"
+    cred_str = r"""{
+  "type": "service_account",
+  "project_id": "vocabuilder",
+  "private_key_id": "xxxx",
+  "private_key": "-----BEGIN PRIVATE KEY-----YomQoU1qLZ7S8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk@vocabuilder.gserviceaccount.com",
+  "client_id": "102",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-vocabuilder.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
+"""  # noqa: B950
+    with open(str(cred_fn), "w", encoding="utf_8") as fp:
+        fp.write(cred_str)
+    return cred_fn
+
+
+@pytest.fixture()
 def database_object(
     setup_database_dir: Callable[[], Path],
+    config_dir_path: Path,
     config_object: Config,
     test_data: PytestDataDict,
     mocker: MockerFixture,

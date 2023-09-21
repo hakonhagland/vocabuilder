@@ -19,27 +19,6 @@ class TestAddItem:
         with open(str(cfg_fn), "a", encoding="utf_8") as fp:
             fp.write(str_)
 
-    def create_credentials_file(self, config_dir_path: Path) -> Path:
-        cred_fn = config_dir_path / "credentials.json"
-        cred_str = r"""{
-  "type": "service_account",
-  "project_id": "vocabuilder",
-  "private_key_id": "xxxx",
-  "private_key": "-----BEGIN PRIVATE KEY-----YomQoU1qLZ7S8=\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk@vocabuilder.gserviceaccount.com",
-  "client_id": "102",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-vocabuilder.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
-"""  # noqa: B950
-
-        with open(str(cred_fn), "w", encoding="utf_8") as fp:
-            fp.write(cred_str)
-        return cred_fn
-
     @pytest.mark.parametrize(
         "file_not_found, file_invalid, cred_missing, url_missing",
         [
@@ -55,6 +34,7 @@ class TestAddItem:
         file_invalid: bool,
         cred_missing: bool,
         url_missing: bool,
+        credentials_file: Path,
         caplog: LogCaptureFixture,
         config_dir_path: Path,
         data_dir_path: Path,
@@ -63,7 +43,7 @@ class TestAddItem:
     ) -> None:
         caplog.set_level(logging.INFO)
         cfg_fn = config_dir_path / Config.config_fn
-        cred_fn = self.create_credentials_file(config_dir_path)
+        cred_fn = credentials_file
         if cred_missing:
             str_ = """[Firebase]
 """
@@ -132,6 +112,7 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
         self,
         ref_error: bool,
         child_error: bool,
+        credentials_file: Path,
         caplog: LogCaptureFixture,
         config_dir_path: Path,
         data_dir_path: Path,
@@ -140,7 +121,7 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
     ) -> None:
         caplog.set_level(logging.INFO)
         cfg_fn = config_dir_path / Config.config_fn
-        cred_fn = self.create_credentials_file(config_dir_path)
+        cred_fn = credentials_file
         str_ = f"""[Firebase]
 credentials = {str(cred_fn)}
 databaseURL = https://vocabuilder.firebasedatabase.app"""
@@ -195,6 +176,7 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
         self,
         get_error: bool,
         db_empty: bool,
+        credentials_file: Path,
         caplog: LogCaptureFixture,
         config_dir_path: Path,
         data_dir_path: Path,
@@ -203,7 +185,7 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
     ) -> None:
         caplog.set_level(logging.INFO)
         cfg_fn = config_dir_path / Config.config_fn
-        cred_fn = self.create_credentials_file(config_dir_path)
+        cred_fn = credentials_file
         str_ = f"""[Firebase]
 credentials = {str(cred_fn)}
 databaseURL = https://vocabuilder.firebasedatabase.app"""
@@ -251,7 +233,7 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
             assert caplog.records[-2].msg.startswith("Firebase database is empty")
         else:
             assert caplog.records[-2].msg.startswith(
-                "Firebase: read item: NYJ18uc, value: {'Term1': '100', 'Status': '1'}"
+                "Firebase: read 1 items from database"
             )
         if get_error:
             assert caplog.records[-1].msg.startswith("Firebase status: NOT_INITIALIZED")
