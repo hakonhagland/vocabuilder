@@ -53,10 +53,10 @@ Module ``vocabuilder.database``
    :undoc-members:
    :show-inheritance:
 
-Module ``vocabuilder.firebase``
--------------------------------
+Module ``vocabuilder.firebase_database``
+----------------------------------------
 
-.. automodule:: vocabuilder.firebase
+.. automodule:: vocabuilder.firebase_database
    :members:
    :undoc-members:
    :show-inheritance:
