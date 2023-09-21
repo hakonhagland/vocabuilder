@@ -34,7 +34,6 @@ class Database(TimeMixin):
 
     def push_updated_items_to_firebase(self) -> None:
         csv_items = self.local_database.get_items()
-        logging.info(f"csv_items: {csv_items}")
         firebase_items = self.firebase_database.get_items()
         header = self.local_database.header
         num_items = 0
