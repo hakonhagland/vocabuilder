@@ -1,7 +1,13 @@
 TODO (further work)
 ===================
 
-* Finish Firebase implementation
+* Finish Firebase implementation. Currently, firebase is updated from local
+  database, but not the other way around. This is also only done at the start
+  of the program. We need to update continuously. We also need to implement a way to
+  clean up duplicated entries in the firebase database like we do for the local
+  database.
+* If several devices (e.g. android, iPad, laptop) are used at the same time, we
+  must continuously check firebase for updates (on each device).
 * Implement view button. It should open a view of the local database content.
 * Implement delete button. It should enable the user to delete a term from the
   database.
