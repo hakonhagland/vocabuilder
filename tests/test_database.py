@@ -134,7 +134,7 @@ class TestDataBase:
             (False, False, False, True),
         ],
     )
-    def test_create(
+    def test_create1(
         self,
         local_db_empty: bool,
         push_error: bool,
@@ -170,25 +170,25 @@ class TestDataBase:
             "NYJ18uc": {
                 header.term1: "apple",
                 header.term2: "사과",
-                header.test_delay: "1",
-                header.last_test: "1684886400",
-                header.last_modified: "1677329957",  # local db: 1687329957
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1677329957,  # local db: 1687329957
                 header.status: TermStatus.NOT_DELETED,
             },
             "NYJ18ud": {  # first duplicate item
                 header.term1: "apple",
                 header.term2: "사과",
-                header.test_delay: "1",
-                header.last_test: "1684886400",
-                header.last_modified: "1677329959",  # local db: 1687329957
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1677329959,  # local db: 1687329957
                 header.status: TermStatus.NOT_DELETED,
             },
             "NYJ18ue": {  # second duplicate item
                 header.term1: "apple",
                 header.term2: "사과",
-                header.test_delay: "1",
-                header.last_test: "1684886400",
-                header.last_modified: "1677329958",  # local db: 1687329957
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1677329958,  # local db: 1687329957
                 header.status: TermStatus.NOT_DELETED,
             },
         }
@@ -206,6 +206,10 @@ class TestDataBase:
                 "vocabuilder.local_database.LocalDatabase.get_items",
                 return_value={},
             )
+        mocker.patch(
+            "vocabuilder.database.Database.push_updated_items_to_local_database",
+            return_value=None,
+        )
         db = Database(cfg, voca_name)
         if push_error:
             assert caplog.records[-2].msg.startswith("Firebase: could not push item: ")
@@ -215,6 +219,77 @@ class TestDataBase:
             assert caplog.records[-2].msg.startswith("Firebase: invalid type error: ")
         else:
             assert db is not None
+
+    @pytest.mark.parametrize("assign_items", [False, True])
+    def test_create2(
+        self,
+        assign_items: bool,
+        caplog: LogCaptureFixture,
+        config_object_fb: Config,
+        setup_database_dir: Callable[[], Path],
+        mocker: MockerFixture,
+        test_data: PytestDataDict,
+    ) -> None:
+        caplog.set_level(logging.INFO)
+        cfg = config_object_fb
+        setup_database_dir()
+        voca_name = test_data["vocaname"]
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+            return_value=None,
+        )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
+        mock = mocker.MagicMock()
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.db.reference",
+            return_value=mock,
+        )
+        child_mock = mocker.MagicMock()
+        mock.child.return_value = child_mock
+        header = CsvDatabaseHeader()
+        db_dict = {
+            "NYJ18uc": {
+                header.term1: "apple",
+                header.term2: "사과",
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1677329957,  # local db: 1687329957
+                header.status: TermStatus.NOT_DELETED,
+            },
+        }
+        if assign_items:
+            db_dict["NYJ18ud"] = {  # This item is not in the local database
+                header.term1: "apple2",
+                header.term2: "사과",
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1677329959,
+                header.status: TermStatus.NOT_DELETED,
+            }
+            db_dict["NYJ18ue"] = {  # duplicate item
+                header.term1: "apple",
+                header.term2: "사과",
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1697329958,  # local db: 1687329957
+                header.status: TermStatus.NOT_DELETED,
+            }
+        child_mock.get.return_value = db_dict
+        mocker.patch(
+            "vocabuilder.database.Database.push_updated_items_to_firebase",
+            return_value=None,
+        )
+        db = Database(cfg, voca_name)
+        assert db is not None
+        if assign_items:
+            assert caplog.records[-1].msg.startswith("Pushed 2 items to local database")
+        else:
+            assert caplog.records[-1].msg.startswith(
+                "No items pushed to local database"
+            )
 
 
 class TestLocalDatabaseCreate:

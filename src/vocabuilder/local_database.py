@@ -46,6 +46,16 @@ class LocalDatabase(TimeMixin):
     # ------------------------------------------
 
     def add_item(self, item: DatabaseRow) -> None:
+        """Add a new item to the database.
+
+        :param item: a dict with the following keys:
+        ``header.term1``, ``header.term2``, ``header.test_delay``,
+        and ``header.last_test``. Here ``header`` refers to the
+        ``CsvDatabaseHeader`` object.
+
+        The ``header.status`` and ``header.last_modified`` keys are added automatically, then
+        the dict is pushed to the database
+        """
         item[self.header.status] = self.status.NOT_DELETED
         item[self.header.last_modified] = self.epoch_in_seconds()  # epoch
         self._validate_item_content(item)
@@ -57,6 +67,25 @@ class LocalDatabase(TimeMixin):
         self.db[term1] = db_object
         self.csvwrapper.append_line(item)
         logging.info("ADDED: " + self._item_to_string(item))
+
+    def assign_item(self, term1: str, item: DatabaseRow) -> None:
+        """Replace, add, or delete a new item to the database. The item
+        is implicitly deleted if the ``header.status`` key is set to
+        ``TermStatus.DELETED``.
+
+        :param item: a dict with the following keys:
+        ``header.status``, ``header.term2``,
+        ``header.test_delay``, ``header.last_test``, and
+        ``header.last_modified``. Here ``header`` refers to the
+        ``CsvDatabaseHeader`` object.
+        """
+        file_obj = item.copy()
+        file_obj[self.header.term1] = term1
+        self._validate_item_content(file_obj)
+        db_object = item.copy()
+        self.db[term1] = db_object
+        self.csvwrapper.append_line(file_obj)
+        logging.info("ASSIGNED: " + self._item_to_string(file_obj))
 
     def check_term1_exists(self, term1: str) -> bool:
         return term1 in self.db
@@ -150,8 +179,7 @@ class LocalDatabase(TimeMixin):
         # NOTE: we can assume that delay is a non-negative integer
         assert delay >= 0
         self.db[term1][self.header.test_delay] = delay
-        now = self.epoch_in_seconds()
-        self.db[term1][self.header.last_test] = str(now)
+        self.db[term1][self.header.last_test] = self.epoch_in_seconds()
         self._update_dbfile_item(term1)
 
     # private methods alfabetically sorted below
@@ -228,6 +256,12 @@ class LocalDatabase(TimeMixin):
         logging.info(f"Read {len(self.db.keys())} lines from local database")
 
     def _validate_item_content(self, item: DatabaseRow) -> None:
+        """Validate that ``item`` has the correct keys and that the values have the correct
+        types. All the keys listed in the ``CsvDatabaseHeader`` object must be present in the
+        item.
+
+        :param item: a dict with the keys as defined in the ``CsvDatabaseHeader`` object.
+        """
         if len(item.keys()) != len(self.header.header):
             raise LocalDatabaseException("unexpected number of elements for item")
         for key in self.header.header:

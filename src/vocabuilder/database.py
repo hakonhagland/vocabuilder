@@ -14,6 +14,7 @@ class Database(TimeMixin):
         self.firebase_database = FirebaseDatabase(config, voca_name)
         if self.firebase_database.is_initialized():
             self.push_updated_items_to_firebase()
+            self.push_updated_items_to_local_database()
         self.config = config
         self.voca_name = voca_name
 
@@ -40,10 +41,12 @@ class Database(TimeMixin):
         logging.info("updating firebase..")
         for key, value in csv_items.items():
             if key in firebase_items:
-                last_mod_local = int(typing.cast(str, value[header.last_modified]))
-                last_mod_fb = int(
-                    typing.cast(str, firebase_items[key][header.last_modified])
+                last_mod_local = typing.cast(int, value[header.last_modified])
+                assert isinstance(last_mod_local, int)
+                last_mod_fb = typing.cast(
+                    int, firebase_items[key][header.last_modified]
                 )
+                assert isinstance(last_mod_fb, int)
                 if last_mod_local > last_mod_fb:
                     logging.info(
                         f"Updating firebase item: {key} (local value is newer)"
@@ -57,6 +60,32 @@ class Database(TimeMixin):
             logging.info(f"Pushed {num_items} items to firebase")
         else:
             logging.info("No items pushed to firebase")
+
+    def push_updated_items_to_local_database(self) -> None:
+        csv_items = self.local_database.get_items()
+        firebase_items = self.firebase_database.get_items()
+        header = self.local_database.header
+        num_items = 0
+        logging.info("updating local database..")
+        for key, value in firebase_items.items():
+            if key in csv_items:
+                last_mod_fb = typing.cast(int, value[header.last_modified])
+                assert isinstance(last_mod_fb, int)
+                last_mod_local = typing.cast(int, csv_items[key][header.last_modified])
+                assert isinstance(last_mod_local, int)
+                if last_mod_fb > last_mod_local:
+                    logging.info(
+                        f"Updating local db item: {key} (firebase value is newer)"
+                    )
+                    self.local_database.assign_item(key, value)
+                    num_items += 1
+            else:
+                self.local_database.assign_item(key, value)
+                num_items += 1
+        if num_items > 0:
+            logging.info(f"Pushed {num_items} items to local database")
+        else:
+            logging.info("No items pushed to local database")
 
     def get_local_database(self) -> LocalDatabase:
         return self.local_database
