@@ -84,18 +84,24 @@
              
   <section id="todo-further-work">
 <h1>TODO (further work)<a class="headerlink" href="#todo-further-work" title="Link to this heading"></a></h1>
-<ul class="simple">
-<li><p>Finish Firebase implementation. Currently, firebase is updated from local
-database, but not the other way around. This is also only done at the start
+<ul>
+<li><p>Refactor firebase database structure. Instead of using the same logic as for
+the local database where we push new entries at the end of the file and clean up duplicates
+later when needed, we should use the term as the key and use the update() or transaction()
+method to update an existing entry directly. This will make it easier to keep the local
+and firebase databases in sync and make it simpler to delete entries from the database.</p></li>
+<li><p>Finish Firebase implementation. Firebase is only synchronized at the start
 of the program. We need to update continuously. We also need to implement a way to
-clean up duplicated entries in the firebase database like we do for the local
+clean up duplicated and deleted entries in the firebase database like we do for the local
 database.</p></li>
 <li><p>If several devices (e.g. android, iPad, laptop) are used at the same time, we
 must continuously check firebase for updates (on each device).</p></li>
-<li><p>Implement view button. It should open a view of the local database content.</p></li>
+<li><p>Implement view button. It should open a view of the local database content. This window
+could be non-blocking, so the user could keep this window open while also running
+a practice session from the test window.</p></li>
 <li><p>Implement delete button. It should enable the user to delete a term from the
 database.</p></li>
-<li><p>Fix edit config option. Currently the app will not quit until the editor has exited.
+<li><p>Fix edit config option. Currently, the app will not quit until the editor has exited.
 The implementation of a daemon process will be necessary, and implementation will be
 different on different platforms.</p></li>
 <li><p>Fix docker image such that it will run under x11docker.</p></li>
@@ -103,13 +109,31 @@ different on different platforms.</p></li>
 of the app editing the same database at the same time.</p></li>
 <li><p>Add documentation for Python source code. Transfer this to sphinx docs.</p></li>
 <li><p>Add feature: Improve the usability of the app by adding a tag field to each data item.
-Currently all items implicitly have the tag “Translation”. But the user may choose to
+Currently, all items implicitly have the tag “Translation”. But the user may choose to
 tag an item as “conjugation” for example. And it will allow the user to add items
 representing the conjugations of a word and later limit the practice session to all
 items with a given tag, e.g. “conjugation”. The app may also choose to present a different
 layout of the gui for practicing “conjugations” compared to practicing “translations”..</p></li>
 <li><p>Tooltip with translation at mouse hover in the list of terms that appears when
 selecting a new term to add to the database.</p></li>
+<li><p>Add an icon for the app. Start with Linux. The add icon for Windows and Mac.</p></li>
+<li><p>When practicing from list (not random) add option to override delay when selecting terms
+from the list</p></li>
+<li><p>Add documentation for standard keyboard shortcuts in <code class="docutils literal notranslate"><span class="pre">LineEdit</span></code> and <code class="docutils literal notranslate"><span class="pre">TextEdit</span></code> widgets.
+<code class="docutils literal notranslate"><span class="pre">Ctrl+Backspace</span></code> deletes the word to the left of the cursor. <code class="docutils literal notranslate"><span class="pre">Ctrl+Delete</span></code> deletes the</p>
+<blockquote>
+<div><p>word to the right of the cursor. <code class="docutils literal notranslate"><span class="pre">Ctrl+Left</span></code> moves the cursor to the beginning of the
+word to the left of the cursor. <code class="docutils literal notranslate"><span class="pre">Ctrl+Right</span></code> moves the cursor to the end of the word to
+the right of the cursor. <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Left</span></code> selects the word to the left of the cursor.
+<code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Right</span></code> selects the word to the right of the cursor. <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Home</span></code>
+selects all text from the cursor to the beginning of the line. <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+End</span></code> selects
+all text from the cursor to the end of the line. <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Up</span></code> selects all text from
+the cursor to the beginning of the document. <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Down</span></code> selects all text from
+the cursor to the end of the document. <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Backspace</span></code> deletes all text from the
+cursor to the beginning of the line. <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Delete</span></code> deletes all text from the
+cursor to the end of the line.</p>
+</div></blockquote>
+</li>
 </ul>
 </section>
 

@@ -156,6 +156,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_voca_name"><code class="docutils literal notranslate"><span class="pre">Database.get_voca_name()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.push_updated_items_to_firebase"><code class="docutils literal notranslate"><span class="pre">Database.push_updated_items_to_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.push_updated_items_to_local_database"><code class="docutils literal notranslate"><span class="pre">Database.push_updated_items_to_local_database()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.reset_firebase"><code class="docutils literal notranslate"><span class="pre">Database.reset_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_item"><code class="docutils literal notranslate"><span class="pre">Database.update_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_retest_value"><code class="docutils literal notranslate"><span class="pre">Database.update_retest_value()</span></code></a></li>
 </ul>
@@ -169,6 +170,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.is_initialized"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.is_initialized()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.push_item"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.push_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.read_database"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.read_database()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.run_reset"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.run_reset()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseStatus"><code class="docutils literal notranslate"><span class="pre">FirebaseStatus</span></code></a><ul>
@@ -219,6 +221,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_database_info_label"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_database_info_label()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_new_entry"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_new_entry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.backup"><code class="docutils literal notranslate"><span class="pre">MainWindow.backup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.create_database_menu"><code class="docutils literal notranslate"><span class="pre">MainWindow.create_database_menu()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.create_file_menu"><code class="docutils literal notranslate"><span class="pre">MainWindow.create_file_menu()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.create_menus"><code class="docutils literal notranslate"><span class="pre">MainWindow.create_menus()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.delete_entry"><code class="docutils literal notranslate"><span class="pre">MainWindow.delete_entry()</span></code></a></li>
@@ -227,6 +230,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.modify_entry"><code class="docutils literal notranslate"><span class="pre">MainWindow.modify_entry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.open_editor_task"><code class="docutils literal notranslate"><span class="pre">MainWindow.open_editor_task()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.quit"><code class="docutils literal notranslate"><span class="pre">MainWindow.quit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.reset_firebase"><code class="docutils literal notranslate"><span class="pre">MainWindow.reset_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.run_task"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_task()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.run_test"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_test()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.view_entries"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_entries()</span></code></a></li>
@@ -835,7 +839,7 @@ picked at random, or should the user select the words from a list?</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="vocabuilder.csv_helpers.CsvDatabaseHeader.status">
-<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Status'</span></em><a class="headerlink" href="#vocabuilder.csv_helpers.CsvDatabaseHeader.status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Status'</span></em><a class="headerlink" href="#vocabuilder.csv_helpers.CsvDatabaseHeader.status" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -998,6 +1002,16 @@ picked at random, or should the user select the words from a list?</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.reset_firebase">
+<span class="sig-name descname"><span class="pre">reset_firebase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.reset_firebase" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.database.Database.update_item">
 <span class="sig-name descname"><span class="pre">update_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.update_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -1067,6 +1081,16 @@ picked at random, or should the user select the words from a list?</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.run_reset">
+<span class="sig-name descname"><span class="pre">run_reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.run_reset" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1377,6 +1401,16 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.create_database_menu">
+<span class="sig-name descname"><span class="pre">create_database_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.create_database_menu" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.create_file_menu">
 <span class="sig-name descname"><span class="pre">create_file_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.create_file_menu" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -1453,6 +1487,16 @@ button</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.quit">
 <span class="sig-name descname"><span class="pre">quit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.quit" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.reset_firebase">
+<span class="sig-name descname"><span class="pre">reset_firebase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.reset_firebase" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
