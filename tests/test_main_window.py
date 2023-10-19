@@ -177,6 +177,31 @@ class TestMenuActions:
             window.edit_config()
         assert re.search(r"Unknown platform", str(excinfo))
 
+    def test_reset_firebase(
+        self,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+    ) -> None:
+        window = main_window
+        callback_called = False
+
+        def gen_wrapper() -> Any:
+            orig_method = window.db.firebase_database.run_reset
+
+            def wrapper(*args: Any, **kwargs: Any) -> None:
+                nonlocal callback_called
+                orig_method(*args, **kwargs)
+                callback_called = True
+
+            return wrapper
+
+        wrapper = gen_wrapper()
+        mocker.patch.object(window.db.firebase_database, "run_reset", wrapper)
+        window.reset_fb_action.trigger()
+        qtbot.waitUntil(lambda: callback_called)
+        assert True
+
 
 class TestKeyPressEvent:
     def test_press_b(

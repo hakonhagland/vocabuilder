@@ -108,6 +108,9 @@ class Database(TimeMixin):
     def get_voca_name(self) -> str:
         return self.local_database.get_voca_name()
 
+    def reset_firebase(self) -> None:
+        self.firebase_database.run_reset()
+
     def update_item(self, term1: str, item: DatabaseRow) -> None:
         self.local_database.update_item(term1, item)
 

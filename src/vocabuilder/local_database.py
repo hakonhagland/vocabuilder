@@ -98,7 +98,7 @@ class LocalDatabase(TimeMixin):
         author = git.Actor("vocabuilder", "hakon.hagland@gmail.com")
         committer = author
         index.commit("Startup commit", author=author, committer=committer)
-        logging.info("Created backup.")
+        logging.info(f"Created backup in {self.backupdir}")
 
     def delete_item(self, term1: str) -> None:
         if term1 not in self.db:
@@ -253,7 +253,9 @@ class LocalDatabase(TimeMixin):
                         f"Unexpected value for status at line {lineno} in file "
                         f"{self.csvwrapper.filename}"
                     )
-        logging.info(f"Read {len(self.db.keys())} lines from local database")
+        logging.info(
+            f"Read {len(self.db.keys())} lines from local database {self.dbname}"
+        )
 
     def _validate_item_content(self, item: DatabaseRow) -> None:
         """Validate that ``item`` has the correct keys and that the values have the correct

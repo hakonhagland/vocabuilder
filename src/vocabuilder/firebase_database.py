@@ -98,6 +98,10 @@ class FirebaseDatabase(TimeMixin):
         logging.info(f"Firebase: read {num_items} items from database")
         return True
 
+    def run_reset(self) -> None:
+        logging.info("Firebase: running cleanup..")
+        # self.db.delete()
+
     # private methods sorted alphabetically
     # -------------------------------------
 

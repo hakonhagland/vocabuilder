@@ -112,10 +112,20 @@ class MainWindow(QMainWindow, WarningsMixin):
         self.edit_config_action.setShortcut("Ctrl+E")
         self.edit_config_action.triggered.connect(self.edit_config)
 
+    def create_database_menu(self) -> None:
+        database_menu = QMenu("&Database", self)
+        self.menu_bar.addMenu(database_menu)
+        self.reset_fb_action = QAction(
+            "Reset firebase database from local database", self
+        )
+        database_menu.addAction(self.reset_fb_action)
+        self.reset_fb_action.triggered.connect(self.reset_firebase)
+
     def create_menus(self) -> None:
         self.menu_bar = QMenuBar(self)
         self.setMenuBar(self.menu_bar)
         self.create_file_menu()
+        self.create_database_menu()
         # self.create_edit_menu()
         # self.create_help_menu()
 
@@ -197,6 +207,9 @@ class MainWindow(QMainWindow, WarningsMixin):
 
     def quit(self) -> None:
         self.app.quit()
+
+    def reset_firebase(self) -> None:
+        self.db.reset_firebase()
 
     def run_task(
         self,

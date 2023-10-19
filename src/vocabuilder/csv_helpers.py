@@ -18,7 +18,7 @@ class CsvDatabaseHeader:
     * last_modified : timestamp (epoch) of last time any of the previous was modified
     """
 
-    status: str = "Status"
+    status = "Status"
     term1 = "Term1"
     term2 = "Term2"
     test_delay = "TestDelay"
