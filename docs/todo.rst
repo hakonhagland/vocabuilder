@@ -1,26 +1,33 @@
 TODO (further work)
 ===================
 
-* Refactor firebase database structure. Instead of using the same logic as for
+* View window: Implement quick search field. It should filter the list of terms
+  in the view window. It should be possible to search for terms in the source
+  language, the target language, or both. It should be possible to search for
+  terms that contain a given substring or that start with a given substring.
+* View window: Update list of terms when the database is updated.
+* View window: Add config option to select font size.
+* Refactor window layout. Main window should contain two buttons "Open database view"
+  and "Interact with database". The latter will open a new window with "Add", "Test",
+  "Modify", "Delete", and "Backup". Where to put "Reset Firebase database"?
+* Refactor Firebase database structure. Instead of using the same logic as for
   the local database where we push new entries at the end of the file and clean up duplicates
   later when needed, we should use the term as the key and use the update() or transaction()
   method to update an existing entry directly. This will make it easier to keep the local
-  and firebase databases in sync and make it simpler to delete entries from the database.
-
+  and Firebase databases in sync and make it simpler to delete entries from the database.
 * Finish Firebase implementation. Firebase is only synchronized at the start
   of the program. We need to update continuously. We also need to implement a way to
-  clean up duplicated and deleted entries in the firebase database like we do for the local
+  clean up duplicated and deleted entries in the Firebase database like we do for the local
   database.
 * If several devices (e.g. android, iPad, laptop) are used at the same time, we
-  must continuously check firebase for updates (on each device).
+  must continuously check Firebase for updates (on each device).
 * Implement view button. It should open a view of the local database content. This window
   could be non-blocking, so the user could keep this window open while also running
   a practice session from the test window.
 * Implement delete button. It should enable the user to delete a term from the
   database.
-* Fix edit config option. Currently, the app will not quit until the editor has exited.
-  The implementation of a daemon process will be necessary, and implementation will be
-  different on different platforms.
+* Test edit config option on macOS and Windows. Check that the app can quit even if the
+  editor has not exited.
 * Fix docker image such that it will run under x11docker.
 * Add locking mechanism. The user should not be able to open more than one instance
   of the app editing the same database at the same time.
@@ -30,10 +37,10 @@ TODO (further work)
   tag an item as “conjugation” for example. And it will allow the user to add items
   representing the conjugations of a word and later limit the practice session to all
   items with a given tag, e.g. “conjugation”. The app may also choose to present a different
-  layout of the gui for practicing “conjugations” compared to practicing “translations”..
+  layout of the GUI for practicing “conjugations” compared to practicing “translations”..
 * Tooltip with translation at mouse hover in the list of terms that appears when
   selecting a new term to add to the database.
-* Add an icon for the app. Start with Linux. The add icon for Windows and Mac.
+* Add an icon for the app. Start with Linux. Then add icon for Windows and Mac.
 * When practicing from list (not random) add option to override delay when selecting terms
   from the list
 * Add documentation for standard keyboard shortcuts in ``LineEdit`` and ``TextEdit`` widgets.

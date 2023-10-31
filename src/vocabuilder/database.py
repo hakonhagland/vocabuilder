@@ -105,6 +105,9 @@ class Database(TimeMixin):
     def get_term2(self, term1: str) -> str:
         return self.local_database.get_term2(term1)
 
+    def get_term2_list(self) -> list[str]:
+        return self.local_database.get_term2_list()
+
     def get_voca_name(self) -> str:
         return self.local_database.get_voca_name()
 

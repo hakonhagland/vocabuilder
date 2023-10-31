@@ -1,7 +1,6 @@
 # import logging
-import multiprocessing
-import os
 import platform
+import subprocess
 import typing
 from typing import Callable
 from PyQt6.QtCore import Qt
@@ -21,10 +20,11 @@ from vocabuilder.add_window import AddWindow
 from vocabuilder.config import Config
 from vocabuilder.database import Database
 from vocabuilder.exceptions import ConfigException
-from vocabuilder.widgets import QGridMinimalLabel, SelectWordFromList
+from vocabuilder.mixins import WarningsMixin
 from vocabuilder.modify_window import ModifyWindow
 from vocabuilder.test_window import TestWindow
-from vocabuilder.mixins import WarningsMixin
+from vocabuilder.view_window import ViewWindow
+from vocabuilder.widgets import QGridMinimalLabel, SelectWordFromList
 
 
 class MainWindow(QMainWindow, WarningsMixin):
@@ -133,21 +133,13 @@ class MainWindow(QMainWindow, WarningsMixin):
         mbox = self.display_warning(self, "Delete entry. Not implemented yet")
         return mbox
 
-    # NOTE: this function cannot be defined inside edit_config() as an anonymous
-    #  function because on Windows, the task will be pickled by the multiprocessing
-    #  module, see run_task() below, and the pickle module does not support
-    #  anonymous functions
-    @staticmethod
-    def open_editor_task(cmd: str, args: list[str]) -> None:
-        os.execvp(cmd, args)
-
     def edit_config(self) -> None:
         cfg = self.config.config["Editor"]
         config_path = str(self.config.get_config_path())
         if platform.system() == "Linux":
             editor = cfg["Linux"]
             cmd = editor
-            args = [editor, config_path]
+            args = [config_path]
         elif platform.system() == "Darwin":
             cmd = "open"
             editor = cfg["MacOS"]
@@ -155,15 +147,22 @@ class MainWindow(QMainWindow, WarningsMixin):
         elif platform.system() == "Windows":
             editor = cfg["Windows"]
             cmd = editor
-            args = [editor, config_path]
+            args = [config_path]
         else:
             raise ConfigException(f"Unknown platform: {platform.system()}")
-
-        self.run_task(MainWindow.open_editor_task, cmd, args)
+        subprocess.Popen([cmd, *args], start_new_session=True)
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
-        keys = [65, 66, 68, 77, 84, 86, Qt.Key.Key_Escape]  # a, b, d, m, r, v, esc
+        keys = [
+            Qt.Key.Key_A,
+            Qt.Key.Key_B,
+            Qt.Key.Key_D,
+            Qt.Key.Key_M,
+            Qt.Key.Key_R,
+            Qt.Key.Key_V,
+            Qt.Key.Key_Escape,
+        ]  # a, b, d, m, r, v, esc
         callbacks = [
             self.add_new_entry,
             self.backup,
@@ -211,18 +210,8 @@ class MainWindow(QMainWindow, WarningsMixin):
     def reset_firebase(self) -> None:
         self.db.reset_firebase()
 
-    def run_task(
-        self,
-        task: Callable[[str, list[str]], None],
-        cmd: str,
-        args: list[str],
-    ) -> None:
-        process = multiprocessing.Process(target=task, daemon=False, args=(cmd, args))
-        process.start()
-
     def run_test(self) -> TestWindow:
         return TestWindow(self, self.config, self.db)
 
-    def view_entries(self) -> QMessageBox:
-        mbox = self.display_warning(self, "View entries. Not implemented yet")
-        return mbox
+    def view_entries(self) -> ViewWindow:
+        return ViewWindow(self, self.config, self.db)

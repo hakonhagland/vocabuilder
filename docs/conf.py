@@ -34,3 +34,10 @@ html_context = {
     "github_version": "master",
     "conf_py_path": "/docs/",
 }
+autodoc_default_options = {
+    "member-order": "bysource",
+    "special-members": "__init__",
+    "undoc-members": True,
+    "members": True,
+    "show-inheritance": True,
+}

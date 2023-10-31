@@ -165,6 +165,9 @@ class LocalDatabase(TimeMixin):
         assert isinstance(term2, str)
         return term2
 
+    def get_term2_list(self) -> list[str]:
+        return [self.get_term2(term1) for term1 in self.get_term1_list()]
+
     def get_voca_name(self) -> str:
         return self.voca_name
 
