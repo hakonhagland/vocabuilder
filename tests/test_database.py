@@ -56,7 +56,7 @@ class TestAddItem:
         }
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.add_item(item)
-        assert "unexpected number of elements" in str(excinfo)
+        assert "Unexpected number of elements" in str(excinfo)
 
     def test_bad_key(self, database_object: Database) -> None:
         db = database_object

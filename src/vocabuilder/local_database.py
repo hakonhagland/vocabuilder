@@ -268,7 +268,10 @@ class LocalDatabase(TimeMixin):
         :param item: a dict with the keys as defined in the ``CsvDatabaseHeader`` object.
         """
         if len(item.keys()) != len(self.header.header):
-            raise LocalDatabaseException("unexpected number of elements for item")
+            raise LocalDatabaseException(
+                f"Unexpected number of elements ({len(item.keys())}) for item. "
+                f"Expected {len(self.header.header)} elements. item = {item}"
+            )
         for key in self.header.header:
             if not (key in item):
                 raise LocalDatabaseException(f"item missing key '{key}'")
