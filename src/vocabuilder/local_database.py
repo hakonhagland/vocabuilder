@@ -123,17 +123,14 @@ class LocalDatabase(TimeMixin):
         pairs = []
         for key in keys:
             values = self.db[key]
-            last_test = values[self.header.last_test]
+            last_test = typing.cast(int, values[self.header.last_test])
             candidate = False
-            if last_test is None:
+            days_since_last_test = self.get_epoch_diff_in_days(int(last_test), now)
+            assert isinstance(values[self.header.test_delay], int)
+            # NOTE: cast from type str | int | None -> int
+            test_delay = typing.cast(int, values[self.header.test_delay])
+            if days_since_last_test >= test_delay:
                 candidate = True
-            else:
-                days_since_last_test = self.get_epoch_diff_in_days(int(last_test), now)
-                assert isinstance(values[self.header.test_delay], int)
-                # NOTE: cast from type str | int | None -> int
-                test_delay = typing.cast(int, values[self.header.test_delay])
-                if days_since_last_test >= test_delay:
-                    candidate = True
             if candidate:
                 assert isinstance(self.header.term2, str)
                 term2 = typing.cast(str, values[self.header.term2])

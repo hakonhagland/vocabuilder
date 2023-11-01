@@ -29,9 +29,10 @@ class CsvDatabaseHeader:
         status: int,
         term1: str,
         term2: str,
-        test_delay: int,
+        test_delay: int,  # NOTE: unit is days
+        # NOTE: epoch value: when an item is added, last_test is set to "now"
         last_test: int,
-        last_modified: int,
+        last_modified: int,  # NOTE: epoch value
     }
 
 
@@ -108,16 +109,12 @@ class CSVwrapperReader:
     def fixup_datatypes(self, row: dict[str, str]) -> None:
         """NOTE: this method modifies the input argument 'row'"""
         for key in row:
-            value = row[key]
-            if value == "NA":
-                row[key] = None  # type: ignore
-            else:
-                try:
-                    row[key] = self.header.types[key](
-                        row[key]
-                    )  # cast the element to the correct type
-                except TypeError as exc:
-                    raise CsvFileException("Bad type found in CSV file") from exc
+            try:
+                row[key] = self.header.types[key](
+                    row[key]
+                )  # cast the element to the correct type
+            except TypeError as exc:
+                raise CsvFileException("Bad type found in CSV file") from exc
 
 
 class CSVwrapperWriter:
@@ -145,17 +142,9 @@ class CSVwrapperWriter:
         self.fp.close()
         return False  # TODO: handle exceptions
 
-    def fixup_none_datavalues(self, row: list[DatabaseValue]) -> None:
-        """NOTE: This method is modifying the input argument 'row'"""
-        for i, item in enumerate(row):
-            if item is None:
-                row[i] = "NA"
-
     def writerow(self, row: list[DatabaseValue]) -> None:
-        self.fixup_none_datavalues(row)
         self.csvwriter.writerow(row)
 
     def writeline(self, row_dict: DatabaseRow) -> None:
         row = self.parent.dict_to_row(row_dict)
-        self.fixup_none_datavalues(row)
         self.csvwriter.writerow(row)

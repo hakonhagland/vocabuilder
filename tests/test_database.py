@@ -367,7 +367,7 @@ class TestGetPairs:
             return_value=1687329957,
         )
         pairs = db.get_pairs_exceeding_test_delay()
-        assert len(pairs) == 5
+        assert len(pairs) == 4
 
     def test_get_single(self, database_object: Database, mocker: MockerFixture) -> None:
         db = database_object
