@@ -85,12 +85,7 @@
   <section id="todo-further-work">
 <h1>TODO (further work)<a class="headerlink" href="#todo-further-work" title="Link to this heading"></a></h1>
 <ul class="simple">
-<li><p>View window: Implement quick search field. It should filter the list of terms
-in the view window. It should be possible to search for terms in the source
-language, the target language, or both. It should be possible to search for
-terms that contain a given substring or that start with a given substring.</p></li>
 <li><p>View window: Update list of terms when the database is updated.</p></li>
-<li><p>View window: Add config option to select font size.</p></li>
 <li><p>Refactor window layout. Main window should contain two buttons “Open database view”
 and “Interact with database”. The latter will open a new window with “Add”, “Test”,
 “Modify”, “Delete”, and “Backup”. Where to put “Reset Firebase database”?</p></li>
@@ -105,12 +100,9 @@ clean up duplicated and deleted entries in the Firebase database like we do for 
 database.</p></li>
 <li><p>If several devices (e.g. android, iPad, laptop) are used at the same time, we
 must continuously check Firebase for updates (on each device).</p></li>
-<li><p>Implement view button. It should open a view of the local database content. This window
-could be non-blocking, so the user could keep this window open while also running
-a practice session from the test window.</p></li>
 <li><p>Implement delete button. It should enable the user to delete a term from the
 database.</p></li>
-<li><p>Test edit config option on macOS and Windows. Check that the app can quit even if the
+<li><p>Test edit config option on macOS. Check that the app can quit even if the
 editor has not exited.</p></li>
 <li><p>Fix docker image such that it will run under x11docker.</p></li>
 <li><p>Add locking mechanism. The user should not be able to open more than one instance
@@ -125,7 +117,7 @@ layout of the GUI for practicing “conjugations” compared to practicing “tr
 <li><p>Tooltip with translation at mouse hover in the list of terms that appears when
 selecting a new term to add to the database.</p></li>
 <li><p>Add an icon for the app. Start with Linux. Then add icon for Windows and Mac.</p></li>
-<li><p>When practicing from list (not random) add option to override delay when selecting terms
+<li><p>When practicing from list (not random) add option to override “practice delay” when selecting terms
 from the list</p></li>
 <li><p>Add documentation for standard keyboard shortcuts in <code class="docutils literal notranslate"><span class="pre">LineEdit</span></code> and <code class="docutils literal notranslate"><span class="pre">TextEdit</span></code> widgets.
 <code class="docutils literal notranslate"><span class="pre">Ctrl+Backspace</span></code> deletes the word to the left of the cursor. <code class="docutils literal notranslate"><span class="pre">Ctrl+Delete</span></code> deletes the

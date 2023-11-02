@@ -1,12 +1,7 @@
 TODO (further work)
 ===================
 
-* View window: Implement quick search field. It should filter the list of terms
-  in the view window. It should be possible to search for terms in the source
-  language, the target language, or both. It should be possible to search for
-  terms that contain a given substring or that start with a given substring.
 * View window: Update list of terms when the database is updated.
-* View window: Add config option to select font size.
 * Refactor window layout. Main window should contain two buttons "Open database view"
   and "Interact with database". The latter will open a new window with "Add", "Test",
   "Modify", "Delete", and "Backup". Where to put "Reset Firebase database"?
@@ -21,12 +16,9 @@ TODO (further work)
   database.
 * If several devices (e.g. android, iPad, laptop) are used at the same time, we
   must continuously check Firebase for updates (on each device).
-* Implement view button. It should open a view of the local database content. This window
-  could be non-blocking, so the user could keep this window open while also running
-  a practice session from the test window.
 * Implement delete button. It should enable the user to delete a term from the
   database.
-* Test edit config option on macOS and Windows. Check that the app can quit even if the
+* Test edit config option on macOS. Check that the app can quit even if the
   editor has not exited.
 * Fix docker image such that it will run under x11docker.
 * Add locking mechanism. The user should not be able to open more than one instance
@@ -41,7 +33,7 @@ TODO (further work)
 * Tooltip with translation at mouse hover in the list of terms that appears when
   selecting a new term to add to the database.
 * Add an icon for the app. Start with Linux. Then add icon for Windows and Mac.
-* When practicing from list (not random) add option to override delay when selecting terms
+* When practicing from list (not random) add option to override "practice delay" when selecting terms
   from the list
 * Add documentation for standard keyboard shortcuts in ``LineEdit`` and ``TextEdit`` widgets.
   ``Ctrl+Backspace`` deletes the word to the left of the cursor. ``Ctrl+Delete`` deletes the
