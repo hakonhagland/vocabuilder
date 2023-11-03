@@ -250,6 +250,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_database_info_label"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_database_info_label()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_new_entry"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_new_entry()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.backup"><code class="docutils literal notranslate"><span class="pre">MainWindow.backup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.closeEvent"><code class="docutils literal notranslate"><span class="pre">MainWindow.closeEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.create_file_menu"><code class="docutils literal notranslate"><span class="pre">MainWindow.create_file_menu()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.create_database_menu"><code class="docutils literal notranslate"><span class="pre">MainWindow.create_database_menu()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.create_menus"><code class="docutils literal notranslate"><span class="pre">MainWindow.create_menus()</span></code></a></li>
@@ -1519,6 +1520,18 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.backup">
 <span class="sig-name descname"><span class="pre">backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.backup" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Overrides the closeEvent() method in QWidget to ensure that all windows
+are closed when the main window is closed</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
