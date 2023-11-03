@@ -1,6 +1,7 @@
 TODO (further work)
 ===================
 
+* View window: Add config option to position the window at a fixed position on the screen.
 * View window: Update list of terms when the database is updated.
 * Refactor window layout. Main window should contain two buttons "Open database view"
   and "Interact with database". The latter will open a new window with "Add", "Test",

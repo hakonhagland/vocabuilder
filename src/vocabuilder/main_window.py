@@ -1,10 +1,10 @@
-# import logging
+import logging
 import platform
 import subprocess
 import typing
 from typing import Callable
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeyEvent, QAction
+from PyQt6.QtGui import QAction, QCloseEvent, QKeyEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QGridLayout,
@@ -103,6 +103,13 @@ class MainWindow(QMainWindow, WarningsMixin):
 
     def backup(self) -> None:
         self.db.create_backup()
+
+    def closeEvent(self, event: QCloseEvent | None) -> None:
+        """Overrides the closeEvent() method in QWidget to ensure that all windows
+        are closed when the main window is closed"""
+        if event is not None:
+            event.accept()
+            self.quit()
 
     def create_file_menu(self) -> None:
         file_menu = QMenu("&File", self)
@@ -207,6 +214,7 @@ class MainWindow(QMainWindow, WarningsMixin):
         return dialog
 
     def quit(self) -> None:
+        logging.info("Quitting the application")
         self.app.quit()
 
     def reset_firebase(self) -> None:

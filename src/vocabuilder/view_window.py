@@ -111,12 +111,18 @@ class ViewWindow(QWidget, WarningsMixin):
         self.window_config = self.config.config["ViewWindow"]
         self.fontsize = self.window_config["FontSize"]
         self.setWindowTitle("View Database")
-        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         layout = QGridLayout()
         vpos = 1
         vpos = self.add_line_edits(layout, vpos)
         vpos = self.add_scroll_area(layout, vpos)
         self.setLayout(layout)
+        if ("X" in self.window_config) and ("Y" in self.window_config):
+            self.move(
+                int(self.window_config["X"]),
+                int(self.window_config["Y"]),
+            )
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
+        # self.setGeometry()
         self.show()
 
     def add_line_edits(self, layout: QGridLayout, vpos: int) -> int:

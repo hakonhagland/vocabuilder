@@ -45,14 +45,17 @@ class TestAddItem:
         cfg_fn = config_dir_path / Config.config_fn
         cred_fn = credentials_file
         if cred_missing:
-            str_ = """[Firebase]
+            str_ = """
+[Firebase]
 """
         elif url_missing:
-            str_ = f"""[Firebase]
+            str_ = f"""
+[Firebase]
 credentials = {str(cred_fn)}
 """
         else:
-            str_ = f"""[Firebase]
+            str_ = f"""
+[Firebase]
 credentials = {str(cred_fn)}
 databaseURL = https://vocabuilder.firebasedatabase.app"""
         self.append_to_config_file(cfg_fn, str_)
@@ -122,7 +125,8 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
         caplog.set_level(logging.INFO)
         cfg_fn = config_dir_path / Config.config_fn
         cred_fn = credentials_file
-        str_ = f"""[Firebase]
+        str_ = f"""
+[Firebase]
 credentials = {str(cred_fn)}
 databaseURL = https://vocabuilder.firebasedatabase.app"""
         self.append_to_config_file(cfg_fn, str_)
@@ -186,7 +190,8 @@ databaseURL = https://vocabuilder.firebasedatabase.app"""
         caplog.set_level(logging.INFO)
         cfg_fn = config_dir_path / Config.config_fn
         cred_fn = credentials_file
-        str_ = f"""[Firebase]
+        str_ = f"""
+[Firebase]
 credentials = {str(cred_fn)}
 databaseURL = https://vocabuilder.firebasedatabase.app"""
         self.append_to_config_file(cfg_fn, str_)

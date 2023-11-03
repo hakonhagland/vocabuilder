@@ -1,3 +1,4 @@
+# import logging
 import shutil
 import typing
 import pytest
@@ -104,7 +105,11 @@ def config_object_fb(
     )
     cfg_fn = cfg_dir / Config.config_fn
     cred_fn = credentials_file
-    str_ = f"""[Firebase]
+    # NOTE: important the below string should start with a newline to avoid
+    #       appending [Firebase] to the end of the last line in existing config
+    #       file
+    str_ = f"""
+[Firebase]
 credentials = {str(cred_fn)}
 databaseURL = https://vocabuilder.firebasedatabase.app"""
     with open(str(cfg_fn), "a", encoding="utf_8") as fp:
