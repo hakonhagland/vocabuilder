@@ -22,9 +22,9 @@ from vocabuilder.mixins import WarningsMixin
 from vocabuilder.widgets import SelectWordFromList
 
 
-class TestWindow(QDialog, WarningsMixin):
+class TestWindow(QWidget, WarningsMixin):
     def __init__(self, parent: QWidget, config: Config, database: Database):
-        super().__init__(parent)
+        super().__init__()
         self.db = database
         self.config = config
         self.window_config = self.config.config["TestWindow"]
@@ -175,7 +175,7 @@ class TestWindow(QDialog, WarningsMixin):
         def callback2(pair: tuple[str, str] | None) -> None:
             if pair is None:
                 self.display_warning_no_terms(self)
-                self.done(1)
+                self.close()
                 return
             term1, term2 = pair
             self.term1 = term1
@@ -233,16 +233,17 @@ class TestWindow(QDialog, WarningsMixin):
     def done_button_clicked(self) -> None:
         delay = self.delay_edit.text()
         self.db.update_retest_value(self.term1, int(delay))
-        self.done(0)
+        self.close()
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
         if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
-            self.done(1)
+            self.close()
 
     def main_dialog(self) -> None:
         """This is a callback method which is called after the test parameters has
         been chosen from the ``TestWindowChooseParameters`` dialog"""
+
         if self.params.cancelled:
             return None
         # NOTE: asssign_terms_to_practice() might open a new dialog window, so
@@ -265,7 +266,7 @@ class TestWindow(QDialog, WarningsMixin):
         layout.setRowStretch(layout.rowCount(), 1)
         self.setLayout(layout)
         self.user_edit.setFocus()
-        self.open()
+        self.show()
         return self
 
     def next_button_clicked(self) -> None:
