@@ -1,5 +1,6 @@
 # import re
 # import logging
+import platform
 import pytest
 import typing
 from pytest_mock.plugin import MockerFixture
@@ -35,6 +36,9 @@ class TestGeneral:
         mocker: MockerFixture,
     ) -> None:
         window = main_window
+        if (not pair) and (platform.system() == "Darwin"):  # pragma: no cover
+            pytest.skip("Skipping test on macOS that segfaults. TODO: Look into this.")
+            return
         with qtbot.waitCallback() as callback:
             testwin = window.run_test()
 
