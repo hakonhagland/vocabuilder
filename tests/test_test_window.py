@@ -37,6 +37,8 @@ class TestGeneral:
     ) -> None:
         window = main_window
         if (not pair) and (platform.system() == "Darwin"):  # pragma: no cover
+            # This test with "pair == False" segfaults for some reason on macOS
+            # TODO: look into this
             pytest.skip("Skipping test on macOS that segfaults. TODO: Look into this.")
             return
         with qtbot.waitCallback() as callback:

@@ -150,7 +150,7 @@ class MainWindow(QMainWindow, WarningsMixin):
         elif platform.system() == "Darwin":
             cmd = "open"
             editor = cfg["MacOS"]
-            args = ["open", "-a", editor, config_path]
+            args = ["-a", editor, config_path]
         elif platform.system() == "Windows":
             editor = cfg["Windows"]
             cmd = editor
