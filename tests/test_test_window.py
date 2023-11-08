@@ -62,7 +62,7 @@ class TestGeneral:
             #  https://github.com/python/cpython/issues/75988
             #  So I am going to mock manually here for now..
             testwin.main_dialog = wrapper  # type: ignore
-            if not pair:
+            if not pair:  # pragma: no cover (this test is skipped on macOS)
                 mocker.patch(
                     "vocabuilder.local_database.LocalDatabase.get_random_pair",
                     return_value=None,
