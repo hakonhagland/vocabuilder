@@ -15,12 +15,11 @@ TODO (further work)
   of the program. We need to update continuously. We also need to implement a way to
   clean up duplicated and deleted entries in the Firebase database like we do for the local
   database.
+* If an item is renamed, the item is not deleted from Firebase?
 * If several devices (e.g. android, iPad, laptop) are used at the same time, we
   must continuously check Firebase for updates (on each device).
 * Implement delete button. It should enable the user to delete a term from the
   database.
-* Test edit config option on macOS. Check that the app can quit even if the
-  editor has not exited.
 * Fix docker image such that it will run under x11docker.
 * Add locking mechanism. The user should not be able to open more than one instance
   of the app editing the same database at the same time.
