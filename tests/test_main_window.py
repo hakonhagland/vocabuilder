@@ -4,7 +4,7 @@ import re
 from _pytest.logging import LogCaptureFixture
 from pytest_mock.plugin import MockerFixture
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QMessageBox
+from PyQt6.QtWidgets import QDialog, QMessageBox, QWidget
 from typing import Any
 from vocabuilder.vocabuilder import (
     MainWindow,
@@ -31,10 +31,10 @@ class TestOther:
         #        qtbot: QtBot,
     ) -> None:
         window = main_window
-        dialog = window.add_new_entry()
-        assert isinstance(dialog, QDialog)
+        add_window = window.add_new_entry()
+        assert isinstance(add_window, QWidget)
         # qtbot.add_widget(dialog)
-        dialog.done(0)
+        add_window.close()
 
     def test_create_backup(
         self,

@@ -42,25 +42,29 @@ class TestGeneral:
     def test_cancel_button(
         self,
         main_window: MainWindow,
+        mocker: MockerFixture,
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        dialog = window.add_new_entry()
-        idx = dialog.button_names.index("&Cancel")
-        cancel_button = dialog.buttons[idx]
-        with qtbot.waitSignal(dialog.finished, timeout=1000):
+        add_window = window.add_new_entry()
+        idx = add_window.button_names.index("&Cancel")
+        cancel_button = add_window.buttons[idx]
+        with qtbot.waitCallback() as callback:
+            mocker.patch.object(add_window, "closeEvent", callback)
             cancel_button.click()
         assert True
 
     def test_keypress_escape(
         self,
         main_window: MainWindow,
+        mocker: MockerFixture,
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        dialog = window.add_new_entry()
-        with qtbot.waitSignal(dialog.finished, timeout=1000):
-            qtbot.keyClick(dialog, Qt.Key.Key_Escape)
+        add_window = window.add_new_entry()
+        with qtbot.waitCallback() as callback:
+            mocker.patch.object(add_window, "closeEvent", callback)
+            qtbot.keyClick(add_window, Qt.Key.Key_Escape)
         assert True
 
     @pytest.mark.parametrize(

@@ -3,7 +3,6 @@ from __future__ import annotations
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QKeyEvent
 from PyQt6.QtWidgets import (
-    QDialog,
     QGridLayout,
     QLabel,
     QLineEdit,
@@ -18,16 +17,15 @@ from vocabuilder.type_aliases import DatabaseRow
 from vocabuilder.widgets import QSelectItemScrollArea
 
 
-class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
+class AddWindow(QWidget, WarningsMixin, StringMixin, TimeMixin):
     """Add a new term (and its translation) to the database, then ask for a another term to add.
     Continue the above procedure of adding terms until the user clicks the cancel button
     """
 
     def __init__(self, parent: QWidget, config: Config, database: Database):
-        super().__init__(parent)  # make dialog modal
-        # NOTE: using double underscore "__parent" to avoid confilict with "parent"
-        #      method in a parent class
-        self.__parent = parent
+        super().__init__()
+        # NOTE: using "parent_" to avoid confilict with "parent" method in QWidget
+        self.parent_ = parent
         self.config = config
         self.db = database
         self.header = CsvDatabaseHeader()
@@ -43,7 +41,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         vpos = self.add_line_edits(layout, vpos)
         self.add_buttons(layout, vpos)
         self.setLayout(layout)
-        self.open()
+        self.show()
 
     def add_buttons(self, layout: QGridLayout, vpos: int) -> int:
         """Adds the button widgets.
@@ -137,7 +135,7 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
         return
 
     def cancel_button(self) -> None:
-        self.done(1)
+        self.close()
 
     def get_db(self) -> Database:
         return self.db
@@ -145,11 +143,11 @@ class AddWindow(QDialog, WarningsMixin, StringMixin, TimeMixin):
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
         # print(f"key code: {event.key()}, text: {event.text()}")
         if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
-            self.done(1)
+            self.close()
 
     def ok_button(self) -> None:
         if self.add_data():
-            self.done(0)
+            self.close()
 
     def update_scroll_area_items(self, text: str) -> None:
         self.scrollarea.update_items(text)
