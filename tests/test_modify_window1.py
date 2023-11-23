@@ -1,9 +1,10 @@
 import re
-from pytest_mock.plugin import MockerFixture
+
 from PyQt6.QtCore import Qt
-from vocabuilder.vocabuilder import (
-    MainWindow,
-)
+from pytest_mock.plugin import MockerFixture
+
+from vocabuilder.vocabuilder import MainWindow
+
 from .common import QtBot
 
 

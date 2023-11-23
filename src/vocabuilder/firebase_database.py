@@ -1,8 +1,9 @@
-import firebase_admin  # type: ignore
-import firebase_admin.db  # type: ignore
 import logging
 
+import firebase_admin  # type: ignore
+import firebase_admin.db  # type: ignore
 from firebase_admin.exceptions import FirebaseError  # type: ignore
+
 from vocabuilder.config import Config
 from vocabuilder.csv_helpers import CsvDatabaseHeader
 

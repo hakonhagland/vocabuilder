@@ -1,12 +1,14 @@
 import typing
+from typing import Any, Callable
 
 import pytest
-from typing import Any, Callable
-from pytest_mock.plugin import MockerFixture
 from PyQt6.QtCore import Qt
-from vocabuilder.vocabuilder import MainWindow
+from pytest_mock.plugin import MockerFixture
+
 from vocabuilder.view_window import ViewWindow
+from vocabuilder.vocabuilder import MainWindow
 from vocabuilder.widgets import QLabelClickable
+
 from .common import QtBot
 
 

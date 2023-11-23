@@ -1,15 +1,16 @@
 import logging
-import pytest
 import re
+from typing import Any
+
+import pytest
 from _pytest.logging import LogCaptureFixture
-from pytest_mock.plugin import MockerFixture
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QMessageBox, QWidget
-from typing import Any
-from vocabuilder.vocabuilder import (
-    MainWindow,
-)
+from pytest_mock.plugin import MockerFixture
+
 from vocabuilder.exceptions import ConfigException
+from vocabuilder.vocabuilder import MainWindow
+
 from .common import QtBot
 
 

@@ -1,8 +1,8 @@
 from pytest_mock.plugin import MockerFixture
-from vocabuilder.vocabuilder import (
-    MainWindow,
-)
+
+from vocabuilder.vocabuilder import MainWindow
 from vocabuilder.widgets import SelectWordFromList
+
 from .common import QtBot
 
 

@@ -1,10 +1,11 @@
 import configparser
+import importlib.resources  # access non-code resources
 import logging
-import platformdirs
+from configparser import ConfigParser
 from pathlib import Path
 
-from configparser import ConfigParser
-import importlib.resources  # access non-code resources
+import platformdirs
+
 from vocabuilder.exceptions import ConfigException
 
 

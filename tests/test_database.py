@@ -1,13 +1,12 @@
 import logging
 import re
 from pathlib import Path
+from typing import Callable
 
 import pytest
-
-from firebase_admin.exceptions import FirebaseError  # type: ignore
 from _pytest.logging import LogCaptureFixture
+from firebase_admin.exceptions import FirebaseError  # type: ignore
 from pytest_mock.plugin import MockerFixture
-from typing import Callable
 
 from vocabuilder.constants import TermStatus
 from vocabuilder.csv_helpers import CsvDatabaseHeader
@@ -17,9 +16,10 @@ from vocabuilder.exceptions import (
     LocalDatabaseException,
     TimeException,
 )
+from vocabuilder.local_database import LocalDatabase
 from vocabuilder.type_aliases import DatabaseRow
 from vocabuilder.vocabuilder import Config
-from vocabuilder.local_database import LocalDatabase
+
 from .common import PytestDataDict
 
 # from .conftest import database_object, test_data, data_dir_path

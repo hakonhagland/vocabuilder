@@ -1,13 +1,14 @@
 # import logging
 import pytest
 
+# from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication
+
 # import re
 from pytest_mock.plugin import MockerFixture
 
-# from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication
-from vocabuilder.vocabuilder import CommandLineOptions
 from vocabuilder.exceptions import CommandLineException
+from vocabuilder.vocabuilder import CommandLineOptions
 
 
 class TestGeneral:

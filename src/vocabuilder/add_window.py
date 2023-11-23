@@ -2,17 +2,12 @@ from __future__ import annotations
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QKeyEvent
-from PyQt6.QtWidgets import (
-    QGridLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QWidget,
-)
+from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QPushButton, QWidget
+
 from vocabuilder.config import Config
-from vocabuilder.database import Database
 from vocabuilder.csv_helpers import CsvDatabaseHeader
-from vocabuilder.mixins import WarningsMixin, StringMixin, TimeMixin
+from vocabuilder.database import Database
+from vocabuilder.mixins import StringMixin, TimeMixin, WarningsMixin
 from vocabuilder.type_aliases import DatabaseRow
 from vocabuilder.widgets import QSelectItemScrollArea
 

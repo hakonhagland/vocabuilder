@@ -1,21 +1,20 @@
 # import logging
 import shutil
 import typing
-import pytest
-
 from pathlib import Path
-from pytest_mock.plugin import MockerFixture
 from typing import Any, Callable
-from PyQt6.QtWidgets import (
-    QApplication,
-)
 
-from vocabuilder.vocabuilder import Config, MainWindow
+import pytest
+from PyQt6.QtWidgets import QApplication
+from pytest_mock.plugin import MockerFixture
+
 from vocabuilder.database import Database
 from vocabuilder.local_database import LocalDatabase
 
 # from vocabuilder.select_voca import SelectVocabulary
 from vocabuilder.test_window import TestWindow as _TestWindow
+from vocabuilder.vocabuilder import Config, MainWindow
+
 from .common import PytestDataDict, QtBot
 
 

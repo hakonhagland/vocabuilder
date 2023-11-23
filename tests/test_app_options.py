@@ -1,11 +1,10 @@
 # import logging
 # import re
+# from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication
 from pytest_mock.plugin import MockerFixture
 
 import vocabuilder.vocabuilder
-
-# from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication
 from vocabuilder.vocabuilder import Config
 
 

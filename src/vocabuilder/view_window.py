@@ -2,17 +2,19 @@ from __future__ import annotations
 
 import logging
 from typing import Callable, Optional
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
-    QHBoxLayout,
     QGridLayout,
+    QHBoxLayout,
     QLineEdit,
     QScrollArea,
     QVBoxLayout,
     QWidget,
 )
+
 from vocabuilder.config import Config
 from vocabuilder.database import Database
 from vocabuilder.mixins import WarningsMixin

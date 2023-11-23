@@ -3,13 +3,15 @@
 
 # import re
 from pathlib import Path
-from pytest_mock.plugin import MockerFixture
+from typing import Callable
 
 # from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
+from pytest_mock.plugin import MockerFixture
+
 import vocabuilder.vocabuilder as vocab
+
 from .common import PytestDataDict, QtBot
-from typing import Callable
 
 
 class TestMain:

@@ -1,9 +1,13 @@
 # import logging
-import pytest
 import re
 import shutil
-from pytest_mock.plugin import MockerFixture
+from pathlib import Path
+from typing import Callable
+
+import pytest
 from PyQt6.QtWidgets import QApplication
+from pytest_mock.plugin import MockerFixture
+
 import vocabuilder.vocabuilder
 from vocabuilder.local_database import LocalDatabase
 from vocabuilder.select_voca import SelectNewVocabularyName
@@ -12,9 +16,8 @@ from vocabuilder.vocabuilder import (
     Config,
     SelectVocabularyException,
 )
+
 from .common import QtBot
-from pathlib import Path
-from typing import Callable
 
 # from .conftest import config_object, config_dir_path
 

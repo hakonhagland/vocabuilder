@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QWidget,
 )
+
 from vocabuilder.commandline import CommandLineOptions
 from vocabuilder.config import Config
 from vocabuilder.local_database import LocalDatabase

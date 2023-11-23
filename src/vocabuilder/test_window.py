@@ -2,6 +2,7 @@ from __future__ import annotations
 
 # import logging
 from typing import Callable
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QKeyEvent
 from PyQt6.QtWidgets import (
@@ -15,6 +16,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from vocabuilder.config import Config
 from vocabuilder.constants import TestDirection, TestMethod
 from vocabuilder.database import Database

@@ -1,18 +1,20 @@
 # import re
 # import logging
 import platform
-import pytest
 import typing
+from typing import Any, Callable
+
+import pytest
+from PyQt6.QtCore import Qt
 from pytest_mock.plugin import MockerFixture
 
-from PyQt6.QtCore import Qt
 from vocabuilder.test_window import (
-    TestWindow as _TestWindow,
-)  # Cannot start with "Test"
-from vocabuilder.widgets import SelectWordFromList
+    TestWindow as _TestWindow,  # Cannot start with "Test"
+)
 from vocabuilder.vocabuilder import MainWindow
+from vocabuilder.widgets import SelectWordFromList
+
 from .common import QtBot
-from typing import Any, Callable
 
 
 class TestGeneral:

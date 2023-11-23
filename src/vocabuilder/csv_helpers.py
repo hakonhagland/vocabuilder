@@ -1,9 +1,10 @@
 from __future__ import annotations
-import csv
 
+import csv
 from pathlib import Path
 from types import TracebackType
 from typing import Literal, Optional
+
 from vocabuilder.exceptions import CsvFileException
 from vocabuilder.type_aliases import DatabaseRow, DatabaseValue
 

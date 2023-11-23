@@ -7,6 +7,16 @@ import platform  # determine os name
 # import pdb
 import sys
 
+from PyQt6 import QtGui
+from PyQt6.QtWidgets import QApplication
+
+from vocabuilder.commandline import CommandLineOptions
+from vocabuilder.config import Config
+from vocabuilder.database import Database
+from vocabuilder.exceptions import SelectVocabularyException
+from vocabuilder.main_window import MainWindow
+from vocabuilder.select_voca import SelectVocabulary
+
 # from pprint import pprint
 
 # NOTE: "Self" type requires python >= 3.11, and we are trying to support python 3.10, so
@@ -14,15 +24,6 @@ import sys
 #   See also: https://stackoverflow.com/a/33533514/2173773
 # from typing_extensions import Self
 
-from PyQt6 import QtGui
-from PyQt6.QtWidgets import QApplication
-
-from vocabuilder.exceptions import SelectVocabularyException
-from vocabuilder.commandline import CommandLineOptions
-from vocabuilder.config import Config
-from vocabuilder.database import Database
-from vocabuilder.main_window import MainWindow
-from vocabuilder.select_voca import SelectVocabulary
 
 # NOTE: type hints for collection of builtin types requires python>=3.9, see
 #  https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html

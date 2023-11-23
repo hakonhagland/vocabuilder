@@ -3,19 +3,21 @@ import platform
 import subprocess
 import typing
 from typing import Callable
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QCloseEvent, QKeyEvent
 from PyQt6.QtWidgets import (
     QApplication,
     QGridLayout,
     QMainWindow,
-    QMessageBox,
-    QPushButton,
     QMenu,
     QMenuBar,
+    QMessageBox,
+    QPushButton,
     QSizePolicy,
     QWidget,
 )
+
 from vocabuilder.add_window import AddWindow
 from vocabuilder.config import Config
 from vocabuilder.database import Database

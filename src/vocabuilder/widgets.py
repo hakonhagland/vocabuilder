@@ -1,7 +1,8 @@
 # import logging
 import typing
 from typing import Any, Callable
-from PyQt6.QtCore import Qt, QSize
+
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QKeyEvent, QMouseEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
@@ -14,6 +15,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from vocabuilder.config import Config
 from vocabuilder.csv_helpers import CsvDatabaseHeader
 from vocabuilder.mixins import StringMixin, WarningsMixin

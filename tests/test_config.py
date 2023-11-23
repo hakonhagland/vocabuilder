@@ -1,12 +1,13 @@
 # import logging
-import pytest
 import re
-
 from pathlib import Path
-from pytest_mock.plugin import MockerFixture
-from vocabuilder.vocabuilder import Config
-from vocabuilder.exceptions import ConfigException
 from typing import Any, Callable
+
+import pytest
+from pytest_mock.plugin import MockerFixture
+
+from vocabuilder.exceptions import ConfigException
+from vocabuilder.vocabuilder import Config
 
 # from .common import QtBot, P
 

@@ -1,8 +1,9 @@
 import time
-
 from typing import Callable
-from PyQt6.QtWidgets import QWidget, QMessageBox
+
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QMessageBox, QWidget
+
 from vocabuilder.exceptions import TimeException
 
 

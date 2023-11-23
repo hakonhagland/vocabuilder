@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import logging
 import random
+import shutil
 import typing
 
 import git
-import shutil
 
 from vocabuilder.config import Config
 from vocabuilder.constants import TermStatus
 from vocabuilder.csv_helpers import CsvDatabaseHeader, CSVwrapper
 from vocabuilder.exceptions import LocalDatabaseException
 from vocabuilder.mixins import TimeMixin
-from vocabuilder.type_aliases import DatabaseRow, DatabaseValue, DatabaseType
+from vocabuilder.type_aliases import DatabaseRow, DatabaseType, DatabaseValue
 
 
 class LocalDatabase(TimeMixin):
