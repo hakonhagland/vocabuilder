@@ -26,3 +26,6 @@ From GitHub
 
 .. note::
     On Windows (powershell) type ``.\.venv\Scripts\Activate.ps1`` to activate the venv
+
+.. note::
+    For development installation from GitHub see: :doc:`Development <development>`

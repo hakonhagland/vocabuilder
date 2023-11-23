@@ -5,22 +5,29 @@ Suggestions for improvements are very welcome. Please use the
 `GitHub issue tracker <https://github.com/hakonhagland/vocabuilder/issues>`_ or submit
 a pull request!
 
-Pull request
-------------
+Pull requests
+-------------
 
 To set up an environment for developing and submitting a pull request, you could:
 
 * Install pyenv
+* Clone the repository
+
+.. code-block:: bash
+
+    $ git clone https://github.com/hakonhagland/vocabuilder.git
+    $ cd vocabuilder
+
 * Install the python versions listed in
   `.python_version <https://github.com/hakonhagland/vocabuilder/blob/main/.python-version>`_ with pyenv
-* On Linux and MacOs:
-   * Install poetry : Run : ``curl -sSL https://install.python-poetry.org | python3 -``
+* On Linux and macOS:
+   * Install Poetry : Run : ``curl -sSL https://install.python-poetry.org | python3 -``
    * On macOS: update PATH environment variable in your `~/.zshrc` init file:
-     ``export PATH="/Users/username/.local/bin:$PATH"`` such that zsh can find the ``poetry`` command
-* On Windows (powershell):
+     ``export PATH="/Users/username/.local/bin:$PATH"`` such that Zsh can find the ``poetry`` command
+* On Windows (PowerShell):
    * Install poetry :
      ``(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -``
-   * update ``PATH`` to include the install folder, e.g.
+   * update ``PATH`` to include the installation folder, e.g.
      ``C:\Users\username\AppData\Roaming\Python\Scripts``
 
 * Then, from the root directory of this repository:

@@ -56,7 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="source.html">Source code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="firebase.html">Firebase</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#pull-request">Pull request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pull-requests">Pull requests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="todo.html">TODO</a></li>
@@ -91,27 +91,34 @@
 <p>Suggestions for improvements are very welcome. Please use the
 <a class="reference external" href="https://github.com/hakonhagland/vocabuilder/issues">GitHub issue tracker</a> or submit
 a pull request!</p>
-<section id="pull-request">
-<h2>Pull request<a class="headerlink" href="#pull-request" title="Link to this heading"></a></h2>
+<section id="pull-requests">
+<h2>Pull requests<a class="headerlink" href="#pull-requests" title="Link to this heading"></a></h2>
 <p>To set up an environment for developing and submitting a pull request, you could:</p>
 <ul class="simple">
 <li><p>Install pyenv</p></li>
+<li><p>Clone the repository</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/hakonhagland/vocabuilder.git
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>vocabuilder
+</pre></div>
+</div>
+<ul class="simple">
 <li><p>Install the python versions listed in
 <a class="reference external" href="https://github.com/hakonhagland/vocabuilder/blob/main/.python-version">.python_version</a> with pyenv</p></li>
 <li><dl class="simple">
-<dt>On Linux and MacOs:</dt><dd><ul>
-<li><p>Install poetry : Run : <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-sSL</span> <span class="pre">https://install.python-poetry.org</span> <span class="pre">|</span> <span class="pre">python3</span> <span class="pre">-</span></code></p></li>
+<dt>On Linux and macOS:</dt><dd><ul>
+<li><p>Install Poetry : Run : <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-sSL</span> <span class="pre">https://install.python-poetry.org</span> <span class="pre">|</span> <span class="pre">python3</span> <span class="pre">-</span></code></p></li>
 <li><p>On macOS: update PATH environment variable in your <cite>~/.zshrc</cite> init file:
-<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=&quot;/Users/username/.local/bin:$PATH&quot;</span></code> such that zsh can find the <code class="docutils literal notranslate"><span class="pre">poetry</span></code> command</p></li>
+<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=&quot;/Users/username/.local/bin:$PATH&quot;</span></code> such that Zsh can find the <code class="docutils literal notranslate"><span class="pre">poetry</span></code> command</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>On Windows (powershell):</dt><dd><ul>
+<dt>On Windows (PowerShell):</dt><dd><ul>
 <li><p>Install poetry :
 <code class="docutils literal notranslate"><span class="pre">(Invoke-WebRequest</span> <span class="pre">-Uri</span> <span class="pre">https://install.python-poetry.org</span> <span class="pre">-UseBasicParsing).Content</span> <span class="pre">|</span> <span class="pre">py</span> <span class="pre">-</span></code></p></li>
-<li><p>update <code class="docutils literal notranslate"><span class="pre">PATH</span></code> to include the install folder, e.g.
+<li><p>update <code class="docutils literal notranslate"><span class="pre">PATH</span></code> to include the installation folder, e.g.
 <code class="docutils literal notranslate"><span class="pre">C:\Users\username\AppData\Roaming\Python\Scripts</span></code></p></li>
 </ul>
 </dd>
