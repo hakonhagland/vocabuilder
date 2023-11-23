@@ -3,7 +3,7 @@ ROOT := $(shell pwd)
 DOCKERDIR := $(ROOT)/docker
 
 .PHONY: docker-image run-docker-image coverage docs mypy test flake8
-.PHONY: black-check black publish-to-pypi
+.PHONY: black-check black publish-to-pypi isort tox
 
 docker-image:
 	"$(DOCKERDIR)"/build-docker.sh "$(DOCKERDIR)"
@@ -16,7 +16,11 @@ coverage:
 	coverage report -m
 
 docs:
-	cd "$(ROOT)"/docs && make html
+	cd "$(ROOT)"/docs && make clean && make html
+
+isort:
+	isort --diff --check-only --profile black src/ tests/
+	isort --profile black src/ tests/
 
 mypy:
 	mypy src/ tests/
@@ -35,3 +39,6 @@ black:
 
 publish-to-pypi:
 	poetry publish --build
+
+tox:
+	tox

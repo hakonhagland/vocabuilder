@@ -44,6 +44,9 @@ pre-commit = "^3.3.3"
 [tool.black]
 line-length = 88
 
+[tool.isort]
+profile = "black"
+
 [tool.coverage.run]
 #omit = [".*", "*/site-packages/*"]
 

@@ -1,7 +1,7 @@
-.coverage
+/.coverage
 __pycache__/
 .pytest_cache
 *.pyc
-.tox/
-docs/_build/
-dist/
+/.tox
+/docs/_build
+/dist
