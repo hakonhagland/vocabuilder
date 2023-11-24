@@ -5,7 +5,7 @@ import typing
 from typing import Callable
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIntValidator, QKeyEvent
+from PyQt6.QtGui import QCloseEvent, QIntValidator, QKeyEvent
 from PyQt6.QtWidgets import (
     QDialog,
     QGridLayout,
@@ -29,6 +29,7 @@ class TestWindow(QWidget, ResizeWindowMixin, WarningsMixin):
     def __init__(self, parent: QWidget, config: Config, database: Database):
         super().__init__()
         self.db = database
+        self.parent_ = parent
         self.config = config
         self.window_config = typing.cast(
             dict[str, str], self.config.config["TestWindow"]
@@ -234,6 +235,13 @@ class TestWindow(QWidget, ResizeWindowMixin, WarningsMixin):
             )
         self.display_warning_no_terms(self)
         return None
+
+    def closeEvent(self, event: QCloseEvent | None) -> None:
+        """Overrides the closeEvent() method in QWidget. We use this to notify the
+        parent when we are closed"""
+        if event is not None:
+            event.accept()
+            self.parent_.test_window_closed()  # type: ignore
 
     def done_button_clicked(self) -> None:
         delay = self.delay_edit.text()

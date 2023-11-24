@@ -35,8 +35,11 @@ class MainWindow(QMainWindow, WarningsMixin):
         self.config = config
         self.button_config = self.config.config["Buttons"]
         self.window_config = self.config.config["MainWindow"]
+        # NOTE: Seems like mypy is reading from top to bottom, so these types need to be
+        # declared before they are used
         self.view_window: ViewWindow | None = None
         self.add_window: AddWindow | None = None
+        self.test_window: TestWindow | None = None
         self.app = app
         self.db = db
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
@@ -231,8 +234,15 @@ class MainWindow(QMainWindow, WarningsMixin):
     def reset_firebase(self) -> None:
         self.db.reset_firebase()
 
-    def run_test(self) -> TestWindow:
-        return TestWindow(self, self.config, self.db)
+    def run_test(self) -> None:
+        if self.test_window is None:
+            self.test_window = TestWindow(self, self.config, self.db)
+        else:
+            self.test_window.activateWindow()
+
+    def test_window_closed(self) -> None:
+        self.test_window = None
+        logging.info("TestWindow closed")
 
     def view_entries(self) -> None:
         if self.view_window is None:

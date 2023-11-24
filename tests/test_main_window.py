@@ -1,5 +1,6 @@
 import logging
 import re
+import typing
 from typing import Any, Callable
 
 import pytest
@@ -9,6 +10,9 @@ from PyQt6.QtWidgets import QDialog, QMessageBox, QWidget
 from pytest_mock.plugin import MockerFixture
 
 from vocabuilder.exceptions import ConfigException
+from vocabuilder.test_window import (
+    TestWindow as _TestWindow,  # cannot start with "Test"
+)
 from vocabuilder.vocabuilder import MainWindow
 
 from .common import QtBot
@@ -114,8 +118,22 @@ class TestOther:
         window = main_window
         with qtbot.waitCallback() as callback:
             mocker.patch("vocabuilder.test_window.TestWindow.main_dialog", callback)
-            testwin = window.run_test()
+            window.run_test()
+            testwin = typing.cast(_TestWindow, window.test_window)
             testwin.params.buttons[0].click()
+        assert True
+
+    def test_re_activate_test(
+        self,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+        test_window: _TestWindow,
+    ) -> None:
+        testwin = test_window
+        window = typing.cast(MainWindow, testwin.parent_)
+        with qtbot.waitCallback() as callback:
+            mocker.patch.object(testwin, "activateWindow", callback)
+            window.run_test()
         assert True
 
     def test_view_entries(

@@ -44,7 +44,8 @@ class TestGeneral:
             pytest.skip("Skipping test on macOS that segfaults. TODO: Look into this.")
             return
         with qtbot.waitCallback() as callback:
-            testwin = window.run_test()
+            window.run_test()
+            testwin = typing.cast(_TestWindow, window.test_window)
 
             def gen_wrapper() -> Callable[[], None]:
                 # original_method = _TestWindow.main_dialog
@@ -102,7 +103,8 @@ class TestGeneral:
     ) -> None:
         window = main_window
         with qtbot.waitCallback() as callback:
-            testwin = window.run_test()
+            window.run_test()
+            testwin = typing.cast(_TestWindow, window.test_window)
 
             def gen_wrapper() -> Callable[[], None]:
                 # original_method = _TestWindow.main_dialog
@@ -135,7 +137,8 @@ class TestGeneral:
     ) -> None:
         window = main_window
         with qtbot.waitCallback() as callback:
-            testwin = window.run_test()
+            window.run_test()
+            testwin = typing.cast(_TestWindow, window.test_window)
 
             def gen_wrapper() -> Callable[[], None]:
                 # original_method = _TestWindow.main_dialog
@@ -174,7 +177,8 @@ class TestGeneral:
         dialog: SelectWordFromList | None = None
         callback3: Callable[[tuple[str, str]], None] | None = None
         with qtbot.waitCallback() as callback:
-            testwin = window.run_test()
+            window.run_test()
+            testwin = typing.cast(_TestWindow, window.test_window)
             if not valid_pair:
                 mocker.patch.object(
                     testwin.db,

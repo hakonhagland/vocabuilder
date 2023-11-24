@@ -205,7 +205,8 @@ def test_window(
 ) -> _TestWindow:
     window = main_window
     with qtbot.waitCallback() as callback:
-        testwin = window.run_test()
+        window.run_test()
+        testwin = typing.cast(_TestWindow, window.test_window)
 
         def gen_wrapper() -> Callable[[], None]:
             original_method = testwin.main_dialog
