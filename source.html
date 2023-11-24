@@ -263,6 +263,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.quit"><code class="docutils literal notranslate"><span class="pre">MainWindow.quit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.reset_firebase"><code class="docutils literal notranslate"><span class="pre">MainWindow.reset_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.run_test"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_test()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.test_window_closed"><code class="docutils literal notranslate"><span class="pre">MainWindow.test_window_closed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.view_entries"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_entries()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.view_window_closed"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_window_closed()</span></code></a></li>
 </ul>
@@ -343,6 +344,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.test_window.TestWindow.add_retest_radio_button"><code class="docutils literal notranslate"><span class="pre">TestWindow.add_retest_radio_button()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.test_window.TestWindow.assign_terms_to_practice"><code class="docutils literal notranslate"><span class="pre">TestWindow.assign_terms_to_practice()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.test_window.TestWindow.choose_word_from_list"><code class="docutils literal notranslate"><span class="pre">TestWindow.choose_word_from_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.test_window.TestWindow.closeEvent"><code class="docutils literal notranslate"><span class="pre">TestWindow.closeEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.test_window.TestWindow.done_button_clicked"><code class="docutils literal notranslate"><span class="pre">TestWindow.done_button_clicked()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.test_window.TestWindow.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">TestWindow.keyPressEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.test_window.TestWindow.main_dialog"><code class="docutils literal notranslate"><span class="pre">TestWindow.main_dialog()</span></code></a></li>
@@ -1672,7 +1674,17 @@ button</p>
 <span class="sig-name descname"><span class="pre">run_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.run_test" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.test_window.TestWindow" title="vocabuilder.test_window.TestWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestWindow</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.test_window_closed">
+<span class="sig-name descname"><span class="pre">test_window_closed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.test_window_closed" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2151,6 +2163,18 @@ the user has selected a word from the non-blocking dialog</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#vocabuilder.widgets.SelectWordFromList" title="vocabuilder.widgets.SelectWordFromList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectWordFromList</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.test_window.TestWindow.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Overrides the closeEvent() method in QWidget. We use this to notify the
+parent when we are closed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
