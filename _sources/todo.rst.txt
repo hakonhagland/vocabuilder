@@ -1,11 +1,10 @@
 TODO (further work)
 ===================
 
-* View window: Prevent from opening more than one instance.
+* Add window: Prevent from opening more than one instance.
+* Test window: Prevent from opening more than one instance.
 * Fix bug when deleting characters in view textedit, add window suddenly closes.
 * Pressing enter in term2 textedit in add window should be an alias for "OK" an add the term to the database.
-* Add window: Add config option to position the window at a fixed position on the screen.
-* Test window: Add config option to position the window at a fixed position on the screen.
 * View window: Update list of terms when the database is updated.
 * Refactor window layout. Main window should contain two buttons "Open database view"
   and "Interact with database". The latter will open a new window with "Add", "Test",

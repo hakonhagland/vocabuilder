@@ -63,6 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.add_line_edits"><code class="docutils literal notranslate"><span class="pre">AddWindow.add_line_edits()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.add_scroll_area"><code class="docutils literal notranslate"><span class="pre">AddWindow.add_scroll_area()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.cancel_button"><code class="docutils literal notranslate"><span class="pre">AddWindow.cancel_button()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.closeEvent"><code class="docutils literal notranslate"><span class="pre">AddWindow.closeEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.get_db"><code class="docutils literal notranslate"><span class="pre">AddWindow.get_db()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">AddWindow.keyPressEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.ok_button"><code class="docutils literal notranslate"><span class="pre">AddWindow.ok_button()</span></code></a></li>
@@ -249,6 +250,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_buttons"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_buttons()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_database_info_label"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_database_info_label()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_new_entry"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_new_entry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.add_window_closed"><code class="docutils literal notranslate"><span class="pre">MainWindow.add_window_closed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.backup"><code class="docutils literal notranslate"><span class="pre">MainWindow.backup()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.closeEvent"><code class="docutils literal notranslate"><span class="pre">MainWindow.closeEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.create_file_menu"><code class="docutils literal notranslate"><span class="pre">MainWindow.create_file_menu()</span></code></a></li>
@@ -258,7 +260,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.edit_config"><code class="docutils literal notranslate"><span class="pre">MainWindow.edit_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">MainWindow.keyPressEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.modify_entry"><code class="docutils literal notranslate"><span class="pre">MainWindow.modify_entry()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.init_child_window_pointers"><code class="docutils literal notranslate"><span class="pre">MainWindow.init_child_window_pointers()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.quit"><code class="docutils literal notranslate"><span class="pre">MainWindow.quit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.reset_firebase"><code class="docutils literal notranslate"><span class="pre">MainWindow.reset_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.run_test"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_test()</span></code></a></li>
@@ -514,6 +515,18 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <dt class="sig sig-object py" id="vocabuilder.add_window.AddWindow.cancel_button">
 <span class="sig-name descname"><span class="pre">cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.cancel_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.add_window.AddWindow.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Overrides the closeEvent() method in QWidget. We use this to notify the
+parent when we are closed</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
@@ -1523,7 +1536,17 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">add_new_entry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.add_new_entry" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.add_window.AddWindow" title="vocabuilder.add_window.AddWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddWindow</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.add_window_closed">
+<span class="sig-name descname"><span class="pre">add_window_closed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.add_window_closed" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1620,16 +1643,6 @@ button</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.widgets.SelectWordFromList" title="vocabuilder.widgets.SelectWordFromList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectWordFromList</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.init_child_window_pointers">
-<span class="sig-name descname"><span class="pre">init_child_window_pointers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.init_child_window_pointers" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
