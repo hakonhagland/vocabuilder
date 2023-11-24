@@ -269,6 +269,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-vocabuilder.mixins">Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.mixins</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.mixins.ConfigWindow"><code class="docutils literal notranslate"><span class="pre">ConfigWindow</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.mixins.ConfigWindow.window_config"><code class="docutils literal notranslate"><span class="pre">ConfigWindow.window_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.mixins.ConfigWindow.move"><code class="docutils literal notranslate"><span class="pre">ConfigWindow.move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.mixins.ConfigWindow.resize"><code class="docutils literal notranslate"><span class="pre">ConfigWindow.resize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.mixins.ResizeWindowMixin"><code class="docutils literal notranslate"><span class="pre">ResizeWindowMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.mixins.ResizeWindowMixin.resize_window_from_config"><code class="docutils literal notranslate"><span class="pre">ResizeWindowMixin.resize_window_from_config()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.mixins.StringMixin"><code class="docutils literal notranslate"><span class="pre">StringMixin</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.mixins.StringMixin.check_space_or_empty_str"><code class="docutils literal notranslate"><span class="pre">StringMixin.check_space_or_empty_str()</span></code></a></li>
 </ul>
@@ -439,7 +449,7 @@ of the main script.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vocabuilder.add_window.AddWindow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.add_window.</span></span><span class="sig-name descname"><span class="pre">AddWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code>, <a class="reference internal" href="#vocabuilder.mixins.WarningsMixin" title="vocabuilder.mixins.WarningsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">WarningsMixin</span></code></a>, <a class="reference internal" href="#vocabuilder.mixins.StringMixin" title="vocabuilder.mixins.StringMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMixin</span></code></a>, <a class="reference internal" href="#vocabuilder.mixins.TimeMixin" title="vocabuilder.mixins.TimeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeMixin</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code>, <a class="reference internal" href="#vocabuilder.mixins.ResizeWindowMixin" title="vocabuilder.mixins.ResizeWindowMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeWindowMixin</span></code></a>, <a class="reference internal" href="#vocabuilder.mixins.StringMixin" title="vocabuilder.mixins.StringMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMixin</span></code></a>, <a class="reference internal" href="#vocabuilder.mixins.TimeMixin" title="vocabuilder.mixins.TimeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeMixin</span></code></a>, <a class="reference internal" href="#vocabuilder.mixins.WarningsMixin" title="vocabuilder.mixins.WarningsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">WarningsMixin</span></code></a></p>
 <p>Add a new term (and its translation) to the database, then ask for a another term to add.
 Continue the above procedure of adding terms until the user clicks the cancel button</p>
 <dl class="py method">
@@ -1680,6 +1690,53 @@ button</p>
 <section id="module-vocabuilder.mixins">
 <span id="module-vocabuilder-mixins"></span><h2>Module <code class="docutils literal notranslate"><span class="pre">vocabuilder.mixins</span></code><a class="headerlink" href="#module-vocabuilder.mixins" title="Link to this heading"></a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="vocabuilder.mixins.ConfigWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.mixins.</span></span><span class="sig-name descname"><span class="pre">ConfigWindow</span></span><a class="headerlink" href="#vocabuilder.mixins.ConfigWindow" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vocabuilder.mixins.ConfigWindow.window_config">
+<span class="sig-name descname"><span class="pre">window_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">]</span></em><a class="headerlink" href="#vocabuilder.mixins.ConfigWindow.window_config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.mixins.ConfigWindow.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.ConfigWindow.move" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.mixins.ConfigWindow.resize">
+<span class="sig-name descname"><span class="pre">resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.ConfigWindow.resize" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vocabuilder.mixins.ResizeWindowMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.mixins.</span></span><span class="sig-name descname"><span class="pre">ResizeWindowMixin</span></span><a class="headerlink" href="#vocabuilder.mixins.ResizeWindowMixin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vocabuilder.mixins.ConfigWindow" title="vocabuilder.mixins.ConfigWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigWindow</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.mixins.ResizeWindowMixin.resize_window_from_config">
+<span class="sig-name descname"><span class="pre">resize_window_from_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.ResizeWindowMixin.resize_window_from_config" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="vocabuilder.mixins.StringMixin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.mixins.</span></span><span class="sig-name descname"><span class="pre">StringMixin</span></span><a class="headerlink" href="#vocabuilder.mixins.StringMixin" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -1996,7 +2053,7 @@ database.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vocabuilder.test_window.TestWindow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.test_window.</span></span><span class="sig-name descname"><span class="pre">TestWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code>, <a class="reference internal" href="#vocabuilder.mixins.WarningsMixin" title="vocabuilder.mixins.WarningsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">WarningsMixin</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code>, <a class="reference internal" href="#vocabuilder.mixins.ResizeWindowMixin" title="vocabuilder.mixins.ResizeWindowMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResizeWindowMixin</span></code></a>, <a class="reference internal" href="#vocabuilder.mixins.WarningsMixin" title="vocabuilder.mixins.WarningsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">WarningsMixin</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.test_window.TestWindow.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.__init__" title="Link to this definition"></a></dt>
