@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 # import logging
+import typing
 from typing import Callable
 
 from PyQt6.QtCore import Qt
@@ -20,16 +21,18 @@ from PyQt6.QtWidgets import (
 from vocabuilder.config import Config
 from vocabuilder.constants import TestDirection, TestMethod
 from vocabuilder.database import Database
-from vocabuilder.mixins import WarningsMixin
+from vocabuilder.mixins import ResizeWindowMixin, WarningsMixin
 from vocabuilder.widgets import SelectWordFromList
 
 
-class TestWindow(QWidget, WarningsMixin):
+class TestWindow(QWidget, ResizeWindowMixin, WarningsMixin):
     def __init__(self, parent: QWidget, config: Config, database: Database):
         super().__init__()
         self.db = database
         self.config = config
-        self.window_config = self.config.config["TestWindow"]
+        self.window_config = typing.cast(
+            dict[str, str], self.config.config["TestWindow"]
+        )
         # NOTE: This complicated approach with callback is mainly done to make it easier
         #  to test the code with pytest
         self.params = TestWindowChooseParameters(
@@ -257,7 +260,7 @@ class TestWindow(QWidget, WarningsMixin):
     def main_dialog2(self) -> TestWindow:
         """This is a callback that is called after the current pair of words
         to practice has been assigned"""
-        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
+        self.resize_window_from_config()
         self.setWindowTitle("Practice term/phrase/word")
         layout = QGridLayout()
         vpos = 1

@@ -232,6 +232,8 @@ class MainWindow(QMainWindow, WarningsMixin):
     def view_entries(self) -> None:
         if self.view_window is None:
             self.view_window = ViewWindow(self, self.config, self.db)
+        else:
+            self.view_window.activateWindow()
 
     def view_window_closed(self) -> None:
         self.view_window = None

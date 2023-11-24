@@ -7,6 +7,26 @@ from PyQt6.QtWidgets import QMessageBox, QWidget
 from vocabuilder.exceptions import TimeException
 
 
+class ConfigWindow:  # pragma: no cover
+    window_config: dict[str, str]
+
+    def move(self, x: int, y: int) -> None:
+        ...
+
+    def resize(self, w: int, h: int) -> None:
+        ...
+
+
+class ResizeWindowMixin(ConfigWindow):
+    def resize_window_from_config(self: ConfigWindow) -> None:
+        if ("X" in self.window_config) and ("Y" in self.window_config):
+            self.move(
+                int(self.window_config["X"]),
+                int(self.window_config["Y"]),
+            )
+        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
+
+
 class StringMixin:
     """String methods"""
 

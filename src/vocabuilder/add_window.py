@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import typing
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QKeyEvent
 from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QPushButton, QWidget
@@ -7,12 +9,12 @@ from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QPushButton, QWidget
 from vocabuilder.config import Config
 from vocabuilder.csv_helpers import CsvDatabaseHeader
 from vocabuilder.database import Database
-from vocabuilder.mixins import StringMixin, TimeMixin, WarningsMixin
+from vocabuilder.mixins import ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixin
 from vocabuilder.type_aliases import DatabaseRow
 from vocabuilder.widgets import QSelectItemScrollArea
 
 
-class AddWindow(QWidget, WarningsMixin, StringMixin, TimeMixin):
+class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixin):
     """Add a new term (and its translation) to the database, then ask for a another term to add.
     Continue the above procedure of adding terms until the user clicks the cancel button
     """
@@ -24,9 +26,11 @@ class AddWindow(QWidget, WarningsMixin, StringMixin, TimeMixin):
         self.config = config
         self.db = database
         self.header = CsvDatabaseHeader()
-        self.window_config = self.config.config["AddWindow"]
+        self.window_config = typing.cast(
+            dict[str, str], self.config.config["AddWindow"]
+        )
         self.button_config = self.config.config["Buttons"]
-        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
+        self.resize_window_from_config()
         self.setWindowTitle("Add new item")
         layout = QGridLayout()
         vpos = 0

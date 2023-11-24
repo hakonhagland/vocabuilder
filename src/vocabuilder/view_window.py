@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import typing
 from typing import Callable, Optional
 
 from PyQt6.QtCore import Qt
@@ -17,7 +18,7 @@ from PyQt6.QtWidgets import (
 
 from vocabuilder.config import Config
 from vocabuilder.database import Database
-from vocabuilder.mixins import WarningsMixin
+from vocabuilder.mixins import ResizeWindowMixin, WarningsMixin
 from vocabuilder.widgets import QLabelClickable
 
 
@@ -104,13 +105,15 @@ class ViewScrollArea(QScrollArea):
         self.scrollwidget.update()
 
 
-class ViewWindow(QWidget, WarningsMixin):
+class ViewWindow(QWidget, ResizeWindowMixin, WarningsMixin):
     def __init__(self, parent: QWidget, config: Config, database: Database) -> None:
         super().__init__()
         self.parent_ = parent  # use parent_ to avoid name clash with QWidget.parent()
         self.db = database
         self.config = config
-        self.window_config = self.config.config["ViewWindow"]
+        self.window_config = typing.cast(
+            dict[str, str], self.config.config["ViewWindow"]
+        )
         self.fontsize = self.window_config["FontSize"]
         self.setWindowTitle("View Database")
         layout = QGridLayout()
@@ -118,12 +121,7 @@ class ViewWindow(QWidget, WarningsMixin):
         vpos = self.add_line_edits(layout, vpos)
         vpos = self.add_scroll_area(layout, vpos)
         self.setLayout(layout)
-        if ("X" in self.window_config) and ("Y" in self.window_config):
-            self.move(
-                int(self.window_config["X"]),
-                int(self.window_config["Y"]),
-            )
-        self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
+        self.resize_window_from_config()
         # self.setGeometry()
         self.show()
 

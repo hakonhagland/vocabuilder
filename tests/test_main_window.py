@@ -130,6 +130,22 @@ class TestOther:
         qtbot.waitUntil(lambda: callback_called)
         assert True
 
+    def test_re_activate_view(
+        self,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+        # caplog: LogCaptureFixture
+    ) -> None:
+        # caplog.set_level(logging.INFO)
+        window = main_window
+        window.view_entries()
+        view_win = window.view_window
+        with qtbot.waitCallback() as callback:
+            mocker.patch.object(view_win, "activateWindow", callback)
+            window.view_entries()
+        assert True
+
 
 class TestMenuActions:
     @pytest.mark.parametrize("os_name", ["Linux", "Windows", "Darwin"])
