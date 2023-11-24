@@ -4,7 +4,7 @@ import logging
 from typing import Callable, Optional
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeyEvent
+from PyQt6.QtGui import QCloseEvent, QKeyEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
     QGridLayout,
@@ -160,6 +160,14 @@ class ViewWindow(QWidget, WarningsMixin):
 
         vpos += 1
         return vpos
+
+    def closeEvent(self, event: QCloseEvent | None) -> None:
+        """Overrides the closeEvent() method in QWidget. We use this to notify the
+        parent when we are closed"""
+        if event is not None:
+            event.accept()
+            # parent = typing.cast(MainWindow, self.parent_)
+            self.parent_.view_window_closed()  # type: ignore
 
     def get_db(self) -> Database:
         return self.db

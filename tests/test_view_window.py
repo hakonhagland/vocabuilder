@@ -20,7 +20,8 @@ class TestView:
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        view_win: ViewWindow = window.view_entries()
+        window.view_entries()
+        view_win = typing.cast(ViewWindow, window.view_window)
         layout1 = view_win.scrollarea1.vbox
         assert layout1 is not None
         # item1 = layout1.itemAt(0) # The item at index 0 is the QSpacerItem
@@ -64,7 +65,8 @@ class TestView:
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        view_win: ViewWindow = window.view_entries()
+        window.view_entries()
+        view_win = typing.cast(ViewWindow, window.view_window)
         callback_called = False
 
         def gen_wrapper() -> Callable[[Any, Any], None]:

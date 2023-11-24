@@ -37,6 +37,7 @@ class MainWindow(QMainWindow, WarningsMixin):
         self.window_config = self.config.config["MainWindow"]
         self.app = app
         self.db = db
+        self.init_child_window_pointers()
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("VocaBuilder")
         self.create_menus()
@@ -215,6 +216,9 @@ class MainWindow(QMainWindow, WarningsMixin):
         )
         return dialog
 
+    def init_child_window_pointers(self) -> None:
+        self.view_window: ViewWindow | None = None
+
     def quit(self) -> None:
         logging.info("Quitting the application")
         self.app.quit()
@@ -225,5 +229,10 @@ class MainWindow(QMainWindow, WarningsMixin):
     def run_test(self) -> TestWindow:
         return TestWindow(self, self.config, self.db)
 
-    def view_entries(self) -> ViewWindow:
-        return ViewWindow(self, self.config, self.db)
+    def view_entries(self) -> None:
+        if self.view_window is None:
+            self.view_window = ViewWindow(self, self.config, self.db)
+
+    def view_window_closed(self) -> None:
+        self.view_window = None
+        logging.info("ViewWindow closed")

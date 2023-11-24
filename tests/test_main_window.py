@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Any
+from typing import Any, Callable
 
 import pytest
 from _pytest.logging import LogCaptureFixture
@@ -110,10 +110,24 @@ class TestOther:
     ) -> None:
         # caplog.set_level(logging.INFO)
         window = main_window
-        view_win = window.view_entries()
-        with qtbot.waitCallback() as callback:
-            mocker.patch.object(view_win, "closeEvent", callback)
-            qtbot.keyClick(view_win, Qt.Key.Key_Escape)
+        window.view_entries()
+        view_win = window.view_window
+        callback_called = False
+
+        def gen_wrapper() -> Callable[[Any, Any], None]:
+            original_method = window.view_window_closed
+
+            def wrapper(*args: Any, **kwargs: Any) -> None:
+                nonlocal callback_called
+                original_method(*args, **kwargs)
+                callback_called = True
+
+            return wrapper
+
+        wrapper = gen_wrapper()
+        mocker.patch.object(window, "view_window_closed", wrapper)
+        qtbot.keyClick(view_win, Qt.Key.Key_Escape)
+        qtbot.waitUntil(lambda: callback_called)
         assert True
 
 
