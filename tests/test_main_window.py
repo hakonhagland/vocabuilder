@@ -32,10 +32,27 @@ class TestOther:
         #        qtbot: QtBot,
     ) -> None:
         window = main_window
-        add_window = window.add_new_entry()
+        window.add_new_entry()
+        add_window = window.add_window
         assert isinstance(add_window, QWidget)
         # qtbot.add_widget(dialog)
         add_window.close()
+
+    def test_re_activate_add(
+        self,
+        main_window: MainWindow,
+        qtbot: QtBot,
+        mocker: MockerFixture,
+        # caplog: LogCaptureFixture
+    ) -> None:
+        # caplog.set_level(logging.INFO)
+        window = main_window
+        window.add_new_entry()
+        add_win = window.add_window
+        with qtbot.waitCallback() as callback:
+            mocker.patch.object(add_win, "activateWindow", callback)
+            window.add_new_entry()
+        assert True
 
     def test_create_backup(
         self,

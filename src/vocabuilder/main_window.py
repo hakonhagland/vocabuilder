@@ -35,9 +35,10 @@ class MainWindow(QMainWindow, WarningsMixin):
         self.config = config
         self.button_config = self.config.config["Buttons"]
         self.window_config = self.config.config["MainWindow"]
+        self.view_window: ViewWindow | None = None
+        self.add_window: AddWindow | None = None
         self.app = app
         self.db = db
-        self.init_child_window_pointers()
         self.resize(int(self.window_config["Width"]), int(self.window_config["Height"]))
         self.setWindowTitle("VocaBuilder")
         self.create_menus()
@@ -101,8 +102,15 @@ class MainWindow(QMainWindow, WarningsMixin):
         layout.setRowStretch(vpos, 0)
         return vpos + 1
 
-    def add_new_entry(self) -> AddWindow:
-        return AddWindow(self, self.config, self.db)
+    def add_new_entry(self) -> None:
+        if self.add_window is None:
+            self.add_window = AddWindow(self, self.config, self.db)
+        else:
+            self.add_window.activateWindow()
+
+    def add_window_closed(self) -> None:
+        self.add_window = None
+        logging.info("AddWindow closed")
 
     def backup(self) -> None:
         self.db.create_backup()
@@ -215,9 +223,6 @@ class MainWindow(QMainWindow, WarningsMixin):
             options,
         )
         return dialog
-
-    def init_child_window_pointers(self) -> None:
-        self.view_window: ViewWindow | None = None
 
     def quit(self) -> None:
         logging.info("Quitting the application")

@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIntValidator, QKeyEvent
+from PyQt6.QtGui import QCloseEvent, QIntValidator, QKeyEvent
 from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QPushButton, QWidget
 
 from vocabuilder.config import Config
@@ -135,6 +135,13 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
 
     def cancel_button(self) -> None:
         self.close()
+
+    def closeEvent(self, event: QCloseEvent | None) -> None:
+        """Overrides the closeEvent() method in QWidget. We use this to notify the
+        parent when we are closed"""
+        if event is not None:
+            event.accept()
+            self.parent_.add_window_closed()  # type: ignore
 
     def get_db(self) -> Database:
         return self.db

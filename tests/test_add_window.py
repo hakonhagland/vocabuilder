@@ -1,4 +1,5 @@
 import logging
+import typing
 from typing import Any, Callable
 
 import pytest
@@ -7,6 +8,7 @@ from PyQt6.QtCore import Qt
 # import re
 from pytest_mock.plugin import MockerFixture
 
+from vocabuilder.add_window import AddWindow
 from vocabuilder.vocabuilder import MainWindow
 
 from .common import QtBot
@@ -19,14 +21,15 @@ class TestGeneral:
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        dialog = window.add_new_entry()
-        idx = dialog.button_names.index("&Add")
-        add_button = dialog.buttons[idx]
+        window.add_new_entry()
+        add_win = typing.cast(AddWindow, window.add_window)
+        idx = add_win.button_names.index("&Add")
+        add_button = add_win.buttons[idx]
         with qtbot.waitCallback() as callback:
 
             def gen_wrapper() -> Callable[[], None]:
-                original_method = dialog.add_button_pressed
-                _self = dialog
+                original_method = add_win.add_button_pressed
+                _self = add_win
 
                 def wrapper(**kwargs: Any) -> None:
                     original_method(**kwargs)
@@ -47,7 +50,8 @@ class TestGeneral:
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        add_window = window.add_new_entry()
+        window.add_new_entry()
+        add_window = typing.cast(AddWindow, window.add_window)
         idx = add_window.button_names.index("&Cancel")
         cancel_button = add_window.buttons[idx]
         with qtbot.waitCallback() as callback:
@@ -62,7 +66,8 @@ class TestGeneral:
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        add_window = window.add_new_entry()
+        window.add_new_entry()
+        add_window = typing.cast(AddWindow, window.add_window)
         with qtbot.waitCallback() as callback:
             mocker.patch.object(add_window, "closeEvent", callback)
             qtbot.keyClick(add_window, Qt.Key.Key_Escape)
@@ -89,16 +94,17 @@ class TestGeneral:
         mocker: MockerFixture,
     ) -> None:
         window = main_window
-        dialog = window.add_new_entry()
-        edit1 = dialog.edits[dialog.header.term1]
+        window.add_new_entry()
+        add_win = typing.cast(AddWindow, window.add_window)
+        edit1 = add_win.edits[add_win.header.term1]
         edit1.setText("rose")
-        edit2 = dialog.edits[dialog.header.term2]
+        edit2 = add_win.edits[add_win.header.term2]
         edit2.setText("장미")
         if delay_str_empty:
-            edit3 = dialog.edits[dialog.header.test_delay]
+            edit3 = add_win.edits[add_win.header.test_delay]
             edit3.setText("")
-        idx = dialog.button_names.index("&Ok")
-        ok_button = dialog.buttons[idx]
+        idx = add_win.button_names.index("&Ok")
+        ok_button = add_win.buttons[idx]
         if term1_exists or term1_empty or term2_empty:
             mocker.patch(
                 "vocabuilder.mixins.WarningsMixin.display_warning",
@@ -113,8 +119,8 @@ class TestGeneral:
         with qtbot.waitCallback() as callback:
 
             def gen_wrapper() -> Callable[[], None]:
-                original_method = dialog.ok_button
-                _self = dialog
+                original_method = add_win.ok_button
+                _self = add_win
 
                 def wrapper(**kwargs: Any) -> None:
                     original_method(**kwargs)
@@ -134,13 +140,14 @@ class TestGeneral:
         qtbot: QtBot,
     ) -> None:
         window = main_window
-        dialog = window.add_new_entry()
-        edit = dialog.edits[dialog.header.term1]
+        window.add_new_entry()
+        add_win = typing.cast(AddWindow, window.add_window)
+        edit = add_win.edits[add_win.header.term1]
         with qtbot.waitCallback() as callback:
 
             def gen_wrapper() -> Callable[[], None]:
-                original_method = dialog.update_scroll_area_items
-                _self = dialog
+                original_method = add_win.update_scroll_area_items
+                _self = add_win
 
                 def wrapper(*args: Any, **kwargs: Any) -> None:
                     original_method(*args, **kwargs)
@@ -161,10 +168,11 @@ class TestGeneral:
         mocker: MockerFixture,
     ) -> None:
         window = main_window
-        dialog = window.add_new_entry()
-        label = dialog.scrollarea.labels[0]
-        logging.info(f"scrollarea num_labels = {len(dialog.scrollarea.labels)}")
-        edit = dialog.edits[dialog.header.term1]
+        window.add_new_entry()
+        add_win = typing.cast(AddWindow, window.add_window)
+        label = add_win.scrollarea.labels[0]
+        logging.info(f"scrollarea num_labels = {len(add_win.scrollarea.labels)}")
+        edit = add_win.edits[add_win.header.term1]
         with qtbot.waitCallback() as callback:
             mocker.patch.object(edit, "setText", callback)
             qtbot.mouseClick(label, Qt.MouseButton.LeftButton)
