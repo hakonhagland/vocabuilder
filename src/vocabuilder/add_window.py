@@ -1,11 +1,18 @@
 from __future__ import annotations
 
-import logging
+# import logging
 import typing
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QCloseEvent, QIntValidator, QKeyEvent
-from PyQt6.QtWidgets import QGridLayout, QLabel, QLineEdit, QPushButton, QWidget
+from PyQt6.QtWidgets import (
+    QGridLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QToolTip,
+    QWidget,
+)
 
 from vocabuilder.config import Config
 from vocabuilder.csv_helpers import CsvDatabaseHeader
@@ -60,16 +67,18 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
             button.setMinimumHeight(int(self.button_config["MinHeight"]))
-            button.clicked.connect(callbacks[i])
+            button.clicked.connect(callbacks[i])  # type: ignore
             layout.addWidget(button, *positions[i])
         return vpos + 1
 
-    def add_button_pressed(self) -> None:
+    def add_button_pressed(self) -> bool:
         if self.add_data():
             self.edits[self.header.term1].setText("")
             self.edits[self.header.term2].setText("")
             self.edits[self.header.test_delay].setText("")
             self.edits[self.header.term1].setFocus()
+            return True
+        return False
 
     def add_data(self) -> bool:
         term1 = self.edits[self.header.term1].text()
@@ -106,7 +115,7 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
         fontsizes = [large, large, None]
         names = [self.header.term1, self.header.term2, self.header.test_delay]
         callbacks1 = [self.update_scroll_area_items, None, None]
-        callbacks2 = [None, self.add_button_pressed, None]
+        callbacks2 = [None, self.simulate_add_button_pressed, None]
         for i, desc in enumerate(descriptions):
             label = QLabel(desc)
             layout.addWidget(label, vpos, 0)
@@ -156,10 +165,18 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
             self.close()
 
     def ok_button(self) -> None:
-        logging.info("AddWindow: ok_button pressed")
         if self.add_data():
-            logging.info("AddWindow: ok_button pressed: add_data() returned True")
             self.close()
+
+    def simulate_add_button_pressed(self) -> None:
+        term1 = self.edits[self.header.term1].text()
+        if self.add_button_pressed():
+            edit2 = self.edits[self.header.term2]
+            point = edit2.pos()
+            point = self.mapToGlobal(edit2.pos())
+            QToolTip.showText(
+                point, f"""Added: <font color="red">{term1}</font>""", msecShowTime=1400
+            )
 
     def update_scroll_area_items(self, text: str) -> None:
         self.scrollarea.update_items(text)

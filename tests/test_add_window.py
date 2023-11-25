@@ -15,9 +15,12 @@ from .common import QtBot
 
 
 class TestGeneral:
+    @pytest.mark.parametrize("term1_exists", [True, False])
     def test_add_button(
         self,
+        term1_exists: bool,
         main_window: MainWindow,
+        mocker: MockerFixture,
         qtbot: QtBot,
     ) -> None:
         window = main_window
@@ -25,6 +28,12 @@ class TestGeneral:
         add_win = typing.cast(AddWindow, window.add_window)
         edit1 = add_win.edits[add_win.header.term1]
         edit1.setText("rose")
+        if term1_exists:
+            edit1.setText("apple")
+            mocker.patch(
+                "vocabuilder.mixins.WarningsMixin.display_warning",
+                return_value=None,
+            )
         edit2 = add_win.edits[add_win.header.term2]
         edit2.setText("장미")
         idx = add_win.button_names.index("&Add")
@@ -45,6 +54,45 @@ class TestGeneral:
             add_button.clicked.disconnect()
             add_button.clicked.connect(wrapper)
             add_button.click()
+        assert True
+
+    @pytest.mark.parametrize("term1_exists", [True, False])
+    def test_simulate_add_button(
+        self,
+        term1_exists: bool,
+        main_window: MainWindow,
+        mocker: MockerFixture,
+        qtbot: QtBot,
+    ) -> None:
+        window = main_window
+        window.add_new_entry()
+        add_win = typing.cast(AddWindow, window.add_window)
+        edit1 = add_win.edits[add_win.header.term1]
+        edit1.setText("rose")
+        if term1_exists:
+            edit1.setText("apple")
+            mocker.patch(
+                "vocabuilder.mixins.WarningsMixin.display_warning",
+                return_value=None,
+            )
+        edit2 = add_win.edits[add_win.header.term2]
+        edit2.setText("장미")
+        with qtbot.waitCallback() as callback:
+
+            def gen_wrapper() -> Callable[[], None]:
+                original_method = add_win.simulate_add_button_pressed
+                _self = add_win
+
+                def wrapper(**kwargs: Any) -> None:
+                    original_method(**kwargs)
+                    callback(_self, **kwargs)
+
+                return wrapper
+
+            wrapper = gen_wrapper()
+            edit2.returnPressed.disconnect()
+            edit2.returnPressed.connect(wrapper)
+            qtbot.keyPress(edit2, Qt.Key.Key_Enter, delay=100)
         assert True
 
     def test_cancel_button(
