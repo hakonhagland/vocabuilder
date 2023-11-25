@@ -1,10 +1,7 @@
 TODO (further work)
 ===================
 
-* Add window: Prevent from opening more than one instance.
-* Test window: Prevent from opening more than one instance.
-* Fix bug when deleting characters in view textedit, add window suddenly closes.
-* Pressing enter in term2 textedit in add window should be an alias for "OK" an add the term to the database.
+* Pressing enter in term2 textedit in add window should be an alias for "OK" and add the term to the database.
 * View window: Update list of terms when the database is updated.
 * Refactor window layout. Main window should contain two buttons "Open database view"
   and "Interact with database". The latter will open a new window with "Add", "Test",
@@ -50,3 +47,4 @@ TODO (further work)
   the cursor to the end of the document. ``Ctrl+Shift+Backspace`` deletes all text from the
   cursor to the beginning of the line. ``Ctrl+Shift+Delete`` deletes all text from the
   cursor to the end of the line.
+* Fix bug when deleting characters in view textedit, add window suddenly closes.

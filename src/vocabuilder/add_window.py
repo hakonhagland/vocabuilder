@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import typing
 
 from PyQt6.QtCore import Qt
@@ -64,11 +65,11 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
         return vpos + 1
 
     def add_button_pressed(self) -> None:
-        self.add_data()
-        self.edits[self.header.term1].setText("")
-        self.edits[self.header.term2].setText("")
-        self.edits[self.header.test_delay].setText("")
-        self.edits[self.header.term1].setFocus()
+        if self.add_data():
+            self.edits[self.header.term1].setText("")
+            self.edits[self.header.term2].setText("")
+            self.edits[self.header.test_delay].setText("")
+            self.edits[self.header.term1].setFocus()
 
     def add_data(self) -> bool:
         term1 = self.edits[self.header.term1].text()
@@ -104,15 +105,18 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
         descriptions = ["Term1:", "Term2:", "Retest in x days:"]
         fontsizes = [large, large, None]
         names = [self.header.term1, self.header.term2, self.header.test_delay]
-        callbacks = [self.update_scroll_area_items, None, None]
+        callbacks1 = [self.update_scroll_area_items, None, None]
+        callbacks2 = [None, self.add_button_pressed, None]
         for i, desc in enumerate(descriptions):
             label = QLabel(desc)
             layout.addWidget(label, vpos, 0)
             edit = QLineEdit(self)
             if fontsizes[i] is not None:
                 edit.setStyleSheet(f"QLineEdit {{font-size: {fontsizes[i]};}}")
-            if callbacks[i] is not None:
-                edit.textChanged.connect(callbacks[i])  # type: ignore
+            if callbacks1[i] is not None:
+                edit.textChanged.connect(callbacks1[i])  # type: ignore
+            if callbacks2[i] is not None:
+                edit.returnPressed.connect(callbacks2[i])  # type: ignore
             self.edits[names[i]] = edit
             layout.addWidget(edit, vpos, 1, 1, 2)
             vpos += 1
@@ -152,7 +156,9 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
             self.close()
 
     def ok_button(self) -> None:
+        logging.info("AddWindow: ok_button pressed")
         if self.add_data():
+            logging.info("AddWindow: ok_button pressed: add_data() returned True")
             self.close()
 
     def update_scroll_area_items(self, text: str) -> None:

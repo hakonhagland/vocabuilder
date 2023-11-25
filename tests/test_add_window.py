@@ -23,6 +23,10 @@ class TestGeneral:
         window = main_window
         window.add_new_entry()
         add_win = typing.cast(AddWindow, window.add_window)
+        edit1 = add_win.edits[add_win.header.term1]
+        edit1.setText("rose")
+        edit2 = add_win.edits[add_win.header.term2]
+        edit2.setText("장미")
         idx = add_win.button_names.index("&Add")
         add_button = add_win.buttons[idx]
         with qtbot.waitCallback() as callback:
