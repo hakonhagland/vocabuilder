@@ -3,7 +3,7 @@ from __future__ import annotations
 # import logging
 import typing
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QCloseEvent, QIntValidator, QKeyEvent
 from PyQt6.QtWidgets import (
     QGridLayout,
@@ -106,6 +106,8 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
         }
         self.db.add_item(item)
         items = self.get_db().get_term1_list()
+        # NOTE: update view window later when reaching the QT eventloop
+        self.maybe_update_view_window_later()
         self.scrollarea.update_items_list(items)
         return True
 
@@ -160,9 +162,16 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
         return self.db
 
     def keyPressEvent(self, event: QKeyEvent | None) -> None:
-        # print(f"key code: {event.key()}, text: {event.text()}")
         if (event is not None) and event.key() == Qt.Key.Key_Escape:  # "ESC" pressed
             self.close()
+
+    def maybe_update_view_window_later(self) -> None:
+        if self.parent_.view_window_is_open():  # type: ignore
+
+            def on_start() -> None:
+                self.parent_.update_view_window()  # type: ignore
+
+            QTimer.singleShot(0, on_start)
 
     def ok_button(self) -> None:
         if self.add_data():

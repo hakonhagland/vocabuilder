@@ -244,6 +244,10 @@ class MainWindow(QMainWindow, WarningsMixin):
         self.test_window = None
         logging.info("TestWindow closed")
 
+    def update_view_window(self) -> None:
+        if self.view_window is not None:
+            self.view_window.update_from_database()
+
     def view_entries(self) -> None:
         if self.view_window is None:
             self.view_window = ViewWindow(self, self.config, self.db)
@@ -253,3 +257,6 @@ class MainWindow(QMainWindow, WarningsMixin):
     def view_window_closed(self) -> None:
         self.view_window = None
         logging.info("ViewWindow closed")
+
+    def view_window_is_open(self) -> bool:
+        return self.view_window is not None

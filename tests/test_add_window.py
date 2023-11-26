@@ -9,6 +9,7 @@ from PyQt6.QtCore import Qt
 from pytest_mock.plugin import MockerFixture
 
 from vocabuilder.add_window import AddWindow
+from vocabuilder.view_window import ViewWindow
 from vocabuilder.vocabuilder import MainWindow
 
 from .common import QtBot
@@ -75,6 +76,64 @@ class TestGeneral:
                 "vocabuilder.mixins.WarningsMixin.display_warning",
                 return_value=None,
             )
+        edit2 = add_win.edits[add_win.header.term2]
+        edit2.setText("장미")
+        with qtbot.waitCallback() as callback:
+
+            def gen_wrapper() -> Callable[[], None]:
+                original_method = add_win.simulate_add_button_pressed
+                _self = add_win
+
+                def wrapper(**kwargs: Any) -> None:
+                    original_method(**kwargs)
+                    callback(_self, **kwargs)
+
+                return wrapper
+
+            wrapper = gen_wrapper()
+            edit2.returnPressed.disconnect()
+            edit2.returnPressed.connect(wrapper)
+            qtbot.keyPress(edit2, Qt.Key.Key_Enter, delay=100)
+        assert True
+
+    @pytest.mark.parametrize("view_edit2", [True, False])
+    def test_add_update_view(
+        self,
+        view_edit2: bool,
+        main_window: MainWindow,
+        mocker: MockerFixture,
+        qtbot: QtBot,
+    ) -> None:
+        window = main_window
+        window.add_new_entry()
+        add_win = typing.cast(AddWindow, window.add_window)
+        window.view_entries()
+        view_win = typing.cast(ViewWindow, window.view_window)
+        view_edit = view_win.edit1
+        view_method = view_win.update_items1
+        view_text = "ap"
+        if view_edit2:
+            view_edit = view_win.edit2
+            view_method = view_win.update_items2
+            view_text = "가"
+        with qtbot.waitCallback() as callback:
+
+            def gen_wrapper() -> Callable[[], None]:
+                original_method = view_method
+
+                def wrapper(*args: Any, **kwargs: Any) -> None:
+                    original_method(*args, **kwargs)
+                    callback(*args, **kwargs)
+
+                return wrapper
+
+            wrapper = gen_wrapper()
+            view_edit.textChanged.disconnect()
+            view_edit.textChanged.connect(wrapper)
+            view_edit.setText(view_text)
+
+        edit1 = add_win.edits[add_win.header.term1]
+        edit1.setText("rose")
         edit2 = add_win.edits[add_win.header.term2]
         edit2.setText("장미")
         with qtbot.waitCallback() as callback:

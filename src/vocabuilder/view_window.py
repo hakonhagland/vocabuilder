@@ -104,6 +104,16 @@ class ViewScrollArea(QScrollArea):
         self.add_items(text, match_term)
         self.scrollwidget.update()
 
+    def update_items_from_db(
+        self, items1: list[str], items2: list[str], text1: str, text2: str
+    ) -> None:
+        self.items = [items1, items2]
+        # logging.info(f"update_items_from_db: {text1}, {text2}")
+        if len(text2) > 0:
+            self.update_items2(text2)
+        else:
+            self.update_items1(text1)
+
 
 class ViewWindow(QWidget, ResizeWindowMixin, WarningsMixin):
     def __init__(self, parent: QWidget, config: Config, database: Database) -> None:
@@ -176,8 +186,15 @@ class ViewWindow(QWidget, ResizeWindowMixin, WarningsMixin):
             logging.info("ViewWindow: ESC pressed")
             self.close()
 
-    def update_items1(self) -> None:
-        self.scrollarea1.update_items1(self.edit1.text())
+    def update_from_database(self) -> None:
+        items1 = self.get_db().get_term1_list()
+        items2 = self.get_db().get_term2_list()
+        self.scrollarea1.update_items_from_db(
+            items1, items2, self.edit1.text(), self.edit2.text()
+        )
 
-    def update_items2(self) -> None:
-        self.scrollarea1.update_items2(self.edit2.text())
+    def update_items1(self, txt: str) -> None:
+        self.scrollarea1.update_items1(txt)
+
+    def update_items2(self, txt: str) -> None:
+        self.scrollarea1.update_items2(txt)

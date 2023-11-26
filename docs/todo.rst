@@ -2,9 +2,6 @@ TODO (further work)
 ===================
 
 * View window: Update list of terms when the database is updated.
-* Refactor window layout. Main window should contain two buttons "Open database view"
-  and "Interact with database". The latter will open a new window with "Add", "Test",
-  "Modify", "Delete", and "Backup". Where to put "Reset Firebase database"?
 * Refactor Firebase database structure. Instead of using the same logic as for
   the local database where we push new entries at the end of the file and clean up duplicates
   later when needed, we should use the term as the key and use the update() or transaction()
