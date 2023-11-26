@@ -66,7 +66,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.closeEvent"><code class="docutils literal notranslate"><span class="pre">AddWindow.closeEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.get_db"><code class="docutils literal notranslate"><span class="pre">AddWindow.get_db()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">AddWindow.keyPressEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.maybe_update_view_window_later"><code class="docutils literal notranslate"><span class="pre">AddWindow.maybe_update_view_window_later()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.ok_button"><code class="docutils literal notranslate"><span class="pre">AddWindow.ok_button()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.simulate_add_button_pressed"><code class="docutils literal notranslate"><span class="pre">AddWindow.simulate_add_button_pressed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.add_window.AddWindow.update_scroll_area_items"><code class="docutils literal notranslate"><span class="pre">AddWindow.update_scroll_area_items()</span></code></a></li>
 </ul>
 </li>
@@ -264,8 +266,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.reset_firebase"><code class="docutils literal notranslate"><span class="pre">MainWindow.reset_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.run_test"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_test()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.test_window_closed"><code class="docutils literal notranslate"><span class="pre">MainWindow.test_window_closed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.update_view_window"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_view_window()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.view_entries"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_entries()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.view_window_closed"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_window_closed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.main_window.MainWindow.view_window_is_open"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_window_is_open()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -478,7 +482,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">add_button_pressed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.add_button_pressed" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -556,8 +560,28 @@ parent when we are closed</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.add_window.AddWindow.maybe_update_view_window_later">
+<span class="sig-name descname"><span class="pre">maybe_update_view_window_later</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.maybe_update_view_window_later" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.add_window.AddWindow.ok_button">
 <span class="sig-name descname"><span class="pre">ok_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.ok_button" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.add_window.AddWindow.simulate_add_button_pressed">
+<span class="sig-name descname"><span class="pre">simulate_add_button_pressed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.simulate_add_button_pressed" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -1690,6 +1714,16 @@ button</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.update_view_window">
+<span class="sig-name descname"><span class="pre">update_view_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.update_view_window" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.view_entries">
 <span class="sig-name descname"><span class="pre">view_entries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.view_entries" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -1705,6 +1739,16 @@ button</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.main_window.MainWindow.view_window_is_open">
+<span class="sig-name descname"><span class="pre">view_window_is_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.view_window_is_open" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
