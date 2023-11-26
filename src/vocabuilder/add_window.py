@@ -67,7 +67,7 @@ class AddWindow(QWidget, ResizeWindowMixin, StringMixin, TimeMixin, WarningsMixi
             self.buttons.append(button)
             button.setMinimumWidth(int(self.button_config["MinWidth"]))
             button.setMinimumHeight(int(self.button_config["MinHeight"]))
-            button.clicked.connect(callbacks[i])  # type: ignore
+            button.clicked.connect(callbacks[i])  # type: ignore[unused-ignore, arg-type]
             layout.addWidget(button, *positions[i])
         return vpos + 1
 
