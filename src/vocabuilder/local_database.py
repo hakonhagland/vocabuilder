@@ -49,9 +49,9 @@ class LocalDatabase(TimeMixin):
         """Add a new item to the database.
 
         :param item: a dict with the following keys:
-        ``header.term1``, ``header.term2``, ``header.test_delay``,
-        and ``header.last_test``. Here ``header`` refers to the
-        ``CsvDatabaseHeader`` object.
+          ``header.term1``, ``header.term2``, ``header.test_delay``,
+          and ``header.last_test``. Here ``header`` refers to the
+          ``CsvDatabaseHeader`` object.
 
         The ``header.status`` and ``header.last_modified`` keys are added automatically, then
         the dict is pushed to the database
@@ -74,10 +74,10 @@ class LocalDatabase(TimeMixin):
         ``TermStatus.DELETED``.
 
         :param item: a dict with the following keys:
-        ``header.status``, ``header.term2``,
-        ``header.test_delay``, ``header.last_test``, and
-        ``header.last_modified``. Here ``header`` refers to the
-        ``CsvDatabaseHeader`` object.
+          ``header.status``, ``header.term2``,
+          ``header.test_delay``, ``header.last_test``, and
+          ``header.last_modified``. Here ``header`` refers to the
+          ``CsvDatabaseHeader`` object.
         """
         file_obj = item.copy()
         file_obj[self.header.term1] = term1
