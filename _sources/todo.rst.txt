@@ -1,6 +1,7 @@
 TODO (further work)
 ===================
 
+* Add feature: integration with Google Translate. Speak the word with correct pronunciation.
 * View window: Update list of terms when the database is updated.
 * Refactor Firebase database structure. Instead of using the same logic as for
   the local database where we push new entries at the end of the file and clean up duplicates

@@ -1280,16 +1280,18 @@ picked at random, or should the user select the words from a list?</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.local_database.LocalDatabase.add_item">
 <span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.add_item" title="Link to this definition"></a></dt>
-<dd><p>Add a new item to the database.
-:rtype: <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd><p>Add a new item to the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]) – a dict with the following keys:</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">header.term1</span></code>, <code class="docutils literal notranslate"><span class="pre">header.term2</span></code>, <code class="docutils literal notranslate"><span class="pre">header.test_delay</span></code>,
+<dd class="field-odd"><p><strong>item</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]) – a dict with the following keys:
+<code class="docutils literal notranslate"><span class="pre">header.term1</span></code>, <code class="docutils literal notranslate"><span class="pre">header.term2</span></code>, <code class="docutils literal notranslate"><span class="pre">header.test_delay</span></code>,
 and <code class="docutils literal notranslate"><span class="pre">header.last_test</span></code>. Here <code class="docutils literal notranslate"><span class="pre">header</span></code> refers to the
 <code class="docutils literal notranslate"><span class="pre">CsvDatabaseHeader</span></code> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
 <p>The <code class="docutils literal notranslate"><span class="pre">header.status</span></code> and <code class="docutils literal notranslate"><span class="pre">header.last_modified</span></code> keys are added automatically, then
 the dict is pushed to the database</p>
 </dd></dl>
@@ -1299,17 +1301,19 @@ the dict is pushed to the database</p>
 <span class="sig-name descname"><span class="pre">assign_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.assign_item" title="Link to this definition"></a></dt>
 <dd><p>Replace, add, or delete a new item to the database. The item
 is implicitly deleted if the <code class="docutils literal notranslate"><span class="pre">header.status</span></code> key is set to
-<code class="docutils literal notranslate"><span class="pre">TermStatus.DELETED</span></code>.
-:rtype: <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">TermStatus.DELETED</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]) – a dict with the following keys:</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">header.status</span></code>, <code class="docutils literal notranslate"><span class="pre">header.term2</span></code>,
+<dd class="field-odd"><p><strong>item</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]) – a dict with the following keys:
+<code class="docutils literal notranslate"><span class="pre">header.status</span></code>, <code class="docutils literal notranslate"><span class="pre">header.term2</span></code>,
 <code class="docutils literal notranslate"><span class="pre">header.test_delay</span></code>, <code class="docutils literal notranslate"><span class="pre">header.last_test</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">header.last_modified</span></code>. Here <code class="docutils literal notranslate"><span class="pre">header</span></code> refers to the
 <code class="docutils literal notranslate"><span class="pre">CsvDatabaseHeader</span></code> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2555,37 +2559,24 @@ to practice has been assigned</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>words</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The list of candidate words</p></li>
-<li><p><strong>callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – If the user selects a word, the callback is called to</p></li>
-</ul>
-</dd>
-</dl>
-<p>continue execution. The callback is given as an argument a pair of
+<li><p><strong>callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – If the user selects a word, the callback is called to
+continue execution. The callback is given as an argument a pair of
 words. The first item of the pair is the selected word, the seconds item
-of the pair is determined by calling the <code class="docutils literal notranslate"><span class="pre">get_pair_callback()</span></code> function</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>get_pair_callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The callback is given the selected word and its</p>
-</dd>
-</dl>
-<p>index into the <code class="docutils literal notranslate"><span class="pre">words</span></code> array, and is expected to produce a pair of words
-as its return value</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A dictionary of options. The following options are available:</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">click_accept</span></code>: If True, the dialog is accepted when the user</dt><dd><p>clicks on a word in the list. Default: False</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">close_on_accept</span></code>: If True, the dialog is closed when the user clicks</dt><dd><p>the “Ok” button. Default: False</p>
-</dd>
-</dl>
-</li>
+of the pair is determined by calling the <code class="docutils literal notranslate"><span class="pre">get_pair_callback()</span></code> function</p></li>
+<li><p><strong>get_pair_callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The callback is given the selected word and its
+index into the <code class="docutils literal notranslate"><span class="pre">words</span></code> array, and is expected to produce a pair of words
+as its return value</p></li>
+<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – <p>A dictionary of options. The following options are available:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">click_accept</span></code>: If True, the dialog is accepted when the user
+clicks on a word in the list. Default: False</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">close_on_accept</span></code>: If True, the dialog is closed when the user clicks
+the “Ok” button. Default: False</p></li>
 </ul>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
