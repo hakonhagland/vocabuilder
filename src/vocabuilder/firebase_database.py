@@ -26,6 +26,7 @@ class FirebaseDatabase(TimeMixin):
         self.header = CsvDatabaseHeader()
         self.status = FirebaseStatus.NOT_INITIALIZED
         self.data: DatabaseType = {}
+        self.fb_keys: dict[str, str] = {}  # Maps local keys to firebase keys
         if self._read_config_parameters():
             if self._initialize_service_account():
                 if self._get_database_reference():
@@ -76,6 +77,7 @@ class FirebaseDatabase(TimeMixin):
             )
             return False
         self.data = {}
+        self.fb_keys = {}
         if snapshot is None:
             logging.info("Firebase database is empty")
             return True
@@ -87,13 +89,24 @@ class FirebaseDatabase(TimeMixin):
             # logging.info(f"Firebase: read item: {raw_key}, value: {item}")
             key = item.pop(self.header.term1)
             if key in self.data:
+                assert key in self.fb_keys
                 num_duplicates += 1
                 lm1 = self.data[key][self.header.last_modified]
                 lm2 = item[self.header.last_modified]
-                if lm1 > lm2:  # old value is newer, so do nothing
+                if lm1 > lm2:  # old value is newer
+                    self._delete_duplicate_item(raw_key, key)  # delete new value
                     continue
-            self.data[key] = item
-            num_items += 1
+                else:
+                    self._delete_duplicate_item(
+                        self.fb_keys[key], key
+                    )  # delete old value
+                    self.fb_keys[key] = raw_key
+                    self.data[key] = item
+                    continue
+            else:
+                self.fb_keys[key] = raw_key
+                self.data[key] = item
+                num_items += 1
         if num_duplicates > 0:
             logging.info(f"Firebase: found {num_duplicates} duplicate items")
         logging.info(f"Firebase: read {num_items} items from database")
@@ -105,6 +118,23 @@ class FirebaseDatabase(TimeMixin):
 
     # private methods sorted alphabetically
     # -------------------------------------
+
+    def _delete_duplicate_item(self, fb_key: str, duplicate_key: str) -> None:
+        try:
+            # TODO: this is not atomic. It should ideally be done in a transaction.
+            #  But since the database is expected to be used by a single person only,
+            #  it would be difficult for a user to change the item during the short
+            #  timespan (<< 1 sec) since we read it. So we just delete it, assuming
+            #  that the user will not change it during this short timespan.
+            self.db.child(fb_key).delete()
+        except FirebaseError as exc:
+            logging.info(
+                "Firebase: could not delete item: cause:"
+                f" {exc.cause}, error: {exc.code}, "
+                f"http_response: {exc.http_response}"
+            )
+            return
+        logging.info(f"Firebase: deleted duplicate item '{duplicate_key}'.")
 
     def _get_database_reference(self) -> bool:
         # https://firebase.google.com/static/docs/reference/admin/python/firebase_admin.db#reference_1

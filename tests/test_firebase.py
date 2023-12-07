@@ -21,6 +21,81 @@ class TestAddItem:
         with open(str(cfg_fn), "a", encoding="utf_8") as fp:
             fp.write(str_)
 
+    @pytest.mark.parametrize("delete_error", [True, False])
+    def test_delete(
+        self,
+        delete_error: bool,
+        credentials_file: Path,
+        caplog: LogCaptureFixture,
+        config_dir_path: Path,
+        data_dir_path: Path,
+        test_data: PytestDataDict,
+        mocker: MockerFixture,
+    ) -> None:
+        caplog.set_level(logging.INFO)
+        cfg_fn = config_dir_path / Config.config_fn
+        cred_fn = credentials_file
+        str_ = f"""
+[Firebase]
+credentials = {str(cred_fn)}
+databaseURL = https://vocabuilder.firebasedatabase.app"""
+        self.append_to_config_file(cfg_fn, str_)
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_config_dir",
+            return_value=config_dir_path,
+        )
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_data_dir",
+            return_value=data_dir_path,
+        )
+        cfg = Config()
+        voca_name = test_data["vocaname"]
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+            return_value=None,
+        )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
+        mock = mocker.MagicMock()
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.db.reference",
+            return_value=mock,
+        )
+        child_mock = mocker.MagicMock()
+        mock.child.return_value = child_mock
+        db_dict = {
+            "NYJ18uc": {
+                "Term1": "100",
+                "Term2": "백",
+                "Status": "1",
+                "LastModified": 1687977071,
+            },
+            "NYJ18ud": {
+                "Term1": "100",
+                "Term2": "백",
+                "Status": "1",
+                "LastModified": 1687977072,
+            },
+        }
+        child_mock.get.return_value = db_dict
+        child2_mock = mocker.MagicMock()
+        child_mock.child.return_value = child2_mock
+        if delete_error:
+            child2_mock.delete.side_effect = FirebaseError(
+                "code", "message", cause=None, http_response=None
+            )
+        else:
+            child2_mock.delete.return_value = None
+        FirebaseDatabase(cfg, voca_name)
+        if delete_error:
+            assert caplog.records[-4].msg.startswith(
+                "Firebase: could not delete item: cause:"
+            )
+        else:
+            assert caplog.records[-4].msg.startswith("Firebase: deleted duplicate item")
+
     @pytest.mark.parametrize(
         "file_not_found, file_invalid, cred_missing, url_missing",
         [
