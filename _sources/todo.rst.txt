@@ -32,16 +32,3 @@ TODO (further work)
 * Add an icon for the app. Start with Linux. Then add icon for Windows and Mac.
 * When practicing from list (not random) add option to override "practice delay" when selecting terms
   from the list
-* Add documentation for standard keyboard shortcuts in ``LineEdit`` and ``TextEdit`` widgets.
-  ``Ctrl+Backspace`` deletes the word to the left of the cursor. ``Ctrl+Delete`` deletes the
-  word to the right of the cursor. ``Ctrl+Left`` moves the cursor to the beginning of the
-  word to the left of the cursor. ``Ctrl+Right`` moves the cursor to the end of the word to
-  the right of the cursor. ``Ctrl+Shift+Left`` selects the word to the left of the cursor.
-  ``Ctrl+Shift+Right`` selects the word to the right of the cursor. ``Ctrl+Shift+Home``
-  selects all text from the cursor to the beginning of the line. ``Ctrl+Shift+End`` selects
-  all text from the cursor to the end of the line. ``Ctrl+Shift+Up`` selects all text from
-  the cursor to the beginning of the document. ``Ctrl+Shift+Down`` selects all text from
-  the cursor to the end of the document. ``Ctrl+Shift+Backspace`` deletes all text from the
-  cursor to the beginning of the line. ``Ctrl+Shift+Delete`` deletes all text from the
-  cursor to the end of the line.
-* Fix bug when deleting characters in view textedit, add window suddenly closes.
