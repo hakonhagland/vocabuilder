@@ -1,7 +1,10 @@
 TODO (further work)
 ===================
 
+* Other apps: Anki, Glossika, HelloTalk: https://youtu.be/U_SAcVGFpag
 * Add feature: integration with Google Translate. Speak the word with correct pronunciation.
+* Make the items in the view window selectable and copyable. CTRL-C should copy the
+  selected item to the clipboard.
 * View window: Update list of terms when the database is updated.
 * Refactor Firebase database structure. Instead of using the same logic as for
   the local database where we push new entries at the end of the file and clean up duplicates
