@@ -51,7 +51,7 @@ class Database(TimeMixin):
                     logging.info(
                         f"Updating firebase item: {key} (local value is newer)"
                     )
-                    self.firebase_database.push_item(key, value)
+                    self.firebase_database.update_item(key, value)
                     num_items += 1
             else:
                 self.firebase_database.push_item(key, value)

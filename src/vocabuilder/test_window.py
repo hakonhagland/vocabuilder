@@ -49,6 +49,7 @@ class TestWindow(QWidget, ResizeWindowMixin, WarningsMixin):
         label11 = QLabel("Translate this term:")
         grid.addWidget(label11, 0, 0)
         label12 = QLabel(f"{self.lang1_term}")  # type: ignore
+        label12.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.term1_label = label12
         term1_color = self.config.config["FontColor"]["Blue"]
         label12.setStyleSheet(

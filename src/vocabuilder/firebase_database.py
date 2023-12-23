@@ -116,6 +116,33 @@ class FirebaseDatabase(TimeMixin):
         logging.info("Firebase: running cleanup..")
         # self.db.delete()
 
+    def update_item(self, key: str, value: DatabaseRow) -> None:
+        if key not in self.fb_keys:
+            logging.info(
+                f"Unexpected: Firebase: key '{key}' not found in database. "
+                f"Cannot update item."
+            )
+            return
+        fb_key = self.fb_keys[key]
+        object = value.copy()
+        object[self.header.term1] = key
+        try:
+            self.db.child(fb_key).update(object)
+        except FirebaseError as exc:
+            logging.info(
+                "Firebase: could not update item: cause:"
+                f" {exc.cause}, error: {exc.code}, "
+                f"http_response: {exc.http_response}"
+            )
+            return
+        except ValueError:
+            logging.info(f"Firebase: invalid value error: {object}")
+            return
+        except TypeError:
+            logging.info(f"Firebase: invalid type error: {object}")
+            return
+        logging.info(f"Firebase: updated item: '{key}'")
+
     # private methods sorted alphabetically
     # -------------------------------------
 

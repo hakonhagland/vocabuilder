@@ -17,7 +17,7 @@ from vocabuilder.exceptions import (
     TimeException,
 )
 from vocabuilder.local_database import LocalDatabase
-from vocabuilder.type_aliases import DatabaseRow
+from vocabuilder.type_aliases import DatabaseRow, DatabaseType
 from vocabuilder.vocabuilder import Config
 
 from .common import PytestDataDict
@@ -124,17 +124,18 @@ class TestBackupRepo:
 
 
 class TestDataBase:
+    # Test specifically push_updated_items_to_firebase()
     @pytest.mark.parametrize(
         "local_db_empty, push_error, value_error, type_error",
         [
+            (False, True, False, False),
             (True, False, False, False),
             (False, False, False, False),
-            (False, True, False, False),
             (False, False, True, False),
             (False, False, False, True),
         ],
     )
-    def test_create1(
+    def test_create_upd_firebase(
         self,
         local_db_empty: bool,
         push_error: bool,
@@ -220,8 +221,139 @@ class TestDataBase:
         else:
             assert db is not None
 
+    # Test specifically push_updated_items_to_firebase() and update_item() method
+    #   in FireBaseDatabase
+    @pytest.mark.parametrize(
+        "update_error,value_error,type_error",
+        [
+            (True, False, False),
+            (False, True, False),
+            (False, False, True),
+        ],
+    )
+    def test_create_upd_firebase2(
+        self,
+        update_error: bool,
+        value_error: bool,
+        type_error: bool,
+        caplog: LogCaptureFixture,
+        config_object_fb: Config,
+        setup_database_dir: Callable[[], Path],
+        mocker: MockerFixture,
+        test_data: PytestDataDict,
+    ) -> None:
+        caplog.set_level(logging.INFO)
+        cfg = config_object_fb
+        setup_database_dir()
+        voca_name = test_data["vocaname"]
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+            return_value=None,
+        )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
+        mock = mocker.MagicMock()
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.db.reference",
+            return_value=mock,
+        )
+        child_mock = mocker.MagicMock()
+        mock.child.return_value = child_mock
+        header = CsvDatabaseHeader()
+        db_dict = {
+            "NYJ18uc": {
+                header.term1: "apple",
+                header.term2: "사과",
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1677329957,  # local db: 1687329957
+                header.status: TermStatus.NOT_DELETED,
+            },
+        }
+        child_mock.get.return_value = db_dict
+        child_child_mock = mocker.MagicMock()
+        child_mock.child.return_value = child_child_mock
+        if update_error:
+            child_child_mock.update.side_effect = FirebaseError(
+                code="code", message="message", http_response=None
+            )
+            logging.info(f"child_mock.update = {child_child_mock.update}")
+        elif value_error:
+            child_child_mock.update.side_effect = ValueError
+        elif type_error:
+            child_child_mock.update.side_effect = TypeError
+        mocker.patch(
+            "vocabuilder.database.Database.push_updated_items_to_local_database",
+            return_value=None,
+        )
+        Database(cfg, voca_name)
+        if update_error:
+            assert caplog.records[-4].msg.startswith(
+                "Firebase: could not update item: "
+            )
+        elif value_error:
+            assert caplog.records[-4].msg.startswith("Firebase: invalid value error: ")
+        elif type_error:
+            assert caplog.records[-4].msg.startswith("Firebase: invalid type error: ")
+        else:  # pragma: no cover
+            raise Exception("Should not reach here")
+
+    # Test specifically push_updated_items_to_firebase() and update_item() method
+    #   in FireBaseDatabase
+    def test_create_upd_firebase3(
+        self,
+        caplog: LogCaptureFixture,
+        config_object_fb: Config,
+        setup_database_dir: Callable[[], Path],
+        mocker: MockerFixture,
+        test_data: PytestDataDict,
+    ) -> None:
+        caplog.set_level(logging.INFO)
+        cfg = config_object_fb
+        setup_database_dir()
+        voca_name = test_data["vocaname"]
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+            return_value=None,
+        )
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.initialize_app",
+            return_value=None,
+        )
+        mock = mocker.MagicMock()
+        mocker.patch(
+            "vocabuilder.firebase_database.firebase_admin.db.reference",
+            return_value=mock,
+        )
+        child_mock = mocker.MagicMock()
+        mock.child.return_value = child_mock
+        header = CsvDatabaseHeader()
+        db_dict: DatabaseType = {
+            "NYJ18uc": {
+                header.term1: "apple",
+                header.term2: "사과",
+                header.test_delay: 1,
+                header.last_test: 1684886400,
+                header.last_modified: 1677329957,  # local db: 1687329957
+                header.status: TermStatus.NOT_DELETED,
+            },
+        }
+        child_mock.get.return_value = db_dict
+        mocker.patch(
+            "vocabuilder.database.Database.push_updated_items_to_local_database",
+            return_value=None,
+        )
+        db = Database(cfg, voca_name)
+        db.firebase_database.update_item("xxxyyy", db_dict["NYJ18uc"])
+        assert caplog.records[-1].msg.startswith(
+            "Unexpected: Firebase: key 'xxxyyy' not found"
+        )
+
+    # Test specifically push_updated_items_to_local_database()
     @pytest.mark.parametrize("assign_items", [False, True])
-    def test_create2(
+    def test_create_upd_local(
         self,
         assign_items: bool,
         caplog: LogCaptureFixture,
