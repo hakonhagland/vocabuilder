@@ -18,16 +18,15 @@ from vocabuilder.exceptions import (
 )
 from vocabuilder.local_database import LocalDatabase
 from vocabuilder.type_aliases import DatabaseRow, DatabaseType
-from vocabuilder.vocabuilder import Config
 
-from .common import PytestDataDict
+from .common import GetConfig, GetDatabase, PytestDataDict
 
 # from .conftest import database_object, test_data, data_dir_path
 
 
 class TestAddItem:
-    def test_add_ok(self, caplog: LogCaptureFixture, database_object: Database) -> None:
-        db = database_object
+    def test_add_ok(self, caplog: LogCaptureFixture, get_database: GetDatabase) -> None:
+        db = get_database()
         caplog.set_level(logging.INFO)
         now = db.epoch_in_seconds()
         ldb = db.get_local_database()
@@ -41,9 +40,9 @@ class TestAddItem:
         db.add_item(item)
         assert caplog.records[-1].msg.startswith("ADDED: term1 = 'yes'")
 
-    def test_extra_item(self, database_object: Database) -> None:
+    def test_extra_item(self, get_database: GetDatabase) -> None:
         """A specific number of keys are required in a DatabaseRow"""
-        db = database_object
+        db = get_database()
         ldb = db.get_local_database()
         now = db.epoch_in_seconds()
         header = ldb.get_header()
@@ -58,8 +57,8 @@ class TestAddItem:
             db.add_item(item)
         assert "Unexpected number of elements" in str(excinfo)
 
-    def test_bad_key(self, database_object: Database) -> None:
-        db = database_object
+    def test_bad_key(self, get_database: GetDatabase) -> None:
+        db = get_database()
         now = db.epoch_in_seconds()
         ldb = db.get_local_database()
         header = ldb.get_header()
@@ -73,8 +72,8 @@ class TestAddItem:
             db.add_item(item)
         assert re.search(r"item missing key", str(excinfo))
 
-    def test_bad_type(self, database_object: Database) -> None:
-        db = database_object
+    def test_bad_type(self, get_database: GetDatabase) -> None:
+        db = get_database()
         now = db.epoch_in_seconds()
         ldb = db.get_local_database()
         header = ldb.get_header()
@@ -93,13 +92,13 @@ class TestBackupRepo:
     def test_create_fail1(
         self,
         setup_database_dir: Callable[[], Path],
-        config_object: Config,
+        get_config: GetConfig,
         test_data: PytestDataDict,
     ) -> None:
         data_dir = setup_database_dir()
         filename = data_dir / LocalDatabase.backup_dirname
         filename.touch(exist_ok=False)
-        cfg = config_object
+        cfg = get_config(setup_firebase=True)
         voca_name = test_data["vocaname"]
         with pytest.raises(LocalDatabaseException) as excinfo:
             LocalDatabase(cfg, voca_name)
@@ -108,7 +107,7 @@ class TestBackupRepo:
     def test_create_fail2(
         self,
         setup_database_dir: Callable[[], Path],
-        config_object: Config,
+        get_config: GetConfig,
         test_data: PytestDataDict,
     ) -> None:
         data_dir = setup_database_dir()
@@ -116,7 +115,7 @@ class TestBackupRepo:
         backupdir.mkdir()
         filename = backupdir / LocalDatabase.git_dirname
         filename.touch(exist_ok=False)
-        cfg = config_object
+        cfg = get_config()
         voca_name = test_data["vocaname"]
         with pytest.raises(LocalDatabaseException) as excinfo:
             LocalDatabase(cfg, voca_name)
@@ -142,13 +141,13 @@ class TestDataBase:
         value_error: bool,
         type_error: bool,
         caplog: LogCaptureFixture,
-        config_object_fb: Config,
+        get_config: GetConfig,
         setup_database_dir: Callable[[], Path],
         mocker: MockerFixture,
         test_data: PytestDataDict,
     ) -> None:
         caplog.set_level(logging.INFO)
-        cfg = config_object_fb
+        cfg = get_config(setup_firebase=True)
         setup_database_dir()
         voca_name = test_data["vocaname"]
         mocker.patch(
@@ -237,13 +236,13 @@ class TestDataBase:
         value_error: bool,
         type_error: bool,
         caplog: LogCaptureFixture,
-        config_object_fb: Config,
+        get_config: GetConfig,
         setup_database_dir: Callable[[], Path],
         mocker: MockerFixture,
         test_data: PytestDataDict,
     ) -> None:
         caplog.set_level(logging.INFO)
-        cfg = config_object_fb
+        cfg = get_config(setup_firebase=True)
         setup_database_dir()
         voca_name = test_data["vocaname"]
         mocker.patch(
@@ -305,13 +304,13 @@ class TestDataBase:
     def test_create_upd_firebase3(
         self,
         caplog: LogCaptureFixture,
-        config_object_fb: Config,
+        get_config: GetConfig,
         setup_database_dir: Callable[[], Path],
         mocker: MockerFixture,
         test_data: PytestDataDict,
     ) -> None:
         caplog.set_level(logging.INFO)
-        cfg = config_object_fb
+        cfg = get_config(setup_firebase=True)
         setup_database_dir()
         voca_name = test_data["vocaname"]
         mocker.patch(
@@ -357,13 +356,13 @@ class TestDataBase:
         self,
         assign_items: bool,
         caplog: LogCaptureFixture,
-        config_object_fb: Config,
+        get_config: GetConfig,
         setup_database_dir: Callable[[], Path],
         mocker: MockerFixture,
         test_data: PytestDataDict,
     ) -> None:
         caplog.set_level(logging.INFO)
-        cfg = config_object_fb
+        cfg = get_config(setup_firebase=True)
         setup_database_dir()
         voca_name = test_data["vocaname"]
         mocker.patch(
@@ -428,14 +427,14 @@ class TestLocalDatabaseCreate:
     def test_create_fail(
         self,
         setup_database_dir: Callable[[], Path],
-        config_object: Config,
+        get_config: GetConfig,
         test_data: PytestDataDict,
     ) -> None:
         data_dir = setup_database_dir()
         filename = data_dir / LocalDatabase.database_fn
         filename.unlink()
         filename.mkdir()
-        cfg = config_object
+        cfg = get_config()
         voca_name = test_data["vocaname"]
         with pytest.raises(LocalDatabaseException) as excinfo:
             LocalDatabase(cfg, voca_name)
@@ -444,55 +443,95 @@ class TestLocalDatabaseCreate:
     def test_new(
         self,
         setup_database_dir: Callable[[], Path],
-        config_object: Config,
+        get_config: GetConfig,
         test_data: PytestDataDict,
     ) -> None:
         data_dir = setup_database_dir()
         filename = data_dir / LocalDatabase.database_fn
         filename.unlink()
-        cfg = config_object
+        cfg = get_config()
         voca_name = test_data["vocaname"]
         LocalDatabase(cfg, voca_name)
         assert filename.stat().st_size == 52
 
 
 class TestDeleteItem:
-    def test_missing(self, database_object: Database) -> None:
-        db = database_object
+    def test_missing(self, get_database: GetDatabase) -> None:
+        db = get_database()
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.delete_item("xyz")
         assert re.search(r"Term1 'xyz' does not exist", str(excinfo))
 
-    def test_success(
-        self, caplog: LogCaptureFixture, database_object: Database
+    @pytest.mark.parametrize(
+        "value_error, no_child, delete_error",
+        [
+            (False, False, False),
+            (True, False, False),
+            (False, True, False),
+            (False, False, True),
+        ],
+    )
+    def test_fb_delete(
+        self,
+        value_error: bool,
+        no_child: bool,
+        delete_error: bool,
+        caplog: LogCaptureFixture,
+        get_database: GetDatabase,
+        mocker: MockerFixture,
     ) -> None:
-        db = database_object
+        db = get_database(init=True)
         caplog.set_level(logging.INFO)
+        if value_error:
+            db.firebase_database.db.child.side_effect = ValueError
+        elif no_child:
+            child = db.firebase_database.db.child()
+            child.get.return_value = None
+        elif delete_error:
+            child = db.firebase_database.db.child()
+            child.delete.side_effect = FirebaseError(
+                code="code", message="message", http_response=None
+            )
         db.delete_item("apple")
-        assert caplog.records[-1].msg.startswith("DELETED: term1 = 'apple'")
+        if value_error:
+            assert caplog.records[-1].msg.startswith(
+                "Firebase: delete failed: invalid child path"
+            )
+        elif no_child:
+            assert caplog.records[-1].msg.startswith(
+                "Firebase: delete failed: key 'apple' does not exist"
+            )
+        elif delete_error:
+            assert caplog.records[-1].msg.startswith(
+                "Firebase: could not delete item: cause: "
+                "None, error: code, http_response: None"
+            )
+        else:
+            assert caplog.records[-2].msg.startswith("DELETED: term1 = 'apple'")
+            assert caplog.records[-1].msg.startswith("Firebase: deleted item: 'apple'")
 
 
 class TestEpochDiff:
     day = 24 * 60 * 60
 
-    def test_bad_timestamp(self, database_object: Database) -> None:
-        db = database_object
+    def test_bad_timestamp(self, get_database: GetDatabase) -> None:
+        db = get_database()
         now = db.epoch_in_seconds()
         t2 = now - 1 * self.day
         with pytest.raises(TimeException) as excinfo:
             db.get_epoch_diff_in_days(now, t2)
         assert re.search(r"Bad timestamp", str(excinfo))
 
-    def test_one_day(self, database_object: Database) -> None:
-        db = database_object
+    def test_one_day(self, get_database: GetDatabase) -> None:
+        db = get_database()
         now = db.epoch_in_seconds()
         t2 = now + 1 * self.day
         assert db.get_epoch_diff_in_days(now, t2) == 1
 
 
 class TestGetPairs:
-    def test_get_all(self, database_object: Database, mocker: MockerFixture) -> None:
-        db = database_object
+    def test_get_all(self, get_database: GetDatabase, mocker: MockerFixture) -> None:
+        db = get_database()
         mocker.patch(
             "vocabuilder.mixins.TimeMixin.epoch_in_seconds",
             autospec=True,
@@ -501,8 +540,8 @@ class TestGetPairs:
         pairs = db.get_pairs_exceeding_test_delay()
         assert len(pairs) == 4
 
-    def test_get_single(self, database_object: Database, mocker: MockerFixture) -> None:
-        db = database_object
+    def test_get_single(self, get_database: GetDatabase, mocker: MockerFixture) -> None:
+        db = get_database()
         mocker.patch(
             "vocabuilder.local_database.random.randint",
             return_value=3,
@@ -511,8 +550,8 @@ class TestGetPairs:
         assert pair is not None
         assert pair[0] == "apple"
 
-    def test_get_none(self, database_object: Database, mocker: MockerFixture) -> None:
-        db = database_object
+    def test_get_none(self, get_database: GetDatabase, mocker: MockerFixture) -> None:
+        db = get_database()
         mocker.patch(
             "vocabuilder.local_database.LocalDatabase.get_pairs_exceeding_test_delay",
             autospec=True,
@@ -523,33 +562,33 @@ class TestGetPairs:
 
 
 class TestGetTermData:
-    def test_term1_data(self, database_object: Database) -> None:
-        db = database_object
+    def test_term1_data(self, get_database: GetDatabase) -> None:
+        db = get_database()
         row = db.get_term1_data("apple")
         ldb = db.get_local_database()
         header = ldb.get_header()
         assert row[header.term2] == "사과"
 
-    def test_term1_data_bad_key(self, database_object: Database) -> None:
-        db = database_object
+    def test_term1_data_bad_key(self, get_database: GetDatabase) -> None:
+        db = get_database()
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.get_term1_data("milk")
         assert re.search(r"non-existing", str(excinfo))
 
-    def test_get_term2(self, database_object: Database) -> None:
-        db = database_object
+    def test_get_term2(self, get_database: GetDatabase) -> None:
+        db = get_database()
         term2 = db.get_term2("apple")
         assert term2 == "사과"
 
 
 class TestOther:
-    def test_datadir(self, database_object: Database, data_dir_path: Path) -> None:
-        db = database_object
+    def test_datadir(self, get_database: GetDatabase, data_dir_path: Path) -> None:
+        db = get_database()
         ldb = db.get_local_database()
         assert ldb.config.datadir_path == data_dir_path
 
-    def test_check_term1_exists(self, database_object: Database) -> None:
-        db = database_object
+    def test_check_term1_exists(self, get_database: GetDatabase) -> None:
+        db = get_database()
         assert db.check_term1_exists("apple")
 
 
@@ -557,14 +596,14 @@ class TestReadDatabase:
     def test_bad_row(
         self,
         setup_database_dir: Callable[[], Path],
-        config_object: Config,
+        get_config: GetConfig,
         test_data: PytestDataDict,
     ) -> None:
         data_dir = setup_database_dir()
         filename = data_dir / LocalDatabase.database_fn
         with open(filename, "a", encoding="utf_8") as fp:
             fp.write("1, 2, 3")
-        cfg = config_object
+        cfg = get_config()
         voca_name = test_data["vocaname"]
         with pytest.raises(CsvFileException) as excinfo:
             LocalDatabase(cfg, voca_name)
@@ -573,7 +612,7 @@ class TestReadDatabase:
     def test_deleted(
         self,
         setup_database_dir: Callable[[], Path],
-        config_object: Config,
+        get_config: GetConfig,
         test_data: PytestDataDict,
     ) -> None:
         data_dir = setup_database_dir()
@@ -592,7 +631,7 @@ class TestReadDatabase:
         row = [item[key] for key in header.header]
         with open(filename, "a", encoding="utf_8") as fp:
             fp.write(",".join(row))
-        cfg = config_object
+        cfg = get_config()
         voca_name = test_data["vocaname"]
         db = LocalDatabase(cfg, voca_name)
         assert mykey not in db.db
@@ -600,7 +639,7 @@ class TestReadDatabase:
     def test_bad_status(
         self,
         setup_database_dir: Callable[[], Path],
-        config_object: Config,
+        get_config: GetConfig,
         test_data: PytestDataDict,
     ) -> None:
         data_dir = setup_database_dir()
@@ -618,7 +657,7 @@ class TestReadDatabase:
         row = [item[key] for key in header.header]
         with open(filename, "a", encoding="utf_8") as fp:
             fp.write(",".join(row))
-        cfg = config_object
+        cfg = get_config()
         voca_name = test_data["vocaname"]
         with pytest.raises(LocalDatabaseException) as excinfo:
             LocalDatabase(cfg, voca_name)
@@ -626,8 +665,8 @@ class TestReadDatabase:
 
 
 class TestUpdateDatabase:
-    def test_bad_key(self, database_object: Database) -> None:
-        db = database_object
+    def test_bad_key(self, get_database: GetDatabase) -> None:
+        db = get_database()
         header = CsvDatabaseHeader()
         status = TermStatus()
         row: DatabaseRow = {
@@ -642,9 +681,9 @@ class TestUpdateDatabase:
         assert re.search(r"trying to update non-existent term", str(excinfo))
 
     def test_success(
-        self, caplog: LogCaptureFixture, database_object: Database
+        self, caplog: LogCaptureFixture, get_database: GetDatabase
     ) -> None:
-        db = database_object
+        db = get_database()
         header = CsvDatabaseHeader()
         status = TermStatus()
         row: DatabaseRow = {
@@ -659,9 +698,9 @@ class TestUpdateDatabase:
         assert caplog.records[-1].msg.startswith("UPDATED: term1 = 'apple'")
 
     def test_update_retest(
-        self, caplog: LogCaptureFixture, database_object: Database
+        self, caplog: LogCaptureFixture, get_database: GetDatabase
     ) -> None:
-        db = database_object
+        db = get_database()
         caplog.set_level(logging.INFO)
         db.update_retest_value("apple", 5)
         assert caplog.records[-1].msg.startswith("UPDATED: term1 = 'apple'")

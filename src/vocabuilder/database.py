@@ -32,6 +32,7 @@ class Database(TimeMixin):
 
     def delete_item(self, term1: str) -> None:
         self.local_database.delete_item(term1)
+        self.firebase_database.delete_item(term1)
 
     def push_updated_items_to_firebase(self) -> None:
         csv_items = self.local_database.get_items()

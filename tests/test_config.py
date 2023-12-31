@@ -9,12 +9,12 @@ from pytest_mock.plugin import MockerFixture
 from vocabuilder.exceptions import ConfigException
 from vocabuilder.vocabuilder import Config
 
-# from .common import QtBot, P
+from .common import GetConfig
 
 
 class TestContructor:
-    def test_config_object(self, config_object: Config, config_dir_path: Path) -> None:
-        cfg = config_object
+    def test_config_object(self, get_config: GetConfig, config_dir_path: Path) -> None:
+        cfg = get_config()
         cfg_dir = config_dir_path
         assert cfg.config_dir == cfg_dir
 
@@ -90,8 +90,8 @@ class TestContructor:
 
 
 class TestOther:
-    def test_get_dir(self, config_object: Config, config_dir_path: Path) -> None:
-        cfg = config_object
+    def test_get_dir(self, get_config: GetConfig, config_dir_path: Path) -> None:
+        cfg = get_config()
         cfg_dir = config_dir_path
         assert cfg.get_config_dir() == cfg_dir
 
@@ -99,9 +99,9 @@ class TestOther:
         "is_dir, bad_content", [(False, False), (True, False), (False, True)]
     )
     def test_data_dir_lock_file(
-        self, is_dir: bool, bad_content: bool, config_object: Config
+        self, is_dir: bool, bad_content: bool, get_config: GetConfig
     ) -> None:
-        cfg = config_object
+        cfg = get_config()
         data_dir = cfg.get_data_dir()
         lock_file = data_dir / "xyz"
         if is_dir:
@@ -122,9 +122,9 @@ class TestOther:
         "is_dir, bad_content", [(False, False), (True, False), (False, True)]
     )
     def test_config_dir_lock_file(
-        self, is_dir: bool, bad_content: bool, config_object: Config
+        self, is_dir: bool, bad_content: bool, get_config: GetConfig
     ) -> None:
-        cfg = config_object
+        cfg = get_config()
         data_dir = cfg.get_data_dir()
         lock_file = data_dir / "xyz"
         if is_dir:
@@ -145,11 +145,11 @@ class TestOther:
     def test_config_dir(
         self,
         path_is_file: bool,
-        config_object: Config,
+        get_config: GetConfig,
         mocker: MockerFixture,
         data_dir_path: Path,
     ) -> None:
-        cfg = config_object
+        cfg = get_config()
         cfg_dir_fake = data_dir_path / "foobar"
         mocker.patch(
             "vocabuilder.config.platformdirs.user_config_dir",

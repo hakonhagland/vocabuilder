@@ -11,15 +11,11 @@ from pytest_mock.plugin import MockerFixture
 import vocabuilder.vocabuilder
 from vocabuilder.local_database import LocalDatabase
 from vocabuilder.select_voca import SelectNewVocabularyName
-from vocabuilder.vocabuilder import (
-    CommandLineOptions,
-    Config,
-    SelectVocabularyException,
-)
+from vocabuilder.vocabuilder import CommandLineOptions, SelectVocabularyException
 
-from .common import QtBot
+from .common import GetConfig, QtBot
 
-# from .conftest import config_object, config_dir_path
+# from .conftest import get_config, config_dir_path
 
 
 class TestGeneral:
@@ -38,12 +34,12 @@ class TestGeneral:
         voca_exists: bool,
         info_fn_exists: bool,
         qapp: QApplication,
-        config_object: Config,
+        get_config: GetConfig,
         setup_database_dir: Callable[[], Path],
         mocker: MockerFixture,
     ) -> None:
         app = qapp
-        cfg = config_object
+        cfg = get_config()
         opts = CommandLineOptions(qapp)
         datadir = setup_database_dir()
         if not cmdline_arg:
@@ -79,12 +75,12 @@ class TestGeneral:
         most_recent: bool,
         db_exist: bool,
         qapp: QApplication,
-        config_object: Config,
+        get_config: GetConfig,
         mocker: MockerFixture,
         setup_database_dir: Callable[[], Path],
     ) -> None:
         app = qapp
-        cfg = config_object
+        cfg = get_config()
         retval = cmdline_param
         patch_retval: str | None = "english-korean"
         if db_exist:
@@ -116,12 +112,12 @@ class TestGeneral:
         valid_name: bool,
         bad_char: bool,
         qapp: QApplication,
-        config_object: Config,
+        get_config: GetConfig,
         mocker: MockerFixture,
         qtbot: QtBot,
     ) -> None:
         app = qapp
-        cfg = config_object
+        cfg = get_config()
         win = SelectNewVocabularyName(cfg, app)
         win.show()
         qtbot.add_widget(win)
@@ -151,12 +147,12 @@ class TestGeneral:
     def test_select_name_window_cancel(
         self,
         qapp: QApplication,
-        config_object: Config,
+        get_config: GetConfig,
         mocker: MockerFixture,
         qtbot: QtBot,
     ) -> None:
         app = qapp
-        cfg = config_object
+        cfg = get_config()
         win = SelectNewVocabularyName(cfg, app)
         qtbot.add_widget(win)
         win.show()

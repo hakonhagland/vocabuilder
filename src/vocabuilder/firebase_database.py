@@ -37,6 +37,37 @@ class FirebaseDatabase(TimeMixin):
     # public methods sorted alphabetically
     # ------------------------------------
 
+    def delete_item(self, key: str) -> None:
+        if key not in self.fb_keys:
+            logging.info(
+                f"Unexpected: Firebase: key '{key}' not found in database. "
+                f"Cannot delete item."
+            )
+            return
+        fb_key = self.fb_keys[key]
+        try:
+            child_ref = self.db.child(fb_key)
+        except ValueError:
+            logging.info(f"Firebase: delete failed: invalid child path '{fb_key}'")
+            return
+        # Check if key exists
+        child_data = child_ref.get()
+        if child_data is None:
+            logging.info(
+                f"Firebase: delete failed: key '{key}' does not exist in database"
+            )
+            return
+        try:
+            child_ref.delete()
+        except FirebaseError as exc:
+            logging.info(
+                "Firebase: could not delete item: cause:"
+                f" {exc.cause}, error: {exc.code}, "
+                f"http_response: {exc.http_response}"
+            )
+            return
+        logging.info(f"Firebase: deleted item: '{key}'")
+
     def get_items(self) -> DatabaseType:
         return self.data
 

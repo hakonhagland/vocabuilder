@@ -1,21 +1,24 @@
 # import logging
 # import re
 # from PyQt6.QtCore import Qt
+# from typing import Callable
+
 from PyQt6.QtWidgets import QApplication
 from pytest_mock.plugin import MockerFixture
 
 import vocabuilder.vocabuilder
-from vocabuilder.vocabuilder import Config
+
+from .common import GetConfig
 
 
 class TestGeneral:
     def test_set_options(
         self,
-        config_object: Config,
+        get_config: GetConfig,
         mocker: MockerFixture,
         qapp: QApplication,
     ) -> None:
-        cfg = config_object
+        cfg = get_config()
         mocker.patch(
             "vocabuilder.vocabuilder.platform.system",
             return_value="Darwin",

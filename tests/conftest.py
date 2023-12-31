@@ -1,4 +1,4 @@
-# import logging
+import logging
 import shutil
 import typing
 from pathlib import Path
@@ -8,6 +8,8 @@ import pytest
 from PyQt6.QtWidgets import QApplication
 from pytest_mock.plugin import MockerFixture
 
+from vocabuilder.constants import TermStatus
+from vocabuilder.csv_helpers import CsvDatabaseHeader
 from vocabuilder.database import Database
 from vocabuilder.local_database import LocalDatabase
 
@@ -15,7 +17,7 @@ from vocabuilder.local_database import LocalDatabase
 from vocabuilder.test_window import TestWindow as _TestWindow
 from vocabuilder.vocabuilder import Config, MainWindow
 
-from .common import PytestDataDict, QtBot
+from .common import GetConfig, GetDatabase, PytestDataDict, QtBot
 
 
 # This will override all qapp_args in all tests since it is session scoped
@@ -68,53 +70,36 @@ def config_dir_path(
 
 
 @pytest.fixture()
-def config_object(
+def get_config(
     config_dir_path: Path, mocker: MockerFixture, data_dir_path: Path
-) -> Config:
-    cfg_dir = config_dir_path
-    data_dir = data_dir_path
-    mocker.patch(
-        "vocabuilder.config.platformdirs.user_config_dir",
-        return_value=cfg_dir,
-    )
-    mocker.patch(
-        "vocabuilder.config.platformdirs.user_data_dir",
-        return_value=data_dir,
-    )
-    cfg = Config()
-    return cfg
-
-
-@pytest.fixture()
-def config_object_fb(
-    config_dir_path: Path,
-    credentials_file: Path,
-    mocker: MockerFixture,
-    data_dir_path: Path,
-) -> Config:
-    cfg_dir = config_dir_path
-    data_dir = data_dir_path
-    mocker.patch(
-        "vocabuilder.config.platformdirs.user_config_dir",
-        return_value=cfg_dir,
-    )
-    mocker.patch(
-        "vocabuilder.config.platformdirs.user_data_dir",
-        return_value=data_dir,
-    )
-    cfg_fn = cfg_dir / Config.config_fn
-    cred_fn = credentials_file
-    # NOTE: important the below string should start with a newline to avoid
-    #       appending [Firebase] to the end of the last line in existing config
-    #       file
-    str_ = f"""
+) -> GetConfig:
+    def _config(setup_firebase: bool = False) -> Config:
+        cfg_dir = config_dir_path
+        data_dir = data_dir_path
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_config_dir",
+            return_value=cfg_dir,
+        )
+        mocker.patch(
+            "vocabuilder.config.platformdirs.user_data_dir",
+            return_value=data_dir,
+        )
+        if setup_firebase:
+            cfg_fn = cfg_dir / Config.config_fn
+            cred_fn = credentials_file
+            # NOTE: important the below string should start with a newline to avoid
+            #       appending [Firebase] to the end of the last line in existing config
+            #       file
+            str_ = f"""
 [Firebase]
 credentials = {str(cred_fn)}
 databaseURL = https://vocabuilder.firebasedatabase.app"""
-    with open(str(cfg_fn), "a", encoding="utf_8") as fp:
-        fp.write(str_)
-    cfg = Config()
-    return cfg
+            with open(str(cfg_fn), "a", encoding="utf_8") as fp:
+                fp.write(str_)
+        cfg = Config()
+        return cfg
+
+    return _config
 
 
 @pytest.fixture()
@@ -140,22 +125,56 @@ def credentials_file(config_dir_path: Path) -> Path:
 
 
 @pytest.fixture()
-def database_object(
+def get_database(
     setup_database_dir: Callable[[], Path],
     config_dir_path: Path,
-    config_object: Config,
+    get_config: GetConfig,
     test_data: PytestDataDict,
     mocker: MockerFixture,
-) -> Database:
-    setup_database_dir()
-    cfg = config_object
-    voca_name = test_data["vocaname"]
-    mocker.patch(
-        "vocabuilder.database.FirebaseDatabase._initialize_service_account",
-        return_value=False,
-    )
-    db = Database(cfg, voca_name)
-    return db
+) -> GetDatabase:
+    def _database_object(init: bool = False) -> Database:
+        setup_database_dir()
+        voca_name = test_data["vocaname"]
+        if init:
+            cfg = get_config(setup_firebase=True)
+            mocker.patch(
+                "vocabuilder.firebase_database.firebase_admin.credentials.Certificate",
+                return_value=None,
+            )
+            mocker.patch(
+                "vocabuilder.firebase_database.firebase_admin.initialize_app",
+                return_value=None,
+            )
+            mock = mocker.MagicMock()
+            mocker.patch(
+                "vocabuilder.firebase_database.firebase_admin.db.reference",
+                return_value=mock,
+            )
+            child_mock = mocker.MagicMock()
+            mock.child.return_value = child_mock
+            logging.info(f"conftest: child_mock: {child_mock}")
+            header = CsvDatabaseHeader()
+            db_dict = {
+                "NYJ18uc": {
+                    header.term1: "apple",
+                    header.term2: "사과",
+                    header.test_delay: 1,
+                    header.last_test: 1684886400,
+                    header.last_modified: 1677329957,  # local db: 1687329957
+                    header.status: TermStatus.NOT_DELETED,
+                },
+            }
+            child_mock.get.return_value = db_dict
+        else:
+            cfg = get_config()
+            mocker.patch(
+                "vocabuilder.database.FirebaseDatabase._initialize_service_account",
+                return_value=False,
+            )
+        db = Database(cfg, voca_name)
+        return db
+
+    return _database_object
 
 
 @pytest.fixture()
@@ -182,12 +201,12 @@ def setup_database_dir(
 
 @pytest.fixture()
 def main_window(
-    config_object: Config,
-    database_object: Database,
+    get_config: GetConfig,
+    get_database: GetDatabase,
     qtbot: QtBot,
 ) -> MainWindow:
-    db = database_object
-    config = config_object
+    db = get_database()
+    config = get_config()
     # NOTE: QApplication.instance() returns a QCoreApplication type object,
     #     but there is no difference between QCoreApplication and QApplication
     #     see: https://stackoverflow.com/a/36561084/2173773
