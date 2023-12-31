@@ -90,11 +90,6 @@
 <li><p>Make the items in the view window selectable and copyable. CTRL-C should copy the
 selected item to the clipboard.</p></li>
 <li><p>View window: Update list of terms when the database is updated.</p></li>
-<li><p>Refactor Firebase database structure. Instead of using the same logic as for
-the local database where we push new entries at the end of the file and clean up duplicates
-later when needed, we should use the term as the key and use the update() or transaction()
-method to update an existing entry directly. This will make it easier to keep the local
-and Firebase databases in sync and make it simpler to delete entries from the database.</p></li>
 <li><p>Finish Firebase implementation. Firebase is only synchronized at the start
 of the program. We need to update continuously. We also need to implement a way to
 clean up duplicated and deleted entries in the Firebase database like we do for the local
