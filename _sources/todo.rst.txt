@@ -5,7 +5,7 @@ TODO (further work)
 * Add feature: integration with Google Translate. Speak the word with correct pronunciation.
 * Make the items in the view window selectable and copyable. CTRL-C should copy the
   selected item to the clipboard.
-* View window: Update list of terms when the database is updated.
+* View window: (Partly finished) Update list of terms when the database is updated.
 * Finish Firebase implementation. Firebase is only synchronized at the start
   of the program. We need to update continuously. We also need to implement a way to
   clean up duplicated and deleted entries in the Firebase database like we do for the local

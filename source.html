@@ -166,6 +166,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_term2"><code class="docutils literal notranslate"><span class="pre">Database.get_term2()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_term2_list"><code class="docutils literal notranslate"><span class="pre">Database.get_term2_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.get_voca_name"><code class="docutils literal notranslate"><span class="pre">Database.get_voca_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.modify_item"><code class="docutils literal notranslate"><span class="pre">Database.modify_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.reset_firebase"><code class="docutils literal notranslate"><span class="pre">Database.reset_firebase()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_item"><code class="docutils literal notranslate"><span class="pre">Database.update_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.database.Database.update_retest_value"><code class="docutils literal notranslate"><span class="pre">Database.update_retest_value()</span></code></a></li>
@@ -183,12 +184,14 @@
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.appname"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.appname</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.__init__"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.delete_item"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.delete_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.get_firebase_key"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.get_firebase_key()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.get_items"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.get_items()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.is_initialized"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.is_initialized()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.push_item"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.push_item()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.read_database"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.read_database()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.run_reset"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.run_reset()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.update_item"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.update_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.update_item_same_key"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.update_item_same_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.firebase_database.FirebaseDatabase.update_item_different_key"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabase.update_item_different_key()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -232,6 +235,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.exceptions.CsvFileException"><code class="docutils literal notranslate"><span class="pre">CsvFileException</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#vocabuilder.exceptions.CsvFileException.__init__"><code class="docutils literal notranslate"><span class="pre">CsvFileException.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabuilder.exceptions.FirebaseDatabaseException"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabaseException</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabuilder.exceptions.FirebaseDatabaseException.__init__"><code class="docutils literal notranslate"><span class="pre">FirebaseDatabaseException.__init__()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#vocabuilder.exceptions.LocalDatabaseException"><code class="docutils literal notranslate"><span class="pre">LocalDatabaseException</span></code></a><ul>
@@ -470,11 +477,11 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <dt class="sig sig-object py" id="vocabuilder.add_window.AddWindow.add_buttons">
 <span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.add_buttons" title="Link to this definition"></a></dt>
 <dd><p>Adds the button widgets.
-:type layout: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGridLayout</span></code>
+:type layout: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QGridLayout</span></code></span>
 :param layout:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -484,7 +491,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">add_button_pressed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.add_button_pressed" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -494,7 +501,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">add_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.add_data" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -504,7 +511,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">add_line_edits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.add_line_edits" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -514,7 +521,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">add_scroll_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.add_scroll_area" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -524,7 +531,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 <span class="sig-name descname"><span class="pre">cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.cancel_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -536,7 +543,7 @@ Continue the above procedure of adding terms until the user clicks the cancel bu
 parent when we are closed</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -546,7 +553,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">get_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.get_db" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.database.Database" title="vocabuilder.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#vocabuilder.database.Database" title="vocabuilder.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -556,7 +563,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.keyPressEvent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -566,7 +573,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">maybe_update_view_window_later</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.maybe_update_view_window_later" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -576,7 +583,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">ok_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.ok_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -586,7 +593,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">simulate_add_button_pressed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.simulate_add_button_pressed" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -596,7 +603,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">update_scroll_area_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.add_window.AddWindow.update_scroll_area_items" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -620,7 +627,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">get_database_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.commandline.CommandLineOptions.get_database_name" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -654,7 +661,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">check_config_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.check_config_dir" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -665,7 +672,7 @@ parent when we are closed</p>
 <dd><p>The config dir might be owned by another app with the same name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -676,7 +683,7 @@ parent when we are closed</p>
 <dd><p>The data dir might be owned by another app with the same name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -686,7 +693,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">get_config_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.get_config_dir" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -696,7 +703,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">get_data_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.get_data_dir" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -706,7 +713,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">get_data_dir_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.get_data_dir_path" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -716,7 +723,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">get_config_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.get_config_path" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -726,7 +733,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">get_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.get_section" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SectionProxy</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">SectionProxy</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -736,7 +743,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">read_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.read_config" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -746,7 +753,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">read_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.config.Config.read_defaults" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -871,7 +878,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">append_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.csv_helpers.CSVwrapper.append_line" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -881,7 +888,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">append_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.csv_helpers.CSVwrapper.append_row" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -891,7 +898,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">dict_to_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.csv_helpers.CSVwrapper.dict_to_row" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -901,7 +908,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">open_for_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.csv_helpers.CSVwrapper.open_for_read" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.csv_helpers.CSVwrapperReader" title="vocabuilder.csv_helpers.CSVwrapperReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVwrapperReader</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#vocabuilder.csv_helpers.CSVwrapperReader" title="vocabuilder.csv_helpers.CSVwrapperReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVwrapperReader</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -911,7 +918,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">open_for_write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.csv_helpers.CSVwrapper.open_for_write" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.csv_helpers.CSVwrapperWriter" title="vocabuilder.csv_helpers.CSVwrapperWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVwrapperWriter</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#vocabuilder.csv_helpers.CSVwrapperWriter" title="vocabuilder.csv_helpers.CSVwrapperWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVwrapperWriter</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -934,7 +941,7 @@ picked at random, or should the user select the words from a list?</p>
 <dd><p>NOTE: this method modifies the input argument ‘row’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -956,7 +963,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">writerow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.csv_helpers.CSVwrapperWriter.writerow" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -966,7 +973,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">writeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.csv_helpers.CSVwrapperWriter.writeline" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -990,7 +997,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.add_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1000,7 +1007,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">check_term1_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.check_term1_exists" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1010,7 +1017,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">create_backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.create_backup" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1020,7 +1027,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">delete_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.delete_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1030,7 +1037,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">push_updated_items_to_firebase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.push_updated_items_to_firebase" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1040,7 +1047,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">push_updated_items_to_local_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.push_updated_items_to_local_database" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1050,7 +1057,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_local_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_local_database" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase" title="vocabuilder.local_database.LocalDatabase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalDatabase</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#vocabuilder.local_database.LocalDatabase" title="vocabuilder.local_database.LocalDatabase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalDatabase</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1060,7 +1067,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_pairs_exceeding_test_delay</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_pairs_exceeding_test_delay" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1070,7 +1077,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_random_pair</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_random_pair" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1080,7 +1087,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_term1_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_term1_data" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1090,7 +1097,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_term1_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_term1_list" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1100,7 +1107,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_term2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_term2" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1110,7 +1117,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_term2_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_term2_list" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1120,7 +1127,17 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_voca_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.get_voca_name" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.database.Database.modify_item">
+<span class="sig-name descname"><span class="pre">modify_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.modify_item" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1130,7 +1147,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">reset_firebase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.reset_firebase" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1140,7 +1157,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">update_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.update_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1150,7 +1167,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">update_retest_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.database.Database.update_retest_value" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1195,7 +1212,17 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">delete_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.delete_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.get_firebase_key">
+<span class="sig-name descname"><span class="pre">get_firebase_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.get_firebase_key" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1205,7 +1232,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.get_items" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1215,7 +1242,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">is_initialized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.is_initialized" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1225,7 +1252,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">push_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.push_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1235,7 +1262,7 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">read_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.read_database" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1245,17 +1272,27 @@ picked at random, or should the user select the words from a list?</p>
 <span class="sig-name descname"><span class="pre">run_reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.run_reset" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.update_item">
-<span class="sig-name descname"><span class="pre">update_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.update_item" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.update_item_same_key">
+<span class="sig-name descname"><span class="pre">update_item_same_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.update_item_same_key" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.firebase_database.FirebaseDatabase.update_item_different_key">
+<span class="sig-name descname"><span class="pre">update_item_different_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.firebase_database.FirebaseDatabase.update_item_different_key" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1305,13 +1342,13 @@ picked at random, or should the user select the words from a list?</p>
 <dd><p>Add a new item to the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]) – a dict with the following keys:
+<dd class="field-odd"><p><strong>item</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</span>) – a dict with the following keys:
 <code class="docutils literal notranslate"><span class="pre">header.term1</span></code>, <code class="docutils literal notranslate"><span class="pre">header.term2</span></code>, <code class="docutils literal notranslate"><span class="pre">header.test_delay</span></code>,
 and <code class="docutils literal notranslate"><span class="pre">header.last_test</span></code>. Here <code class="docutils literal notranslate"><span class="pre">header</span></code> refers to the
 <code class="docutils literal notranslate"><span class="pre">CsvDatabaseHeader</span></code> object.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 <p>The <code class="docutils literal notranslate"><span class="pre">header.status</span></code> and <code class="docutils literal notranslate"><span class="pre">header.last_modified</span></code> keys are added automatically, then
@@ -1326,14 +1363,14 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <code class="docutils literal notranslate"><span class="pre">TermStatus.DELETED</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]) – a dict with the following keys:
+<dd class="field-odd"><p><strong>item</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</span>) – a dict with the following keys:
 <code class="docutils literal notranslate"><span class="pre">header.status</span></code>, <code class="docutils literal notranslate"><span class="pre">header.term2</span></code>,
 <code class="docutils literal notranslate"><span class="pre">header.test_delay</span></code>, <code class="docutils literal notranslate"><span class="pre">header.last_test</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">header.last_modified</span></code>. Here <code class="docutils literal notranslate"><span class="pre">header</span></code> refers to the
 <code class="docutils literal notranslate"><span class="pre">CsvDatabaseHeader</span></code> object.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1343,7 +1380,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">check_term1_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.check_term1_exists" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1353,7 +1390,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">create_backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.create_backup" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1363,7 +1400,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">delete_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.delete_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1373,7 +1410,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_items" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1383,7 +1420,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_header</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_header" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.csv_helpers.CsvDatabaseHeader" title="vocabuilder.csv_helpers.CsvDatabaseHeader"><code class="xref py py-class docutils literal notranslate"><span class="pre">CsvDatabaseHeader</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#vocabuilder.csv_helpers.CsvDatabaseHeader" title="vocabuilder.csv_helpers.CsvDatabaseHeader"><code class="xref py py-class docutils literal notranslate"><span class="pre">CsvDatabaseHeader</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1394,7 +1431,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <dd><p>Get all candidates for a practice session.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1404,7 +1441,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_random_pair</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_random_pair" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1414,7 +1451,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_term1_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_term1_data" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">UnionType</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1424,7 +1461,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_term1_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_term1_list" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1434,7 +1471,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_term2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_term2" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1444,7 +1481,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_term2_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_term2_list" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1454,7 +1491,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">get_voca_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.get_voca_name" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1464,7 +1501,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">update_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.local_database.LocalDatabase.update_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1475,7 +1512,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <dd><p>Set a delay (in days) until next time this term should be practiced</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1514,6 +1551,17 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <dl class="py method">
 <dt class="sig sig-object py" id="vocabuilder.exceptions.CsvFileException.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.exceptions.CsvFileException.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="vocabuilder.exceptions.FirebaseDatabaseException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vocabuilder.exceptions.</span></span><span class="sig-name descname"><span class="pre">FirebaseDatabaseException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.exceptions.FirebaseDatabaseException" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vocabuilder.exceptions.FirebaseDatabaseException.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.exceptions.FirebaseDatabaseException.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1568,7 +1616,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.add_buttons" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1578,7 +1626,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">add_database_info_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.add_database_info_label" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1588,7 +1636,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">add_new_entry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.add_new_entry" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1598,7 +1646,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">add_window_closed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.add_window_closed" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1608,7 +1656,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 <span class="sig-name descname"><span class="pre">backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.backup" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1620,7 +1668,7 @@ is implicitly deleted if the <code class="docutils literal notranslate"><span cl
 are closed when the main window is closed</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1630,7 +1678,7 @@ are closed when the main window is closed</p>
 <span class="sig-name descname"><span class="pre">create_file_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.create_file_menu" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1640,7 +1688,7 @@ are closed when the main window is closed</p>
 <span class="sig-name descname"><span class="pre">create_database_menu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.create_database_menu" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1650,7 +1698,7 @@ are closed when the main window is closed</p>
 <span class="sig-name descname"><span class="pre">create_menus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.create_menus" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1660,7 +1708,7 @@ are closed when the main window is closed</p>
 <span class="sig-name descname"><span class="pre">delete_entry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.delete_entry" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">QMessageBox</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QMessageBox</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1670,7 +1718,7 @@ are closed when the main window is closed</p>
 <span class="sig-name descname"><span class="pre">edit_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.edit_config" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1680,7 +1728,7 @@ are closed when the main window is closed</p>
 <span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.keyPressEvent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1694,7 +1742,7 @@ the above procedure of modifying terms until the user clicks the cancel
 button</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.widgets.SelectWordFromList" title="vocabuilder.widgets.SelectWordFromList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectWordFromList</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#vocabuilder.widgets.SelectWordFromList" title="vocabuilder.widgets.SelectWordFromList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectWordFromList</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1704,7 +1752,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">quit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.quit" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1714,7 +1762,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">reset_firebase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.reset_firebase" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1724,7 +1772,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">run_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.run_test" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1734,7 +1782,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">test_window_closed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.test_window_closed" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1744,7 +1792,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">update_view_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.update_view_window" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1754,7 +1802,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">view_entries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.view_entries" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1764,7 +1812,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">view_window_closed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.view_window_closed" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1774,7 +1822,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">view_window_is_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.main_window.MainWindow.view_window_is_open" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1798,7 +1846,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.ConfigWindow.move" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1808,7 +1856,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.ConfigWindow.resize" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1824,7 +1872,7 @@ button</p>
 <span class="sig-name descname"><span class="pre">resize_window_from_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.ResizeWindowMixin.resize_window_from_config" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1845,7 +1893,7 @@ button</p>
 <dd class="field-odd"><p><strong>str</strong> (<em>str</em>) – Input string</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if string is empty or only space</p>
@@ -1864,7 +1912,7 @@ button</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">epoch_in_seconds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.TimeMixin.epoch_in_seconds" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1877,7 +1925,7 @@ in this application they should always be positive (corresponding to
 dates after year 2022)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1893,7 +1941,7 @@ dates after year 2022)</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">display_warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.WarningsMixin.display_warning" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">QMessageBox</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QMessageBox</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1903,7 +1951,7 @@ dates after year 2022)</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">display_warning_no_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.mixins.WarningsMixin.display_warning_no_terms" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">QMessageBox</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QMessageBox</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1914,7 +1962,7 @@ dates after year 2022)</p>
 <dd><p>This method is here such that it can be mocked from pytest</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1940,7 +1988,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.modify_window.ModifyWindow.add_buttons" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1950,7 +1998,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.modify_window.ModifyWindow.add_labels" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1960,7 +2008,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_line_edits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.modify_window.ModifyWindow.add_line_edits" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1970,7 +2018,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.modify_window.ModifyWindow.cancel_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1980,7 +2028,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.modify_window.ModifyWindow.keyPressEvent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1990,7 +2038,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">modify_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.modify_window.ModifyWindow.modify_item" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2000,7 +2048,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">ok_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.modify_window.ModifyWindow.ok_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2024,7 +2072,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">choose_most_recent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectVocabulary.choose_most_recent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2034,7 +2082,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">find_existing_vocabularies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectVocabulary.find_existing_vocabularies" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2044,7 +2092,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectVocabulary.get_name" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2054,7 +2102,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">open_select_voca_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectVocabulary.open_select_voca_window" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2064,7 +2112,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">read_active_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectVocabulary.read_active_name" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2085,7 +2133,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_info_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectNewVocabularyName.add_info_label" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2095,7 +2143,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_line_edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectNewVocabularyName.add_line_edit" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2105,7 +2153,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectNewVocabularyName.add_buttons" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2115,7 +2163,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">ok_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectNewVocabularyName.ok_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2125,7 +2173,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectNewVocabularyName.cancel_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2135,7 +2183,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">validate_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.select_voca.SelectNewVocabularyName.validate_name" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2159,7 +2207,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_current_term_to_practice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.add_current_term_to_practice" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2169,7 +2217,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_next_done_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.add_next_done_buttons" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2179,7 +2227,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_param_info_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.add_param_info_labels" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2189,7 +2237,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_retest_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.add_retest_options" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2199,7 +2247,7 @@ database.</p>
 <span class="sig-name descname"><span class="pre">add_retest_radio_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.add_retest_radio_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2211,12 +2259,12 @@ database.</p>
 a word randomly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <a class="reference internal" href="#vocabuilder.test_window.TestWindow" title="vocabuilder.test_window.TestWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestWindow</span></code></a>]]) – called to continue execution after
+<dd class="field-odd"><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <a class="reference internal" href="#vocabuilder.test_window.TestWindow" title="vocabuilder.test_window.TestWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestWindow</span></code></a>]]</span>) – called to continue execution after
 the term to practice has been determined. Note that the callback is needed
 since a non-blocking dialog will be opened if the term is selected from a list.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#vocabuilder.test_window.TestWindow" title="vocabuilder.test_window.TestWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestWindow</span></code></a>]</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#vocabuilder.test_window.TestWindow" title="vocabuilder.test_window.TestWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestWindow</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2228,11 +2276,11 @@ since a non-blocking dialog will be opened if the term is selected from a list.<
 available for practice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Callback to be called to continue execution after the
+<dd class="field-odd"><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Callback to be called to continue execution after the
 the user has selected a word from the non-blocking dialog</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#vocabuilder.widgets.SelectWordFromList" title="vocabuilder.widgets.SelectWordFromList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectWordFromList</span></code></a>]</p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#vocabuilder.widgets.SelectWordFromList" title="vocabuilder.widgets.SelectWordFromList"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectWordFromList</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2244,7 +2292,7 @@ the user has selected a word from the non-blocking dialog</p>
 parent when we are closed</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2254,7 +2302,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">done_button_clicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.done_button_clicked" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2264,7 +2312,7 @@ parent when we are closed</p>
 <span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.keyPressEvent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2276,7 +2324,7 @@ parent when we are closed</p>
 been chosen from the <code class="docutils literal notranslate"><span class="pre">TestWindowChooseParameters</span></code> dialog</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2288,7 +2336,7 @@ been chosen from the <code class="docutils literal notranslate"><span class="pre
 to practice has been assigned</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#vocabuilder.test_window.TestWindow" title="vocabuilder.test_window.TestWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestWindow</span></code></a></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#vocabuilder.test_window.TestWindow" title="vocabuilder.test_window.TestWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestWindow</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2298,7 +2346,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">next_button_clicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.next_button_clicked" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2308,7 +2356,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">show_hidden_translation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.show_hidden_translation" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2318,7 +2366,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">update_retest_lineedit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindow.update_retest_lineedit" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2339,7 +2387,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.add_buttons" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2349,7 +2397,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">add_check_box_group1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.add_check_box_group1" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2359,7 +2407,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">add_check_box_group2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.add_check_box_group2" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2369,7 +2417,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.cancel_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2379,7 +2427,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">call_parent_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.call_parent_callback" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2389,7 +2437,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.keyPressEvent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2399,7 +2447,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">modify_checkbox_group1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.modify_checkbox_group1" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2409,7 +2457,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">modify_checkbox_group2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.modify_checkbox_group2" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2419,7 +2467,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">ok_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.test_window.TestWindowChooseParameters.ok_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2438,7 +2486,7 @@ to practice has been assigned</p>
 <dd><p>The user can select between different databases with different vocabularies</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2448,7 +2496,7 @@ to practice has been assigned</p>
 <span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">set_app_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.vocabuilder.set_app_options" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2458,7 +2506,7 @@ to practice has been assigned</p>
 <span class="sig-prename descclassname"><span class="pre">vocabuilder.vocabuilder.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.vocabuilder.main" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2480,7 +2528,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">addCallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.QLabelClickable.addCallback" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2490,7 +2538,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ev</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.QLabelClickable.mousePressEvent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2511,7 +2559,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">sizeHint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.QGridMinimalLabel.sizeHint" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">QSize</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QSize</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2532,7 +2580,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">add_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.QSelectItemScrollArea.add_items" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2542,7 +2590,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">item_clicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.QSelectItemScrollArea.item_clicked" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2552,7 +2600,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">update_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.QSelectItemScrollArea.update_items" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2562,7 +2610,7 @@ to practice has been assigned</p>
 <span class="sig-name descname"><span class="pre">update_items_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.QSelectItemScrollArea.update_items_list" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2580,15 +2628,15 @@ to practice has been assigned</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>words</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The list of candidate words</p></li>
-<li><p><strong>callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – If the user selects a word, the callback is called to
+<li><p><strong>words</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The list of candidate words</p></li>
+<li><p><strong>callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – If the user selects a word, the callback is called to
 continue execution. The callback is given as an argument a pair of
 words. The first item of the pair is the selected word, the seconds item
 of the pair is determined by calling the <code class="docutils literal notranslate"><span class="pre">get_pair_callback()</span></code> function</p></li>
-<li><p><strong>get_pair_callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The callback is given the selected word and its
+<li><p><strong>get_pair_callback</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – The callback is given the selected word and its
 index into the <code class="docutils literal notranslate"><span class="pre">words</span></code> array, and is expected to produce a pair of words
 as its return value</p></li>
-<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – <p>A dictionary of options. The following options are available:</p>
+<li><p><strong>options</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – <p>A dictionary of options. The following options are available:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">click_accept</span></code>: If True, the dialog is accepted when the user
 clicks on a word in the list. Default: False</p></li>
@@ -2606,7 +2654,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">add_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.add_buttons" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2616,7 +2664,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">add_line_edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.add_line_edit" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2626,7 +2674,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">add_scroll_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vpos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.add_scroll_area" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2636,7 +2684,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.cancel_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2646,7 +2694,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">check_bool_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.check_bool_option" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2656,7 +2704,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">check_term_in_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.check_term_in_list" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2666,7 +2714,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.keyPressEvent" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2676,7 +2724,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">ok_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.ok_button" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2686,7 +2734,7 @@ the “Ok” button. Default: False</p></li>
 <span class="sig-name descname"><span class="pre">update_scroll_area_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vocabuilder.widgets.SelectWordFromList.update_scroll_area_items" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
