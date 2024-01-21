@@ -117,8 +117,7 @@ class ModifyWindow(QDialog, WarningsMixin, StringMixin):
         else:
             item[self.header.term1] = new_term1
             item[self.header.term2] = new_term2
-            self.db.delete_item(old_term1)
-            self.db.add_item(item)
+            self.db.modify_item(old_term1, item)
         return True
 
     def ok_button(self) -> None:

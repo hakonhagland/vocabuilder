@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vocabuilder"
-version = "0.1.13"
+version = "0.1.14"
 description = "Vocabulary builder for language learners"
 authors = ["Håkon Hægland <hakon.hagland@gmail.com>"]
 readme = "README.md"
@@ -39,7 +39,7 @@ flake8 = "^6.0.0"
 flake8-bugbear = "^23.6.5"
 pytest-qt = "^4.2.0"
 pytest-xvfb = "^3.0.0"
-pre-commit = "^3.3.3"
+#pre-commit = "^3.3.3"
 
 [tool.black]
 line-length = 88

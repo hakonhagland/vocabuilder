@@ -22,6 +22,14 @@ class CsvFileException(Exception):
         return f"CSV file exception: {self.value}"
 
 
+class FirebaseDatabaseException(Exception):
+    def __init__(self, value: str):
+        self.value = value
+
+    def __str__(self) -> str:
+        return f"Firebase exception: {self.value}"
+
+
 class LocalDatabaseException(Exception):
     def __init__(self, value: str):
         self.value = value

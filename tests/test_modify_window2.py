@@ -109,6 +109,6 @@ class TestGeneral:
         idx = dialog2.button_names.index("&Ok")
         ok_button = dialog2.buttons[idx]
         with qtbot.waitCallback() as callback:
-            mocker.patch.object(dialog2.db, "add_item", callback)
+            mocker.patch.object(dialog2.db, "modify_item", callback)
             ok_button.click()
-        assert len(callback.args) == 1
+        assert len(callback.args) == 2

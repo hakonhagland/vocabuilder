@@ -13,6 +13,7 @@ from vocabuilder.csv_helpers import CsvDatabaseHeader
 from vocabuilder.database import Database
 from vocabuilder.exceptions import (
     CsvFileException,
+    FirebaseDatabaseException,
     LocalDatabaseException,
     TimeException,
 )
@@ -345,9 +346,9 @@ class TestDataBase:
             return_value=None,
         )
         db = Database(cfg, voca_name)
-        db.firebase_database.update_item("xxxyyy", db_dict["NYJ18uc"])
+        db.firebase_database.update_item_same_key("xxxyyy", db_dict["NYJ18uc"])
         assert caplog.records[-1].msg.startswith(
-            "Unexpected: Firebase: key 'xxxyyy' not found"
+            "Cannot update item: Key 'xxxyyy' not found"
         )
 
     # Test specifically push_updated_items_to_local_database()
@@ -461,6 +462,12 @@ class TestDeleteItem:
         with pytest.raises(LocalDatabaseException) as excinfo:
             db.delete_item("xyz")
         assert re.search(r"Term1 'xyz' does not exist", str(excinfo))
+
+    def test_missing_fb(self, get_database: GetDatabase) -> None:
+        db = get_database()
+        with pytest.raises(FirebaseDatabaseException) as excinfo:
+            db.firebase_database.delete_item("xyz")
+        assert re.search(r"key 'xyz' not found in database", str(excinfo))
 
     @pytest.mark.parametrize(
         "value_error, no_child, delete_error",
@@ -681,7 +688,10 @@ class TestUpdateDatabase:
         assert re.search(r"trying to update non-existent term", str(excinfo))
 
     def test_success(
-        self, caplog: LogCaptureFixture, get_database: GetDatabase
+        self,
+        caplog: LogCaptureFixture,
+        get_database: GetDatabase,
+        mocker: MockerFixture,
     ) -> None:
         db = get_database()
         header = CsvDatabaseHeader()
@@ -693,6 +703,11 @@ class TestUpdateDatabase:
             header.last_test: 1684886400,
             header.last_modified: 1687329957,
         }
+        mocker.patch.object(
+            db.firebase_database,
+            "update_item_same_key",
+            return_value=None,
+        )
         caplog.set_level(logging.INFO)
         db.update_item("apple", row)
         assert caplog.records[-1].msg.startswith("UPDATED: term1 = 'apple'")
@@ -704,3 +719,55 @@ class TestUpdateDatabase:
         caplog.set_level(logging.INFO)
         db.update_retest_value("apple", 5)
         assert caplog.records[-1].msg.startswith("UPDATED: term1 = 'apple'")
+
+
+class TestModifyDatabase:
+    def test_bad_key(
+        self,
+        get_database: GetDatabase,
+        mocker: MockerFixture,
+        caplog: LogCaptureFixture,
+    ) -> None:
+        db = get_database()
+        header = CsvDatabaseHeader()
+        status = TermStatus()
+        row: DatabaseRow = {
+            header.status: status.NOT_DELETED,
+            header.term1: "apple",
+            header.term2: "사과",
+            header.test_delay: 1,
+            header.last_test: 1684886400,
+            header.last_modified: 1687329957,
+        }
+        mocker.patch.object(db.local_database, "delete_item", return_value=None)
+        mocker.patch.object(db.local_database, "add_item", return_value=None)
+        caplog.set_level(logging.INFO)
+        db.modify_item("milk", row)
+        assert caplog.records[-1].msg.startswith(
+            "Cannot update item: Key 'milk' not found in database"
+        )
+
+    def test_success(
+        self,
+        get_database: GetDatabase,
+        mocker: MockerFixture,
+        caplog: LogCaptureFixture,
+    ) -> None:
+        db = get_database(init=True)
+        header = CsvDatabaseHeader()
+        status = TermStatus()
+        row: DatabaseRow = {
+            header.status: status.NOT_DELETED,
+            header.term1: "milk",
+            header.term2: "사과",
+            header.test_delay: 1,
+            header.last_test: 1684886400,
+            header.last_modified: 1687329957,
+        }
+        mocker.patch.object(db.local_database, "delete_item", return_value=None)
+        mocker.patch.object(db.local_database, "add_item", return_value=None)
+        caplog.set_level(logging.INFO)
+        db.modify_item("apple", row)
+        assert caplog.records[-1].msg.startswith(
+            "Firebase: renamed item: 'apple' -> 'milk'"
+        )

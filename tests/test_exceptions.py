@@ -4,6 +4,7 @@ from vocabuilder.exceptions import (
     CommandLineException,
     ConfigException,
     CsvFileException,
+    FirebaseDatabaseException,
     LocalDatabaseException,
     SelectVocabularyException,
     TimeException,
@@ -30,6 +31,14 @@ def test_csvfile_exception() -> None:
     try:
         raise CsvFileException("Testing")
     except CsvFileException as exc:
+        msg = str(exc)
+        assert re.search(r"Testing", msg)
+
+
+def test_firebase_database_exception() -> None:
+    try:
+        raise FirebaseDatabaseException("Testing")
+    except FirebaseDatabaseException as exc:
         msg = str(exc)
         assert re.search(r"Testing", msg)
 

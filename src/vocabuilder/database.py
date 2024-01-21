@@ -52,7 +52,7 @@ class Database(TimeMixin):
                     logging.info(
                         f"Updating firebase item: {key} (local value is newer)"
                     )
-                    self.firebase_database.update_item(key, value)
+                    self.firebase_database.update_item_same_key(key, value)
                     num_items += 1
             else:
                 self.firebase_database.push_item(key, value)
@@ -112,11 +112,18 @@ class Database(TimeMixin):
     def get_voca_name(self) -> str:
         return self.local_database.get_voca_name()
 
+    def modify_item(self, old_term1: str, item: DatabaseRow) -> None:
+        self.local_database.delete_item(old_term1)
+        self.local_database.add_item(item)
+        new_term1 = typing.cast(str, item[self.local_database.header.term1])
+        self.firebase_database.update_item_different_key(old_term1, new_term1, item)
+
     def reset_firebase(self) -> None:
         self.firebase_database.run_reset()
 
     def update_item(self, term1: str, item: DatabaseRow) -> None:
         self.local_database.update_item(term1, item)
+        self.firebase_database.update_item_same_key(term1, item)
 
     def update_retest_value(self, term1: str, delay: int) -> None:
         self.local_database.update_retest_value(term1, delay)

@@ -6,6 +6,7 @@ from firebase_admin.exceptions import FirebaseError  # type: ignore
 
 from vocabuilder.config import Config
 from vocabuilder.csv_helpers import CsvDatabaseHeader
+from vocabuilder.exceptions import FirebaseDatabaseException
 
 # from vocabuilder.local_database import LocalDatabase
 from vocabuilder.mixins import TimeMixin
@@ -39,11 +40,10 @@ class FirebaseDatabase(TimeMixin):
 
     def delete_item(self, key: str) -> None:
         if key not in self.fb_keys:
-            logging.info(
+            raise FirebaseDatabaseException(
                 f"Unexpected: Firebase: key '{key}' not found in database. "
                 f"Cannot delete item."
             )
-            return
         fb_key = self.fb_keys[key]
         try:
             child_ref = self.db.child(fb_key)
@@ -67,6 +67,11 @@ class FirebaseDatabase(TimeMixin):
             )
             return
         logging.info(f"Firebase: deleted item: '{key}'")
+
+    def get_firebase_key(self, key: str) -> str:
+        if key not in self.fb_keys:
+            raise FirebaseDatabaseException(f"Key '{key}' not found in database.")
+        return self.fb_keys[key]
 
     def get_items(self) -> DatabaseType:
         return self.data
@@ -147,32 +152,31 @@ class FirebaseDatabase(TimeMixin):
         logging.info("Firebase: running cleanup..")
         # self.db.delete()
 
-    def update_item(self, key: str, value: DatabaseRow) -> None:
-        if key not in self.fb_keys:
-            logging.info(
-                f"Unexpected: Firebase: key '{key}' not found in database. "
-                f"Cannot update item."
-            )
-            return
-        fb_key = self.fb_keys[key]
+    def update_item_same_key(self, key: str, value: DatabaseRow) -> None:
         object = value.copy()
         object[self.header.term1] = key
         try:
-            self.db.child(fb_key).update(object)
-        except FirebaseError as exc:
-            logging.info(
-                "Firebase: could not update item: cause:"
-                f" {exc.cause}, error: {exc.code}, "
-                f"http_response: {exc.http_response}"
-            )
+            fb_key = self.get_firebase_key(key)
+        except FirebaseDatabaseException as exc:
+            logging.info(f"Cannot update item: {exc.value}")
             return
-        except ValueError:
-            logging.info(f"Firebase: invalid value error: {object}")
+        if self._update_item(fb_key, object):
+            logging.info(f"Firebase: updated item: '{key}'")
+
+    def update_item_different_key(
+        self, old_key: str, new_key: str, value: DatabaseRow
+    ) -> None:
+        object = value.copy()
+        object[self.header.term1] = new_key
+        try:
+            fb_key = self.get_firebase_key(old_key)
+        except FirebaseDatabaseException as exc:
+            logging.info(f"Cannot update item: {exc.value}")
             return
-        except TypeError:
-            logging.info(f"Firebase: invalid type error: {object}")
-            return
-        logging.info(f"Firebase: updated item: '{key}'")
+        del self.fb_keys[old_key]
+        self.fb_keys[new_key] = fb_key
+        if self._update_item(fb_key, object):
+            logging.info(f"Firebase: renamed item: '{old_key}' -> '{new_key}'")
 
     # private methods sorted alphabetically
     # -------------------------------------
@@ -249,3 +253,22 @@ class FirebaseDatabase(TimeMixin):
             return "INITIALIZED"
         else:
             return "UNKNOWN"  # pragma: no cover
+
+    def _update_item(self, fb_key: str, object: DatabaseRow) -> bool:
+        try:
+            logging.info(f"Firebase: updating item: {fb_key}, value: {object}")
+            self.db.child(fb_key).update(object)
+        except FirebaseError as exc:
+            logging.info(
+                "Firebase: could not update item: cause:"
+                f" {exc.cause}, error: {exc.code}, "
+                f"http_response: {exc.http_response}"
+            )
+            return False
+        except ValueError:
+            logging.info(f"Firebase: invalid value error: {object}")
+            return False
+        except TypeError:
+            logging.info(f"Firebase: invalid type error: {object}")
+            return False
+        return True
