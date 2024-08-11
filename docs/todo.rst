@@ -1,10 +1,11 @@
 TODO (further work)
 ===================
 
-* Other apps: Anki, Glossika, HelloTalk: https://youtu.be/U_SAcVGFpag
-* Add feature: integration with Google Translate. Speak the word with correct pronunciation.
 * Make the items in the view window selectable and copyable. CTRL-C should copy the
   selected item to the clipboard.
+* Other apps: Anki, Glossika, HelloTalk: https://youtu.be/U_SAcVGFpag
+* View window: When term1 is a long string, it steals space from the term2 column.
+* Add feature: integration with Google Translate. Speak the word with correct pronunciation.
 * View window: (Partly finished) Update list of terms when the database is updated.
 * Finish Firebase implementation. Firebase is only synchronized at the start
   of the program. We need to update continuously. We also need to implement a way to
@@ -30,3 +31,5 @@ TODO (further work)
 * Add an icon for the app. Start with Linux. Then add icon for Windows and Mac.
 * When practicing from list (not random) add option to override "practice delay" when selecting terms
   from the list
+* Tox: ``.python-version``: update
+* Mention: poetry and pre-commit should be installed globally

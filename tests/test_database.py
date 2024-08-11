@@ -290,13 +290,13 @@ class TestDataBase:
         )
         Database(cfg, voca_name)
         if update_error:
-            assert caplog.records[-4].msg.startswith(
+            assert caplog.records[-38].msg.startswith(
                 "Firebase: could not update item: "
             )
         elif value_error:
-            assert caplog.records[-4].msg.startswith("Firebase: invalid value error: ")
+            assert caplog.records[-38].msg.startswith("Firebase: invalid value error: ")
         elif type_error:
-            assert caplog.records[-4].msg.startswith("Firebase: invalid type error: ")
+            assert caplog.records[-38].msg.startswith("Firebase: invalid type error: ")
         else:  # pragma: no cover
             raise Exception("Should not reach here")
 
@@ -542,10 +542,10 @@ class TestGetPairs:
         mocker.patch(
             "vocabuilder.mixins.TimeMixin.epoch_in_seconds",
             autospec=True,
-            return_value=1687329957,
+            return_value=1716389188,
         )
         pairs = db.get_pairs_exceeding_test_delay()
-        assert len(pairs) == 4
+        assert len(pairs) == 40
 
     def test_get_single(self, get_database: GetDatabase, mocker: MockerFixture) -> None:
         db = get_database()

@@ -288,4 +288,4 @@ class TestGeneral:
             mocker.patch.object(edit, "setText", callback)
             qtbot.mouseClick(label, Qt.MouseButton.LeftButton)
         txt = callback.args[0]
-        assert txt == "bag"
+        assert txt == "cloud"

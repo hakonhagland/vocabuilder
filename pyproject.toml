@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vocabuilder"
-version = "0.1.14"
+version = "0.1.16"
 description = "Vocabulary builder for language learners"
 authors = ["Håkon Hægland <hakon.hagland@gmail.com>"]
 readme = "README.md"
@@ -9,7 +9,7 @@ license = "MIT"
 repository = "https://github.com/hakonhagland/vocabuilder"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"  # StrEnum requires Python 3.11
 platformdirs = "^3.8.0"
 pyqt6 = "^6.5.1"
 configparser = "^5.3.0"

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import enum
 import logging
 import typing
-from typing import Callable, Optional
+from typing import Callable
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QCloseEvent, QKeyEvent
 from PyQt6.QtWidgets import (
-    QBoxLayout,
     QGridLayout,
     QHBoxLayout,
     QLineEdit,
@@ -22,9 +22,11 @@ from vocabuilder.mixins import ResizeWindowMixin, WarningsMixin
 from vocabuilder.widgets import QLabelClickable
 
 
-class MatchTerm:
-    TERM1: int = 1
-    TERM2: int = 2
+class MatchTerm(enum.Enum):
+    """Filter results based on the term1 or the term2 LineEdits"""
+
+    TERM1 = "term1"
+    TERM2 = "term2"
 
 
 class ViewScrollArea(QScrollArea):
@@ -39,6 +41,16 @@ class ViewScrollArea(QScrollArea):
         super().__init__()
         self.items = [items1, items2]
         self.callbacks = [callback1, callback2]
+        # We implement lazy loading of the items in the scroll area to avoid
+        # performance issues when there are a large number of items.
+        num_items = len(self.items[0])
+        self.filtered_indices = list(
+            range(num_items)  # Initially no filtering, so all items are included
+        )
+        self.loaded_rows = (
+            0  # Will be updated below, and also in maybe_load_more_items()
+        )
+        self.add_increment = 40  # Add this many items at a time
         self.fontsize = fontsize
         self.vbox = QVBoxLayout()
         self.scrollwidget = QWidget()
@@ -48,35 +60,35 @@ class ViewScrollArea(QScrollArea):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setWidgetResizable(True)
         self.setWidget(self.scrollwidget)
+        if scrollbar := self.verticalScrollBar():
+            scrollbar.valueChanged.connect(self.maybe_load_more_items)
         return
 
     def add_left_and_right_column(self) -> None:
         self.vbox.addStretch()  # https://stackoverflow.com/a/63438161/2173773
-        self.vbox.setDirection(QBoxLayout.Direction.BottomToTop)
+        # self.vbox.setDirection(QBoxLayout.Direction.TopToBottom)
         self.vbox.setSpacing(0)
         self.vbox.setContentsMargins(0, 0, 0, 0)
         self.add_items()
 
-    def add_items(
-        self, text: Optional[str] = None, match_term: Optional[int] = None
-    ) -> None:
+    def add_items(self) -> None:
+        """Add a maximum of items self.add_increment items to the scroll area. This lazy
+        loading of items is done to avoid performance issues when there are a large number
+        of items."""
         style = f"border: 1px solid #bbbbbb; font-size: {self.fontsize}"
-        for i in reversed(range(len(self.items[0]))):
-            if (match_term is not None) and (text is not None):
-                if match_term == MatchTerm.TERM1:
-                    term1 = self.items[0][i]
-                    if not (text in term1):
-                        continue
-                elif match_term == MatchTerm.TERM2:
-                    term2 = self.items[1][i]
-                    if not (text in term2):
-                        continue
+        added_rows = 0
+        if self.loaded_rows > 0:
+            self.vbox.takeAt(self.vbox.count() - 1)  # Remove the stretch
+        for i in range(self.add_increment):
+            if self.loaded_rows + i >= len(self.filtered_indices):
+                break
+            idx = self.filtered_indices[self.loaded_rows + i]
             widget = QWidget()
             hbox = QHBoxLayout()
             hbox.setContentsMargins(0, 0, 0, 0)
             widget.setLayout(hbox)
             for j in range(0, 2):
-                term = self.items[j][i]
+                term = self.items[j][idx]
                 label = QLabelClickable(term)
                 label.setStyleSheet(style)
 
@@ -86,6 +98,27 @@ class ViewScrollArea(QScrollArea):
                 label.addCallback(callback)
                 hbox.addWidget(label)
             self.vbox.addWidget(widget)
+            added_rows += 1
+        self.vbox.addStretch()
+        self.loaded_rows += added_rows
+
+    def filter_items(self, text: str, match_term: MatchTerm) -> None:
+        """Filter the items based on the text and the match_term"""
+        self.filtered_indices = []
+        num_items = len(self.items[0])
+        self.loaded_rows = 0
+        for i in range(num_items):
+            if match_term == MatchTerm.TERM1:
+                if text in self.items[0][i]:
+                    self.filtered_indices.append(i)
+            elif match_term == MatchTerm.TERM2:
+                if text in self.items[1][i]:
+                    self.filtered_indices.append(i)
+
+    def maybe_load_more_items(self) -> None:
+        if scrollbar := self.verticalScrollBar():
+            if scrollbar.value() == scrollbar.maximum():
+                self.add_items()
 
     def update_items1(self, text: str) -> None:
         self.update_items(text, MatchTerm.TERM1)
@@ -93,7 +126,7 @@ class ViewScrollArea(QScrollArea):
     def update_items2(self, text: str) -> None:
         self.update_items(text, MatchTerm.TERM2)
 
-    def update_items(self, text: str, match_term: int) -> None:
+    def update_items(self, text: str, match_term: MatchTerm) -> None:
         layout = self.vbox
         for i in reversed(range(layout.count())):
             layout_item = layout.itemAt(i)
@@ -101,7 +134,8 @@ class ViewScrollArea(QScrollArea):
                 widget = layout_item.widget()
                 if widget is not None:
                     widget.deleteLater()
-        self.add_items(text, match_term)
+        self.filter_items(text, match_term)
+        self.add_items()
         self.scrollwidget.update()
 
     def update_items_from_db(

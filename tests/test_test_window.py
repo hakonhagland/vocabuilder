@@ -224,7 +224,10 @@ class TestGeneral:
                     ok_button.click()
             pair = callback2.args[0]
             assert len(pair) == 2
-            assert pair[1] == "사과"
+            if not click_label:
+                assert pair[1] == "사과"
+            elif click_label and valid_pair:
+                assert pair[1] == "점원"
             callback3 = typing.cast(Callable[[tuple[str, str]], None], callback3)
             callback3(pair)
 
