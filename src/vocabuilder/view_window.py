@@ -79,6 +79,10 @@ class ViewScrollArea(QScrollArea):
         added_rows = 0
         if self.loaded_rows > 0:
             self.vbox.takeAt(self.vbox.count() - 1)  # Remove the stretch
+            # NOTE: We don't need to delete the stretch widget, as it will be handled by Qt:
+            # layout_item = self.vbox.takeAt(self.vbox.count() - 1)  # Remove the stretch
+            # layout_item.widget().deleteLater()
+            # self.vbox.removeItem(layout_item)
         for i in range(self.add_increment):
             if self.loaded_rows + i >= len(self.filtered_indices):
                 break
@@ -134,6 +138,8 @@ class ViewScrollArea(QScrollArea):
                 widget = layout_item.widget()
                 if widget is not None:
                     widget.deleteLater()
+                layout.removeItem(layout_item)  # Remove the layout item itself
+        layout.addStretch()  # Add the stretch back to ensure proper spacing
         self.filter_items(text, match_term)
         self.add_items()
         self.scrollwidget.update()
